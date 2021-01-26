@@ -774,7 +774,7 @@ namespace FilterDataGrid
                             FieldType = fieldType,
                             Content = null,
                             Label = Loc.Empty,
-                            IsChecked = true
+                            IsChecked = !CurrentFilter?.PreviouslyFilteredItems.Contains(null) ?? false
                         });
                     }
                 }); // and task
