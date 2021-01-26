@@ -378,7 +378,7 @@ namespace FilterDataGrid
         #endregion Protected Methods
 
         #region Private Methods
-        
+
         /// <summary>
         ///     Reset the cursor at the end of the sort
         /// </summary>
@@ -764,10 +764,9 @@ namespace FilterDataGrid
                         filterItemList.Add(filterItem);
                     }
 
-                    
+                    // add a empty item at the bottom of the list
                     if (containtsEmpty)
                     {
-                        // add a empty item at the bottom of the list
                         sourceObjectList.Insert(sourceObjectList.Count, null);
 
                         filterItemList.Add(new FilterItem
