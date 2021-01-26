@@ -927,10 +927,10 @@ namespace FilterDataGrid
                         {
                             // remove filtered items that should no longer be filtered
                             previousFilteredItems = previousFilteredItems.Except(checkedItems).ToList();
-
-                            // add the previous filtered items to the list of new items to filter
-                            uncheckedItems.AddRange(previousFilteredItems);
                         }
+
+                        // add the previous filtered items to the list of new items to filter
+                        uncheckedItems.AddRange(previousFilteredItems);
                     }
                 });
 
