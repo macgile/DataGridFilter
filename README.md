@@ -46,4 +46,3 @@ https://dillinger.io/
 		> **FieldName** of **DataGridTemplateColumn** is mandatory   
 		   
 
-> The translations are from google translate, if you find any errors please let me know.
