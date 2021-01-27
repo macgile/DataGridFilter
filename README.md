@@ -29,6 +29,7 @@ https://dillinger.io/
 		  - (bool) **ShowElapsedTime**    : *Displays the elapsed time of filtering in status bar*, default : false
 		  - (string) **DateFormatString** : *Date display format*, default : "d"
 		  - (enum) **FilterLanguage**     : *Translation into available language*, default : English   
+		  Languages available : English, French, Russian, German, Italian, Chinese   
 		> if you add custom columns, you must set the **AutoGenerateColumns** property to "False"  
 		
 	  - **Custom colum**   
