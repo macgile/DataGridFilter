@@ -30,6 +30,7 @@ https://dillinger.io/
 		  - (string) **DateFormatString** : *Date display format*, default : "d"
 		  - (enum) **FilterLanguage**     : *Translation into available language*, default : English   
 		  Languages available : English, French, Russian, German, Italian, Chinese   
+			> The translations are from google translate, if you find any errors please let me know.
 		> if you add custom columns, you must set the **AutoGenerateColumns** property to "False"  
 		
 	  - **Custom colum**   
