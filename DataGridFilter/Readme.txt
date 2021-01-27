@@ -3,7 +3,7 @@ General use:
 
 1) Include the FilterDataGrid folder in your project
 
-2) Add "FilterableDatagrid.xaml" to App.xaml as MergedDictionaries
+2) Add "FilterDataGrid.xaml" to App.xaml as MergedDictionaries
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
