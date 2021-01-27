@@ -33,12 +33,12 @@ https://dillinger.io/
 			> The translations are from google translate, if you find any errors please let me know.
 		> if you add custom columns, you must set the **AutoGenerateColumns** property to "False"  
 		
-	  - **Custom colum**   
+	  - **Custom TextColumn**   
 		```
 		<control:FilterDataGrid.Columns>   
 		    <control:DataGridTextColumn IsColumnFiltered="True" ...
 		```
-	  - **Custom template colum**   
+	  - **Custom TemplateColumn**   
 		```
 		<control:FilterDataGrid.Columns>   
 		    <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ...
