@@ -31,18 +31,20 @@ https://dillinger.io/
 		  - (enum) **FilterLanguage**     : *Translation into available language*, default : English   
 		  *Languages available : English, French, Russian, German, Italian, Chinese*   
 			> The translations are from google translate, if you find any errors please let me know.
-		> if you add custom columns, you must set the **AutoGenerateColumns** property to "False"  
+		> *If you add custom columns, you must set the **AutoGenerateColumns** property to "False"*  
 		
 	  - **Custom TextColumn**   
 		```
 		<control:FilterDataGrid.Columns>   
 		    <control:DataGridTextColumn IsColumnFiltered="True" ...
 		```
-	  - **Custom TemplateColumn**   
+	  - **Custom TemplateColumn**  
+	    > **FieldName** of **DataGridTemplateColumn** is mandatory   
+	    
 		```
 		<control:FilterDataGrid.Columns>   
 		    <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ...
 		```
-		> **FieldName** of **DataGridTemplateColumn** is mandatory   
+		
 		   
 
