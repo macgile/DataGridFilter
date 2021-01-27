@@ -56,7 +56,7 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                <Label Content="{x:Static control:Loc.LanguageName}" ContentStringFormat="FilterDataGrid language : {0}" />
+                <Label Content="{Binding ElementName=FilterDataGrid, Path=Translate.LanguageName}" ContentStringFormat="FilterLanguage property : {0}" />
             </StackPanel>
         </Grid>
 
@@ -78,6 +78,7 @@
             CanUserAddRows="False"
             ColumnWidth="*"
             DateFormatString="d"
+            FilterLanguage="English"
             HorizontalGridLinesBrush="LightGray"
             IsReadOnly="True"
             ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
@@ -130,11 +131,11 @@
             Margin="10,10,0,2"
             FontSize="13"
             FontWeight="DemiBold"
-            Text="{Binding ElementName=DataGridAuto, Path=Items.Count, StringFormat=Auto generate columns : {0:### ### ###} items}"
+            Text="{Binding ElementName=FilterDataGridAuto, Path=Items.Count, StringFormat=Auto generate columns : {0:### ### ###} items}"
             Visibility="Visible" />
 
         <control:FilterDataGrid
-            x:Name="DataGridAuto"
+            x:Name="FilterDataGridAuto"
             Grid.Row="4"
             Margin="10,10,0,2"
             AlternatingRowBackground="WhiteSmoke"
@@ -143,10 +144,13 @@
             Background="Transparent"
             CanUserAddRows="False"
             ColumnWidth="*"
+            FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             LoadingRow="DataGrid_LoadingRow"
             MinColumnWidth="50"
             RowHeaderWidth="30"
+            ShowElapsedTime="True"
+            ShowStatusBar="True"
             VerticalScrollBarVisibility="Visible"
             Visibility="Visible" />-->
     </Grid>

@@ -3,6 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:control="clr-namespace:FilterDataGrid">
 
+    <!--  STRING FORMAT CONVERTER  -->
+    <control:StringFormatConverter x:Key="StringFormatConverter" />
+
     <!--  PATH MAGNIFIER ICON  -->
     <Geometry x:Key="Magnifier">
         M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59
@@ -34,19 +37,66 @@
         M7,10L12,15L17,10H7Z
     </Geometry>
 
-    <!--  NOT USED  -->
-    <Style x:Key="StyleButtonFilter" TargetType="Button">
-        <Setter Property="Opacity" Value="0.8" />
-    </Style>
-
-    <!--  NOT USED  -->
-    <Style x:Key="StyleButtonFilterSet" TargetType="Button">
-        <Setter Property="Opacity" Value="1" />
-    </Style>
-
+    <!--  FIX BUG LISTBOX  -->
     <Style TargetType="ListBoxItem">
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <!--  PLACEHOLDER  SEARCH BOX  -->
+    <Style x:Key="PlaceHolder" TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <TextBox
+                            x:Name="textSource"
+                            Margin="{TemplateBinding Margin}"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Panel.ZIndex="2"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            MaxLength="{TemplateBinding MaxLength}"
+                            Text="{Binding Path=Text, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Margin="{TemplateBinding Margin}"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Panel.ZIndex="1"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            MaxLength="{TemplateBinding MaxLength}"
+                            Text="{TemplateBinding Tag}">
+
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}">
+                                    <Setter Property="Foreground" Value="Transparent" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Text, ElementName=textSource}" Value="">
+                                            <Setter Property="Foreground" Value="LightGray" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!--  TREEVIEW  -->
@@ -60,6 +110,7 @@
         </Setter>
     </Style>
 
+    <!--  TREEVIEW EXPAND/COLLAPSE TOGGLE  -->
     <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
         <Setter Property="Focusable" Value="False" />
         <Setter Property="Width" Value="19" />
@@ -101,6 +152,7 @@
         </Setter>
     </Style>
 
+    <!--  TREEVIEW TREEVIEWITEM STYLE  -->
     <Style x:Key="StyleTreeViewItem" TargetType="{x:Type TreeViewItem}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Padding" Value="1,0,0,0" />
@@ -173,62 +225,6 @@
                             <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!--  PLACEHOLDER  SEARCH BOX  -->
-    <Style x:Key="PlaceHolder" TargetType="{x:Type TextBox}">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Grid>
-                        <TextBox
-                            x:Name="textSource"
-                            Margin="{TemplateBinding Margin}"
-                            Padding="{TemplateBinding Padding}"
-                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Panel.ZIndex="2"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            FontSize="{TemplateBinding FontSize}"
-                            FontWeight="{TemplateBinding FontWeight}"
-                            MaxLength="{TemplateBinding MaxLength}"
-                            Text="{Binding Path=Text, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBox
-                            Margin="{TemplateBinding Margin}"
-                            Padding="{TemplateBinding Padding}"
-                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Panel.ZIndex="1"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            FontSize="{TemplateBinding FontSize}"
-                            FontWeight="{TemplateBinding FontWeight}"
-                            MaxLength="{TemplateBinding MaxLength}"
-                            Text="{TemplateBinding Tag}">
-
-                            <TextBox.Style>
-                                <Style TargetType="{x:Type TextBox}">
-                                    <Setter Property="Foreground" Value="Transparent" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Text, ElementName=textSource}" Value="">
-                                            <Setter Property="Foreground" Value="LightGray" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
-                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -335,19 +331,31 @@
                     </Border.Style>
 
                     <UniformGrid Columns="2" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
+
+                        <!--  RESULT STATUS  -->
                         <TextBlock
                             Margin="0,0,0,0"
                             HorizontalAlignment="Left"
                             FontSize="11"
                             FontWeight="Normal">
                             <TextBlock.Text>
-                                <MultiBinding StringFormat="{x:Static control:Loc.Status}">
-                                    <Binding Path="Items.Count" />
+                                <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                    <Binding Path="Translate.Status" />
+                                    <Binding Path="Items.Count" UpdateSourceTrigger="PropertyChanged" />
                                     <Binding Path="ItemsSourceCount" />
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
-                        <TextBlock HorizontalAlignment="Right" Text="{Binding ElapsedTime, UpdateSourceTrigger=PropertyChanged, StringFormat={x:Static control:Loc.ElapsedTime}, FallbackValue=00:00.00}">
+
+                        <!--  ELAPSED TIME  -->
+                        <TextBlock HorizontalAlignment="Right">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                    <Binding Path="Translate.ElapsedTime" UpdateSourceTrigger="PropertyChanged" />
+                                    <Binding Path="ElapsedTime" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -365,7 +373,7 @@
         </Border>
     </ControlTemplate>
 
-    <!--  STYLE BASED ON DATAGRID  -->
+    <!--  FILTERDATAGRID STYLE BASED ON DATAGRID  -->
     <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="control:FilterDataGrid">
         <Setter Property="Template" Value="{StaticResource ControlTemplateDatagrid}" />
     </Style>
@@ -391,7 +399,7 @@
                     VerticalAlignment="Center"
                     Text="{Binding}" />
 
-                <!--  ADD A FILTER BUTTON AND POPUP  -->
+                <!--  FILTER BUTTON  -->
                 <Button
                     Name="filterButton"
                     Grid.Column="1"
@@ -524,12 +532,23 @@
                                                             Fill="{TemplateBinding Foreground}"
                                                             Stretch="Uniform" />
 
-                                                        <ContentPresenter
+                                                        <TextBlock
                                                             x:Name="ContentPresenter"
                                                             Grid.Column="1"
                                                             HorizontalAlignment="Stretch"
-                                                            Content="{TemplateBinding Content}"
-                                                            ContentStringFormat="{x:Static control:Loc.Clear}" />
+                                                            DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                                    <MultiBinding.Bindings>
+                                                                        <Binding
+                                                                            Path="Translate.Clear"
+                                                                            TargetNullValue=""
+                                                                            UpdateSourceTrigger="PropertyChanged" />
+                                                                        <Binding ElementName="ClearFilterBnt" Path="Content" />
+                                                                    </MultiBinding.Bindings>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
                                                     </Grid>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
@@ -589,10 +608,11 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalContentAlignment="Center"
                                     AcceptsReturn="False"
+                                    DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}"
                                     FontSize="13"
                                     MaxLength="20"
                                     Style="{StaticResource PlaceHolder}"
-                                    Tag="{x:Static control:Loc.Search}" />
+                                    Tag="{Binding Translate.Search}" />
 
                                 <Button
                                     x:Name="ClearSearchBoxBtn"
@@ -760,21 +780,22 @@
                             Margin="0,6,4,6"
                             HorizontalAlignment="Right"
                             Background="Transparent"
-                            Columns="2">
+                            Columns="2"
+                            DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
 
                             <Button
                                 Width="100"
                                 Margin="0"
                                 HorizontalAlignment="Left"
                                 Command="{x:Static control:FilterDataGrid.ApplyFilter}"
-                                Content="{x:Static control:Loc.Ok}" />
+                                Content="{Binding Translate.Ok}" />
 
                             <Button
                                 Width="100"
                                 Margin="6,0,0,0"
                                 HorizontalAlignment="Right"
                                 Command="{x:Static control:FilterDataGrid.CancelFilter}"
-                                Content="{x:Static control:Loc.Cancel}" />
+                                Content="{Binding Translate.Cancel}" />
                         </UniformGrid>
 
                         <!--  RESIZE GRIP  -->

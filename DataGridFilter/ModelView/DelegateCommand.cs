@@ -1,4 +1,4 @@
-﻿#region (c) 2019 Phareway.com. All right reserved
+﻿#region (c) 2019 Gilles Macabies All right reserved
 
 //   Author     : Gilles Macabies
 //   Solution   : DataGridFilter

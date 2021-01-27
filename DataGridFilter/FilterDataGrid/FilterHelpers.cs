@@ -1,18 +1,18 @@
-﻿#region (c) 2019 Gilles Macabies
+﻿#region (c) 2019 Gilles Macabies All right reserved
 
 // Author     : Gilles Macabies
 // Solution   : DataGridFilter
 // Projet     : DataGridFilter
 // File       : FilterHelpers.cs
-// Created    : 09/11/2019
+// Created    : 20/01/2021
+//
 
-#endregion (c) 2019 Gilles Macabies
+#endregion (c) 2019 Gilles Macabies All right reserved
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -27,7 +27,6 @@ using System.Windows.Media;
 
 namespace FilterDataGrid
 {
-
     public static class Extensions
     {
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
@@ -39,7 +38,7 @@ namespace FilterDataGrid
     public static class Helpers
     {
         /// <summary>
-        /// Print elapsed time
+        ///     Print elapsed time
         /// </summary>
         /// <param name="label"></param>
         /// <param name="start"></param>
@@ -70,7 +69,7 @@ namespace FilterDataGrid
             if (child == null) return null;
 
             //handle content elements separately
-            ContentElement contentElement = child as ContentElement;
+            var contentElement = child as ContentElement;
             if (contentElement != null)
             {
                 var parent = ContentOperations.GetParent(contentElement);
@@ -116,7 +115,7 @@ namespace FilterDataGrid
         #region Public Methods
 
         private static T FindVisualChild<T>(this DependencyObject dependencyObject, string name)
-                    where T : DependencyObject
+            where T : DependencyObject
         {
             // Search immediate children first (breadth-first)
             var childrenCount = VisualTreeHelper.GetChildrenCount(dependencyObject);
@@ -346,28 +345,17 @@ namespace FilterDataGrid
 
         public static Visual GetDescendantByType(Visual element, Type type)
         {
-            if (element == null)
-            {
-                return null;
-            }
-            if (element.GetType() == type)
-            {
-                return element;
-            }
+            if (element == null) return null;
+            if (element.GetType() == type) return element;
             Visual foundElement = null;
-            if (element is FrameworkElement frameworkElement)
-            {
-                frameworkElement.ApplyTemplate();
-            }
+            if (element is FrameworkElement frameworkElement) frameworkElement.ApplyTemplate();
             for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
             {
                 var visual = VisualTreeHelper.GetChild(element, i) as Visual;
                 foundElement = GetDescendantByType(visual, type);
-                if (foundElement != null)
-                {
-                    break;
-                }
+                if (foundElement != null) break;
             }
+
             return foundElement;
         }
 

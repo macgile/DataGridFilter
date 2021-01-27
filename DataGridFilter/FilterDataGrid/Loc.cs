@@ -26,17 +26,20 @@ namespace FilterDataGrid
         Chinese
     }
 
-    public static class Loc
+    public class Loc
     {
         #region Private Fields
 
-        private static readonly int Language;
+        private int language;
 
-        // RESPECT THE ORDER OF THE Local ENUMERATION
+        #endregion Private Fields
+
+        #region Private Fields
 
         // culture name(used for dates)
         private static readonly string[] CultureNames = { "en-US", "fr-FR", "ru-RU", "de-DE", "it-IT", "zh-Hans" };
 
+        // RESPECT THE ORDER OF THE Local ENUMERATION
         // translation
         private static readonly Dictionary<string, string[]> Translation = new Dictionary<string, string[]>
         {
@@ -131,33 +134,48 @@ namespace FilterDataGrid
             }
         };
 
+
         #endregion Private Fields
 
         #region Constructors
 
-        static Loc()
+        public Loc()
         {
-            // change language here
             Language = (int)Local.English;
-            Culture = new CultureInfo(CultureNames[Language]);
         }
 
         #endregion Constructors
 
         #region Public Properties
 
-        public static CultureInfo Culture { get; }
-        public static string CultureName => CultureNames[Language];
-        public static string LanguageName => Enum.GetName(typeof(Local), Language);
+        public string All => Translation["All"][Language];
 
-        public static string All => Translation["All"][Language];
-        public static string Cancel => Translation["Cancel"][Language];
-        public static string Ok => Translation["Ok"][Language];
-        public static string Clear => Translation["Clear"][Language];
-        public static string Empty => Translation["Empty"][Language];
-        public static string Search => Translation["Search"][Language];
-        public static string Status => Translation["Status"][Language];
-        public static string ElapsedTime => Translation["ElapsedTime"][Language];
+        public string Cancel => Translation["Cancel"][Language];
+
+        public string Clear => Translation["Clear"][Language];
+
+        public CultureInfo Culture { get; set; }
+
+        public string CultureName => CultureNames[Language];
+
+        public string ElapsedTime => Translation["ElapsedTime"][Language];
+
+        public string Empty => Translation["Empty"][Language];
+
+        public int Language
+        {
+            get => language;
+            set
+            {
+                language = value;
+                Culture = new CultureInfo(CultureNames[Language]);
+            }
+        }
+
+        public string LanguageName => Enum.GetName(typeof(Local), Language);
+        public string Ok => Translation["Ok"][Language];
+        public string Search => Translation["Search"][Language];
+        public string Status => Translation["Status"][Language];
 
         #endregion Public Properties
     }

@@ -1,4 +1,4 @@
-﻿#region (c) 2019 Phareway.com. All right reserved
+﻿#region (c) 2019 Gilles Macabies All right reserved
 
 //   Author     : Gilles Macabies
 //   Solution   : DataGridFilter
@@ -6,7 +6,7 @@
 //   File       : MainWindow.xaml.cs
 //   Created    : 31/10/2019
 
-#endregion (c) 2019 Phareway.com. All right reserved
+#endregion (c) 2019 Gilles Macabies All right reserved
 
 using System;
 using System.Diagnostics;

@@ -4,10 +4,10 @@
 // Solution   : DataGridFilter
 // Projet     : DataGridFilter
 // File       : FilterDataGrid.cs
-// Created    : 08/12/2020
-//
+// Created    : 26/01/2021
+// 
 
-#endregion (c) 2019 Gilles Macabies All right reserved
+#endregion
 
 using System;
 using System.Collections;
@@ -107,6 +107,12 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata("d"));
 
+        public static readonly DependencyProperty FilterLanguageProperty =
+            DependencyProperty.Register("FilterLanguage",
+                typeof(Local),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(Local.English));
+
         #endregion Public DependencyProperty
 
         #region Public Event
@@ -159,6 +165,11 @@ namespace FilterDataGrid
         #region Public Properties
 
         /// <summary>
+        ///     Instance of Loc
+        /// </summary>
+        public Loc Translate { get; set; }
+
+        /// <summary>
         ///     Elapsed time
         /// </summary>
         public TimeSpan ElapsedTime
@@ -180,7 +191,7 @@ namespace FilterDataGrid
 
         public bool ShowElapsedTime
         {
-            get { return (bool)GetValue(ShowElapsedTimeProperty); }
+            get { return (bool) GetValue(ShowElapsedTimeProperty); }
             set { SetValue(ShowElapsedTimeProperty, value); }
         }
 
@@ -189,7 +200,7 @@ namespace FilterDataGrid
         /// </summary>
         public bool ShowStatusBar
         {
-            get { return (bool)GetValue(ShowStatusBarProperty); }
+            get { return (bool) GetValue(ShowStatusBarProperty); }
             set { SetValue(ShowStatusBarProperty, value); }
         }
 
@@ -198,8 +209,17 @@ namespace FilterDataGrid
         /// </summary>
         public string DateFormatString
         {
-            get { return (string)GetValue(DateFormatStringProperty); }
+            get { return (string) GetValue(DateFormatStringProperty); }
             set { SetValue(DateFormatStringProperty, value); }
+        }
+
+        /// <summary>
+        ///     Language
+        /// </summary>
+        public Local FilterLanguage
+        {
+            get { return (Local) GetValue(FilterLanguageProperty); }
+            set { SetValue(FilterLanguageProperty, value); }
         }
 
         #endregion Public Properties
@@ -227,8 +247,11 @@ namespace FilterDataGrid
 
             try
             {
-                iconFilterSet = (Geometry)FindResource("FilterSet");
-                iconFilter = (Geometry)FindResource("Filter");
+                iconFilterSet = (Geometry) FindResource("FilterSet");
+                iconFilter = (Geometry) FindResource("Filter");
+
+                // FilterLanguage : default : 0 (english)
+                Translate = new Loc {Language = (int) FilterLanguage};
 
                 // sorting event
                 Sorted += OnSorted;
@@ -237,9 +260,9 @@ namespace FilterDataGrid
 
                 // get the columns that can be filtered
                 var columns = Columns
-                    .Where(c => c.GetType() == typeof(DataGridTextColumn) && ((DataGridTextColumn)c).IsColumnFiltered
+                    .Where(c => c.GetType() == typeof(DataGridTextColumn) && ((DataGridTextColumn) c).IsColumnFiltered
                                 || c.GetType() == typeof(DataGridTemplateColumn) &&
-                                ((DataGridTemplateColumn)c).IsColumnFiltered)
+                                ((DataGridTemplateColumn) c).IsColumnFiltered)
                     .Select(c => c)
                     .ToList();
 
@@ -250,14 +273,14 @@ namespace FilterDataGrid
 
                     if (columnType == typeof(DataGridTextColumn))
                     {
-                        var column = (DataGridTextColumn)col;
-                        column.HeaderTemplate = (DataTemplate)FindResource("DataGridHeaderTemplate");
-                        column.FieldName = ((Binding)column.Binding).Path.Path;
+                        var column = (DataGridTextColumn) col;
+                        column.HeaderTemplate = (DataTemplate) FindResource("DataGridHeaderTemplate");
+                        column.FieldName = ((Binding) column.Binding).Path.Path;
                     }
                     else if (columnType == typeof(DataGridTemplateColumn))
                     {
-                        var column = (DataGridTemplateColumn)col;
-                        column.HeaderTemplate = (DataTemplate)FindResource("DataGridHeaderTemplate");
+                        var column = (DataGridTemplateColumn) col;
+                        column.HeaderTemplate = (DataTemplate) FindResource("DataGridHeaderTemplate");
                     }
                 }
             }
@@ -286,7 +309,7 @@ namespace FilterDataGrid
                     Binding = new Binding(e.PropertyName),
                     FieldName = e.PropertyName,
                     Header = e.Column.Header.ToString(),
-                    HeaderTemplate = (DataTemplate)FindResource("DataGridHeaderTemplate"),
+                    HeaderTemplate = (DataTemplate) FindResource("DataGridHeaderTemplate"),
                     IsColumnFiltered = true
                 };
 
@@ -325,9 +348,9 @@ namespace FilterDataGrid
                 {
                     var coll = Columns
                         .FirstOrDefault(c => c.GetType() == typeof(DataGridTextColumn)
-                                             && ((DataGridTextColumn)c).FieldName == filter.FieldName
+                                             && ((DataGridTextColumn) c).FieldName == filter.FieldName
                                              || c.GetType() == typeof(DataGridTemplateColumn)
-                                             && ((DataGridTemplateColumn)c).FieldName == filter.FieldName);
+                                             && ((DataGridTemplateColumn) c).FieldName == filter.FieldName);
 
                     if (coll == null) continue;
 
@@ -450,7 +473,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void CheckedAllCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            var item = (FilterItem)e.Parameter;
+            var item = (FilterItem) e.Parameter;
 
             // only when the item[0] (select all) is checked or unchecked
             if (item?.Id != 0 || ItemCollectionView == null) return;
@@ -557,11 +580,11 @@ namespace FilterDataGrid
         /// <returns></returns>
         private bool SearchFilter(object obj)
         {
-            var item = (FilterItem)obj;
+            var item = (FilterItem) obj;
             if (string.IsNullOrEmpty(searchText) || item == null || item.Id == 0) return true;
 
             if (item.FieldType == typeof(DateTime))
-                return ((DateTime?)item.Content)?.ToString("d")
+                return ((DateTime?) item.Content)?.ToString("d")
                     .IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
 
             return item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
@@ -574,7 +597,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void SearchTextBoxOnTextChanged(object sender, TextChangedEventArgs e)
         {
-            var textBox = (TextBox)sender;
+            var textBox = (TextBox) sender;
 
             // fix TextChanged event fires twice
             // I did not find another solution
@@ -625,7 +648,7 @@ namespace FilterDataGrid
 
             try
             {
-                button = (Button)e.OriginalSource;
+                button = (Button) e.OriginalSource;
 
                 if (Items.Count == 0 || button == null) return;
 
@@ -674,13 +697,13 @@ namespace FilterDataGrid
                 // get field name from binding Path
                 if (columnType == typeof(DataGridTextColumn))
                 {
-                    var column = (DataGridTextColumn)header.Column;
+                    var column = (DataGridTextColumn) header.Column;
                     fieldName = column.FieldName;
                 }
 
                 if (columnType == typeof(DataGridTemplateColumn))
                 {
-                    var column = (DataGridTemplateColumn)header.Column;
+                    var column = (DataGridTemplateColumn) header.Column;
                     fieldName = column.FieldName;
                 }
 
@@ -700,7 +723,8 @@ namespace FilterDataGrid
                                 new FilterCommon
                                 {
                                     FieldName = fieldName,
-                                    FieldType = fieldType
+                                    FieldType = fieldType,
+                                    Translate = Translate
                                 };
 
                 // list of all item values, filtered and unfiltered (previous filtered items)
@@ -708,7 +732,7 @@ namespace FilterDataGrid
 
                 // add the first element (select all)
                 var filterItemList = new List<FilterItem>
-                    {new FilterItem {Id = 0, Label = Loc.All, IsChecked = true}};
+                    {new FilterItem {Id = 0, Label = Translate.All, IsChecked = true}};
 
                 // set cursor
                 Mouse.OverrideCursor = Cursors.Wait;
@@ -728,25 +752,24 @@ namespace FilterDataGrid
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
                     // displays new (checked) and already filtered (unchecked) items
-                    // PreviouslyFilteredItems is a list of objects that can be a string or a datetime
-                    if (lastFilter == CurrentFilter.FieldName && CurrentFilter?.PreviouslyFilteredItems.Any() == true)
+                    // PreviouslyFilteredItems is a HashSet of objects
+                    if (lastFilter == CurrentFilter.FieldName)
                         sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems);
 
                     // sorting is a slow operation, using ParallelQuery
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
 
-                    var containtsEmpty = false;
+                    var emptyItem = false;
 
                     // if it exists, place the empty element at the bottom of the list
                     if (sourceObjectList.Any(l => string.IsNullOrEmpty(l?.ToString())))
                     {
-                        containtsEmpty = true;
+                        emptyItem = true;
                         var emptyItems = sourceObjectList.Where(x => string.IsNullOrEmpty(x?.ToString())).ToList();
                         foreach (var em in emptyItems) sourceObjectList.Remove(em);
                     }
 
-                    // add all items to the "observable" collection
-                    // if (fieldType != typeof(DateTime))
+                    // add all items to the filterItemList
                     for (var i = 0; i < sourceObjectList.Count; i++)
                     {
                         var item = sourceObjectList[i];
@@ -758,14 +781,14 @@ namespace FilterDataGrid
                             Label = item?.ToString(), // Content displayed
 
                             // check or uncheck if the content of item exists in the previously filtered elements
-                            IsChecked = !CurrentFilter?.PreviouslyFilteredItems.Contains(item) ?? false,
+                            IsChecked = !CurrentFilter?.PreviouslyFilteredItems.Contains(item) ?? false
                         };
 
                         filterItemList.Add(filterItem);
                     }
 
                     // add a empty item at the bottom of the list
-                    if (containtsEmpty)
+                    if (emptyItem)
                     {
                         sourceObjectList.Insert(sourceObjectList.Count, null);
 
@@ -774,22 +797,23 @@ namespace FilterDataGrid
                             Id = filterItemList.Count,
                             FieldType = fieldType,
                             Content = null,
-                            Label = Loc.Empty,
+                            Label = Translate.Empty,
                             IsChecked = !CurrentFilter?.PreviouslyFilteredItems.Contains(null) ?? false
                         });
                     }
                 }); // and task
 
-                // the current listbox or tree structure
+                // the current listbox or treeview
                 if (fieldType == typeof(DateTime))
                 {
                     treeview = VisualTreeHelpers.FindChild<TreeView>(popup.Child, "PopupTreeview");
 
                     if (treeview != null)
                     {
-                        // fill tree with list
+                        // fill the treeview with the tree structure built by CurrentFilter.BuildTree
                         // and if it is the last filter, uncheck the elements already filtered
-                        treeview.ItemsSource = CurrentFilter?.BuildTree(sourceObjectList, lastFilter == CurrentFilter.FieldName);
+                        treeview.ItemsSource =
+                            CurrentFilter?.BuildTree(sourceObjectList, lastFilter /*== CurrentFilter.FieldName*/);
                         treeview.Visibility = Visibility.Visible;
                     }
 
@@ -924,10 +948,8 @@ namespace FilterDataGrid
                         contain = checkedItems.Intersect(previousFilteredItems).Any();
 
                         if (contain)
-                        {
                             // remove filtered items that should no longer be filtered
                             previousFilteredItems = previousFilteredItems.Except(checkedItems).ToList();
-                        }
 
                         // add the previous filtered items to the list of new items to filter
                         uncheckedItems.AddRange(previousFilteredItems);
@@ -989,7 +1011,7 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "\r\nPopupClosed");
 
-            var pop = (Popup)sender;
+            var pop = (Popup) sender;
 
             // clear lists if close popup without filtering
             if (!pending)
@@ -1075,7 +1097,7 @@ namespace FilterDataGrid
         private static async void ResetCursor()
         {
             // reset cursor
-            await UiDispatcher.BeginInvoke((Action)(() => { Mouse.OverrideCursor = null; }),
+            await UiDispatcher.BeginInvoke((Action) (() => { Mouse.OverrideCursor = null; }),
                 DispatcherPriority.ContextIdle);
         }
 

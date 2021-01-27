@@ -81,6 +81,7 @@
     <Compile Include="FilterDataGrid\FilterCommon.cs" />
     <Compile Include="FilterDataGrid\FilterItem.cs" />
     <Compile Include="FilterDataGrid\Loc.cs" />
+    <Compile Include="FilterDataGrid\StringFormatConverter.cs" />
     <Compile Include="ModelView\DelegateCommand.cs" />
     <Compile Include="ModelView\RandomGenerator.cs" />
     <Compile Include="Model\Employe.cs" />

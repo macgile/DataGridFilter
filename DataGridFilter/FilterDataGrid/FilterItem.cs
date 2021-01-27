@@ -1,15 +1,19 @@
-﻿// Author     : Gilles Macabies
-// Solution   : WpfCodeProject
-// Projet     : WpfCodeProject
+﻿#region (c) 2019 Gilles Macabies All right reserved
+
+// Author     : Gilles Macabies
+// Solution   : DataGridFilter
+// Projet     : DataGridFilter
 // File       : FilterItem.cs
-// Created    : 17/01/2021
-//
+// Created    : 26/01/2021
+// 
+
+#endregion
 
 using System;
 using System.Collections.Generic;
 
+// ReSharper disable ConvertToAutoPropertyWhenPossible
 // ReSharper disable InconsistentNaming
-
 // ReSharper disable ArrangeAccessorOwnerBody
 // ReSharper disable CheckNamespace
 // ReSharper disable MemberCanBePrivate.Global
@@ -20,6 +24,12 @@ namespace FilterDataGrid
 {
     public class FilterItem : NotifyProperty
     {
+        #region Public Events
+
+        public event EventHandler<bool?> OnIsCheckedDate;
+
+        #endregion Public Events
+
         #region Private Fields
 
         private bool isChecked;
@@ -27,12 +37,6 @@ namespace FilterDataGrid
         private bool notify;
 
         #endregion Private Fields
-
-        #region Public Events
-
-        public event EventHandler<bool?> OnIsCheckedDate;
-
-        #endregion Public Events
 
         #region Public Properties
 
@@ -59,7 +63,7 @@ namespace FilterDataGrid
                     OnPropertyChanged("IsChecked");
 
                 // reactivate notify
-                // the iteration over an ObservableCollection triggers the notification
+                // the iteration over an Collection triggers the notification
                 // of the "IsChecked" property and slows the performance of the loop
                 notify = true;
             }
