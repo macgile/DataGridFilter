@@ -17,21 +17,21 @@ General use:
     Control : 
         <control:FilterDataGrid ...
         
-        Available properties :
+        - Available properties :
           (bool) ShowStatusBar      : Displays the status bar, default : false
           (bool) ShowElapsedTime    : Displays the elapsed time of filtering in status bar, default : false
           (string) DateFormatString : Date display format, default : "d"
           (enum) FilterLanguage     : Translation into available language, default : English
                                       Languages available : English, French, Russian, German, Italian, Chinese
 
-        * If you add custom columns, you must set the property AutoGenerateColumns to "False"
+          * If you add custom columns, you must set the property AutoGenerateColumns to "False"
 
-        Custom TextColumn :  
-        <control:FilterDataGrid.Columns>
-            <control:DataGridTextColumn IsColumnFiltered="True" ...
+        - Custom TextColumn :  
+            <control:FilterDataGrid.Columns>
+                <control:DataGridTextColumn IsColumnFiltered="True" ...
 
-       * FieldName property of TemplateColumn is required
-        Custom TemplateColumn :
-        <control:FilterDataGrid.Columns>   
-            <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ...
+          * FieldName property of TemplateColumn is required
+        - Custom TemplateColumn :
+            <control:FilterDataGrid.Columns>   
+                <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ...
 
