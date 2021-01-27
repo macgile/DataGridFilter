@@ -25,9 +25,10 @@ https://dillinger.io/
 	  - **Control**   
 		`<control:FilterDataGrid ...`   
 		- Available properties
-		  - **ShowStatusBar** : *displays the status bar* (bool)
-		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar* (bool)
-		  - **DateFormatString** : *date display format* (string)   
+		  - (bool) **ShowStatusBar** : *Displays the status bar*, default : false
+		  - (bool) **ShowElapsedTime** : *Displays the elapsed time of filtering in status bar*, default : false
+		  - (string)**DateFormatString** : *Date display format*, default : "d"
+		  - (enum) **FilterLanguage**  : *Translation into available language*, default : English   
 		> if you add custom columns, you must set the **AutoGenerateColumns** property to "False"  
 		
 	  - **Custom colum**   
