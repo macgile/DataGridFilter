@@ -43,6 +43,6 @@ https://dillinger.io/
 		    <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ...
 		```
 		> **FieldName** of **DataGridTemplateColumn** is mandatory   
- - You can change the **language** with FilterLanguage property (English by default)   
-   		Languages available : English, French, Russian, German, Italian, Chinese
+		   
+
 > The translations are from google translate, if you find any errors please let me know.
