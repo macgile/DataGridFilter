@@ -31,7 +31,7 @@ https://dillinger.io/
 		  - (enum) **FilterLanguage**     : *Translation into available language*, default : English   
 		  *Languages available : English, French, Russian, German, Italian, Chinese*   
 			> The translations are from google translate, if you find any errors please let me know.
-		> *If you add custom columns, you must set the **AutoGenerateColumns** property to "False"*  
+		> *If you add custom columns, you must set **AutoGenerateColumns"False"***  
 		
 	  - **Custom TextColumn**   
 		```
