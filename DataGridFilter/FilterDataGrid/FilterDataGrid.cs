@@ -919,7 +919,7 @@ namespace FilterDataGrid
                         checkedItems = dateList.Where(f => f.IsChecked).Select(f => f.Content).ToList();
 
                         // unchecked :
-                        // result search is checked => add to unchecked
+                        // the search result is checked => add unchecked elements to the unchecked list
                         // otherwise, add the unchecked items of the date list
                         uncheckedItems = search
                             ? rawValuesDataGridItems?.Except(checkedItems).ToList()
@@ -931,7 +931,7 @@ namespace FilterDataGrid
                         checkedItems = viewItems.Where(f => f.IsChecked).Select(f => f.Content).ToList();
 
                         // unchecked :
-                        // result search is checked => add to unchecked
+                        // the search result is checked => add unchecked elements to the unchecked list
                         // otherwise add unchecked from the lisbox view
                         uncheckedItems = search
                             ? rawValuesDataGridItems.Except(checkedItems).ToList() // result search (only items checked)
