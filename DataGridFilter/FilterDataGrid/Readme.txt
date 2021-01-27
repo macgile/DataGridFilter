@@ -28,9 +28,9 @@ General use:
 
         Custom TextColumn :  
         <control:FilterDataGrid.Columns>
-            <control:DataGridTextColumn ...
+            <control:DataGridTextColumn IsColumnFiltered="True" ...
 
-       * FieldName property of DataGridTemplateColumn is required
+       * FieldName property of TemplateColumn is required
         Custom TemplateColumn :
         <control:FilterDataGrid.Columns>   
             <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ...
