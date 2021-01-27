@@ -39,7 +39,7 @@ https://dillinger.io/
 		    <control:DataGridTextColumn IsColumnFiltered="True" ...
 		```
 	  - **Custom TemplateColumn**  
-	    > ***FieldName** of **DataGridTemplateColumn** is mandatory*   
+	    > ***FieldName** property of **DataGridTemplateColumn** is required*   
 	    
 		```
 		<control:FilterDataGrid.Columns>   
