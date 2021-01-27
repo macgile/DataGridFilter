@@ -26,12 +26,12 @@ General use:
 
         * If you add custom columns, you must set the property AutoGenerateColumns to "False"
 
-        Custom colum :  
+        Custom TextColumn :  
         <control:FilterDataGrid.Columns>
             <control:DataGridTextColumn ...
 
-       * The property "FiledName" in DataGridTemplateColumn is mandatory
-        Custom template colum :
+       * FieldName property of DataGridTemplateColumn is required
+        Custom TemplateColumn :
         <control:FilterDataGrid.Columns>   
             <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ...
 
