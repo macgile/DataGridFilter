@@ -934,11 +934,9 @@ namespace FilterDataGrid
                         // result search is checked => add to unchecked
                         // otherwise add unchecked from the lisbox view
                         uncheckedItems = search
-                            ? rawValuesDataGridItems // only items displayed in datagrid view
-                                .Except(viewItems.Where(v => v.IsChecked).Select(v => v.Content))
-                                .ToList() // result search (only items checked)
-                            : viewItems.Where(f => !f.IsChecked).Select(f => f.Content)
-                                .ToList(); // items not checked
+                            ? rawValuesDataGridItems.Except(checkedItems).ToList() // result search (only items checked)
+                            : viewItems.Where(f => !f.IsChecked)
+                                .Select(f => f.Content).ToList(); // items not checked
                     }
 
                     if (checkedItems != null && uncheckedItems != null)
