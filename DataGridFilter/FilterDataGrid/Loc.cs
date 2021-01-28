@@ -66,8 +66,7 @@ namespace FilterDataGrid
                 }
             },
             {
-                "Clear",
-                new[]
+                "Clear", new[]
                 {
                     "Clear filter \"{0}\"",
                     "Effacer le filtre \"{0}\"",
