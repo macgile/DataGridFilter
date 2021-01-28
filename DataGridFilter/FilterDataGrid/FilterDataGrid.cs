@@ -1046,21 +1046,36 @@ namespace FilterDataGrid
                 popup.VerticalOffset = -1d;
                 popup.Placement = PlacementMode.Bottom;
 
-                // main window
-                var mainWindow = Application.Current.MainWindow;
+                if (Application.Current?.MainWindow != null)
+                {
+                    // main window
+                    var mainWindow = Application.Current.MainWindow;
 
-                if (mainWindow == null) return;
+                    var headerPoint = header.TransformToVisual(mainWindow).Transform(new Point(0, 0));
+                    var headHeigth = header.ActualHeight;
 
-                var popupPoint = popup.TransformToVisual(mainWindow).Transform(new Point(0, 0));
-                var popupWidth = grid.Width > 0
-                    ? grid.Width
-                    : grid.ActualWidth;
+                    var popupHeigth = grid.Height > 0
+                        ? grid.Height
+                        : grid.ActualHeight;
 
-                var delta = popupPoint.X + popupWidth - (mainWindow.ActualWidth - 16d);
-                var offset = Math.Abs(popupWidth - header.ActualWidth) * -1d;
+                    var popupWidth = grid.Width > 0
+                        ? grid.Width
+                        : grid.ActualWidth;
 
-                if (delta > 0d)
-                    popup.HorizontalOffset = offset - 2d;
+                    // delta for max size popup
+                    var deltaX = Math.Ceiling(mainWindow.ActualWidth - (headerPoint.X + popupWidth));
+                    var deltaY = Math.Ceiling(mainWindow.ActualHeight - (headerPoint.Y + popupHeigth + headHeigth));
+
+                    // max size of popup
+                    grid.MaxWidth = Math.Ceiling(popupWidth + deltaX - 18d - 16d);
+                    grid.MaxHeight = Math.Ceiling(popupHeigth + deltaY - 40d - 16d);
+
+                    var delta = headerPoint.X + popupWidth - (mainWindow.ActualWidth - 16d);
+                    var offset = Math.Abs(popupWidth - header.ActualWidth) * -1d;
+
+                    if (delta > 0d)
+                        popup.HorizontalOffset = offset - 2d;
+                }
             }
             catch (Exception ex)
             {
@@ -1068,6 +1083,38 @@ namespace FilterDataGrid
                 throw;
             }
         }
+        
+        //private void PopupPlacement(FrameworkElement grid, FrameworkElement header)
+        //{
+        //    try
+        //    {
+        //        popup.PlacementTarget = header;
+        //        popup.HorizontalOffset = -1d;
+        //        popup.VerticalOffset = -1d;
+        //        popup.Placement = PlacementMode.Bottom;
+
+        //        // main window
+        //        var mainWindow = Application.Current.MainWindow;
+
+        //        if (mainWindow == null) return;
+
+        //        var popupPoint = popup.TransformToVisual(mainWindow).Transform(new Point(0, 0));
+        //        var popupWidth = grid.Width > 0
+        //            ? grid.Width
+        //            : grid.ActualWidth;
+
+        //        var delta = popupPoint.X + popupWidth - (mainWindow.ActualWidth - 16d);
+        //        var offset = Math.Abs(popupWidth - header.ActualWidth) * -1d;
+
+        //        if (delta > 0d)
+        //            popup.HorizontalOffset = offset - 2d;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine($"PopupPlacement error : {ex.Message}");
+        //        throw;
+        //    }
+        //}
 
         /// <summary>
         ///     Aggregate list of predicate as filter
