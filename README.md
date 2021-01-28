@@ -3,7 +3,7 @@ Edited
 https://dillinger.io/
 -->
 
-# WPF Filterable Datagrid, multi language
+# WPF Filterable DataGrid, multi language
 ![datagrid image demo](datagridFilter.png)
 
 ## How to use
