@@ -4,7 +4,7 @@ https://dillinger.io/
 -->
 
 # WPF Filterable DataGrid, multi language
-![datagrid image demo](datagridFilter.png)
+![datagrid image demo](FilterDataGrid.png)
 
 ## How to use
  - Include the **FilterDataGrid** folder in your project   
