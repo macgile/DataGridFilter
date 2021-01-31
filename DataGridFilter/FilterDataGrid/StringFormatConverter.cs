@@ -22,7 +22,7 @@ namespace FilterDataGrid
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values[0] == DependencyProperty.UnsetValue) return "";
+            if (values[0] == DependencyProperty.UnsetValue || string.IsNullOrEmpty(values[0])) return "";
 
             var stringFormat = values[0].ToString();
 
