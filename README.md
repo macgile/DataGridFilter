@@ -42,7 +42,7 @@ The translation of the displayed information is available in several languages.
 		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false
 		  - **DateFormatString** : *date display format*, default : "d"
 		  - **FilterLanguage** : *translation into available language*, default : English   
-		*Languages available : English, French, Russian, German, Italian, Chinese*  
+		*Available Languages : English, French, Russian, German, Italian, Chinese*  
 		>  
 
  	> *If you add custom columns, you must set **AutoGenerateColumns="False"*** 
