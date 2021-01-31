@@ -43,7 +43,7 @@ Available Languages : English, French, Russian, German, Italian, Chinese
 		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false
 		  - **DateFormatString** : *date display format*, default : "d"
 		  - **FilterLanguage** : *translation into available language*, default : English   
-		*Available Languages : English, French, Russian, German, Italian, Chinese*  
+
 		>  
 
  	> *If you add custom columns, you must set **AutoGenerateColumns="False"*** 
