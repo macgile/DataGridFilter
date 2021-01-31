@@ -65,7 +65,7 @@ Available languages: English, French, Russian, German, Italian, Chinese
 ## Benchmark ##
 
 > Intel Core i7, 2.93 GHz, 16 GB, Windows 10, 64 bits.  
-> Tested on the "LastName" column of the demo application using a random distinct name generator, between 5 and 8 letters in length.  
+> Tested on the "Last name" column of the demo application using a random distinct name generator, between 5 and 8 letters in length.  
 > The elapsed time decreases based on the number of columns and filtered items.
 
 
