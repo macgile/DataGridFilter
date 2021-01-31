@@ -58,7 +58,7 @@ The translation of the displayed information is available in several languages.
 		```xml
 		<control:FilterDataGrid.Columns>   
 		    <control:DataGridTemplateColumn IsColumnFiltered="True"
-			                                FieldName="LastName" ...
+			                            FieldName="LastName" ...
 		```
 
 ## Benchmark ##
