@@ -69,7 +69,7 @@ Available languages: English, French, Russian, German, Italian, Chinese
 > The elapsed time decreases according to the number of columns and the number of filtered elements.
 
 
-Number of lines | Opening of the PopUp | Applying the filter | Total (PopUp + Filter)
+Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Filter)
  --- | --- | --- | ---
 10 000 | < 1 second | < 1 second | < 1 second 
 100 000 | < 1 second | < 1 second | < 1 second 
