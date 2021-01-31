@@ -34,7 +34,8 @@ The translation of the displayed information is available in several languages.
 		```
 	  - **Control**   
 		```xml 
-		<control:FilterDataGrid FilterLanguage="English" DateFormatString="d" ShowStatusBar="True" ShowElapsedTime="False"
+		<control:FilterDataGrid
+		FilterLanguage="English" DateFormatString="d" ShowStatusBar="True" ShowElapsedTime="False"
 		...
 		```   
 		- Properties
