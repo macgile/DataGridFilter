@@ -6,13 +6,6 @@ https://dillinger.io/
 # WPF Filterable DataGrid, multi language
 ![datagrid image demo](FilterDataGrid.png)
 
-<!--
-An easy-to-use filterable, multilingual custom DataGrid control for managing and filtering data for your WPF applications
-<font size="3">
-
-</font>  
--->
-
 
 A custom DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters for each column, like Excel.  
 The translation of the displayed information is available in several languages.  
