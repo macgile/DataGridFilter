@@ -732,6 +732,11 @@
                                                 Content="{Binding Label}"
                                                 FontWeight="Normal"
                                                 IsChecked="{Binding IsChecked}" />
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Level}" Value="1">
+                                                    <Setter TargetName="CheckBox" Property="Margin" Value="4,0,0,0" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
@@ -754,11 +759,17 @@
                                         <HierarchicalDataTemplate DataType="control:FilterItem" ItemsSource="{Binding Children}">
                                             <StackPanel Orientation="Horizontal">
                                                 <CheckBox
+                                                    x:Name="CheckBoxTree"
                                                     VerticalAlignment="Center"
                                                     Focusable="False"
                                                     IsChecked="{Binding IsDateChecked}" />
                                                 <ContentPresenter Margin="2" Content="{Binding Label}" />
                                             </StackPanel>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Level}" Value="1">
+                                                    <Setter TargetName="CheckBoxTree" Property="Margin" Value="4,0,0,0" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
                                         </HierarchicalDataTemplate>
                                     </TreeView.ItemTemplate>
                                     <TreeView.ItemContainerStyle>

@@ -773,6 +773,7 @@ namespace FilterDataGrid
                             FieldType = fieldType,
                             Content = item, // raw value
                             Label = item?.ToString(), // Content displayed
+                            Level = 1, // padding 
 
                             // check or uncheck if the content of item exists in the previously filtered elements
                             IsChecked = !CurrentFilter?.PreviouslyFilteredItems.Contains(item) ?? false
