@@ -84,7 +84,7 @@ namespace FilterDataGrid
                     "Искать (содержит)",
                     "Suche (enthält)",
                     "Cerca (contiene)",
-                    "搜索（包含",
+                    "搜索（包含)",
                 }
             },
             {
