@@ -9,7 +9,7 @@ https://dillinger.io/
 
 A custom DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters for each column, like Excel.  
 
-The translation of the displayed information is available in several languages: English, French, Russian, German, Italian, Chinese  
+The translation of the information displayed (Select All, Blank, Ok, Cancel, etc.) is available in several languages: English, French, Russian, German, Italian, Chinese 
 
  > *The translations are from google translate, if you find any errors please let me know.*
 
