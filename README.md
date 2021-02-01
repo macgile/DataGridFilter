@@ -8,7 +8,9 @@ https://dillinger.io/
 
 
 A custom DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters for each column, like Excel.  
+
 The translation of the displayed information is available in several languages.  
+Available languages: English, French, Russian, German, Italian, Chinese  
 
  > *The translations are from google translate, if you find any errors please let me know.*
 
@@ -41,7 +43,7 @@ The translation of the displayed information is available in several languages.
 		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false
 		  - **DateFormatString** : *date display format*, default : "d"
 		  - **FilterLanguage** : *translation into available language*, default : English   
-		*Available Languages : English, French, Russian, German, Italian, Chinese*  
+
 		>  
 
  	> *If you add custom columns, you must set **AutoGenerateColumns="False"*** 
@@ -63,14 +65,14 @@ The translation of the displayed information is available in several languages.
 ## Benchmark ##
 
 > Intel Core i7, 2.93 GHz, 16 GB, Windows 10, 64 bits.  
-> Tested on the first column of the demo application using a random distinct name generator between 5 and 8 letters in length.  
-> The elapsed time decreases according to the number of columns and the number of filtered elements.
+> Tested on the "Last name" column of the demo application using a random distinct name generator, between 5 and 8 letters in length.  
+> The elapsed time decreases based on the number of columns and filtered items.
 
 
-Number of lines | Opening of the PopUp | Applying the filter | Total (PopUp + Filter)
+Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Filter)
  --- | --- | --- | ---
-1000 | < 1 second | < 1 second | < 1 second 
-100,000 | < 1 second | < 1 second | < 1 second 
-500,000 | ± 1.5 second | < 1 second	| ± 2.5 seconds 
+10 000 | < 1 second | < 1 second | < 1 second 
+100 000 | < 1 second | < 1 second | < 1 second 
+500 000 | ± 1.5 second | ± 1 second	| ± 2.5 seconds 
 1 000 000 | ± 3 seconds	| ± 1.5 seconds	| ± 4.5 seconds 
 
