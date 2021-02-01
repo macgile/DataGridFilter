@@ -65,7 +65,7 @@ The translation of the information displayed (Select All, Blank, Ok, Cancel, Dat
 
 > Intel Core i7, 2.93 GHz, 16 GB, Windows 10, 64 bits.  
 > Tested on the "Last name" column of the demo application using a random distinct name generator, between 5 and 8 letters in length.  
-> The elapsed time decreases based on the number of columns and filtered items.
+> *The elapsed time decreases based on the number of columns and filtered items.*
 
 
 Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Filter)
