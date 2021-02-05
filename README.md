@@ -15,22 +15,13 @@ The translation of the information displayed (Select All, Blank, Ok, Cancel, Dat
 
 
 ## How to use
- - Include the **FilterDataGrid** folder in your project   
-
- - Add **FilterDataGrid.xaml** to App.xaml as MergedDictionaries   
-```xml
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-	    	<ResourceDictionary Source="FilterDataGrid/FilterDataGrid.xaml" />
-		...
-```  
+ - Add **FilterDataGrid.dll** as reference in your project
    
  - Add **FilterDatagrid** into your xaml :   
  
       - **Namespace**  
 		```xml 
-		<Window xmlns:control="clr-namespace:FilterDataGrid" ...
+		<Window xmlns:control="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" ...
 		```
 	  - **Control**   
 		```xml 

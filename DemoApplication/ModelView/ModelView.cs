@@ -18,7 +18,7 @@ using System.Windows.Input;
 
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace MacGile.ModelView
+namespace DemoApplication.ModelView
 {
     public class ModelView : INotifyPropertyChanged
     {
@@ -99,7 +99,7 @@ namespace MacGile.ModelView
             var employe = new List<Employe>();
 
             // number of elements to be generated
-            const int @int = 100;
+            const int @int = 100000;
 
             // for distinct lastname set "true" at CreateRandomEmployee(true)
             for (var i = 0; i < @int; i++)
