@@ -2,6 +2,7 @@
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Markup;
 
 // Les informations générales relatives à un assembly dépendent de
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
@@ -37,6 +38,9 @@ using System.Windows;
                                               //(utilisé si une ressource est introuvable dans la page,
                                               // dans l'application ou dans l'un des dictionnaires de ressources spécifiques à un thème)
 )]
+
+[assembly: XmlnsDefinition("http://control.filterdatagrid.com/2021", "FilterDataGrid")]
+
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //

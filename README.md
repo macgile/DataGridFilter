@@ -22,7 +22,7 @@ Languages available: English, French, Russian, German, Italian, Chinese.
  
       - **Namespace**  
 		```xml 
-		<Window xmlns:control="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" ...
+		<Window xmlns:control="http://control.filterdatagrid.com/2021" ...
 		```
 	  - **Control**   
 		```xml 
