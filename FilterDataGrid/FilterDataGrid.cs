@@ -385,7 +385,10 @@ namespace FilterDataGrid
 
                 CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(ItemsSource);
                 // set Filter
-                CollectionViewSource.Filter = Filter;
+                if (CollectionViewSource.CanFilter)
+                {
+                    CollectionViewSource.Filter = Filter;
+                }
 
                 GlobalFilterList = new List<FilterCommon>();
                 ItemsSourceCount = Items.Count;
@@ -945,7 +948,10 @@ namespace FilterDataGrid
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(filterItemList);
 
                 // set filter in popup
-                ItemCollectionView.Filter = SearchFilter;
+                if (ItemCollectionView.CanFilter)
+                {
+                    ItemCollectionView.Filter = SearchFilter;
+                }
 
                 // set the placement and offset of the PopUp in relation to the header and
                 // the main window of the application (placement : bottom left or bottom right)
@@ -1120,19 +1126,20 @@ namespace FilterDataGrid
                 popup.VerticalOffset = -1d;
                 popup.Placement = PlacementMode.Bottom;
 
-                if (Application.Current?.MainWindow != null)
+                var hostingWindow = Window.GetWindow(this);
+
+                if (hostingWindow != null)
                 {
-                    var mainWindow = Application.Current.MainWindow;
-                    var mainHeight = mainWindow.ActualHeight - 39d;
-                    var mainWidth = mainWindow.ActualWidth;
+                    var mainHeight = hostingWindow.ActualHeight - 39d;
+                    var mainWidth = hostingWindow.ActualWidth;
                     var col = ((DataGridColumnHeader)header).Column;
 
                     // get X,Y position
-                    var headerMainPoint = header.TransformToVisual(mainWindow).Transform(new Point(0, 0));
+                    var headerMainPoint = header.TransformToVisual(hostingWindow).Transform(new Point(0, 0));
                     var popupHeaderPoint = popup.TransformToVisual(header).Transform(new Point(0, 0));
 
-                    var popupMainPoint = popup.TransformToVisual(mainWindow).Transform(new Point(0, 0));
-                    var datagridMain = this.TransformToVisual(mainWindow).Transform(new Point(0, 0));
+                    var popupMainPoint = popup.TransformToVisual(hostingWindow).Transform(new Point(0, 0));
+                    var datagridMain = this.TransformToVisual(hostingWindow).Transform(new Point(0, 0));
                     var popupDatagrid = popup.TransformToVisual(this).Transform(new Point(0, 0));
 
                     var headHeigth = header.ActualHeight;
@@ -1211,12 +1218,12 @@ namespace FilterDataGrid
                 popup.VerticalOffset = -1d;
                 popup.Placement = PlacementMode.Bottom;
 
-                if (Application.Current?.MainWindow != null)
-                {
-                    var mainWindow = Application.Current.MainWindow;
+                var hostingWindow = Window.GetWindow(this);
 
-                    var content = (FrameworkElement)mainWindow.Content;
-                    var testheigth = mainWindow.ActualHeight - content?.ActualHeight ?? 0;
+                if (hostingWindow != null)
+                {
+                    var content = (FrameworkElement)hostingWindow.Content;
+                    var testheigth = hostingWindow.ActualHeight - content?.ActualHeight ?? 0;
                     var margin = (Thickness)content?.Margin;
                     testheigth += margin.Bottom + margin.Top;
 
@@ -1224,15 +1231,15 @@ namespace FilterDataGrid
 
                     //margin.Value.Bottom
                     // get X,Y position of header
-                    var headerPoint = header.TransformToVisual(mainWindow).Transform(new Point(0, 0));
+                    var headerPoint = header.TransformToVisual(hostingWindow).Transform(new Point(0, 0));
                     var headHeigth = header.ActualHeight;
 
                     var popupHeigth = originalPopUpHeight; //grid.Height > 0 ? grid.Height : grid.ActualHeight;
                     var popupWidth = grid.Width > 0 ? grid.Width : grid.ActualWidth;
 
                     // delta for max size popup
-                    var deltaX = mainWindow.ActualWidth - (headerPoint.X + popupWidth);
-                    var deltaY = mainWindow.ActualHeight - (headerPoint.Y + popupHeigth + headHeigth);
+                    var deltaX = hostingWindow.ActualWidth - (headerPoint.X + popupWidth);
+                    var deltaY = hostingWindow.ActualHeight - (headerPoint.Y + popupHeigth + headHeigth);
 
                     // delta > 0 : main > popup   le popup est plus petit
                     // delta < 0 : main < popup   le popup est plus grand
@@ -1249,7 +1256,7 @@ namespace FilterDataGrid
                     //grid.Height = originalPopUpHeight - Math.Abs(deltaY) -16d -40d;
                     //  grid.MinHeight = grid.Height;
 
-                    Debug.WriteLine($"mainWindow.ActualHeight: {mainWindow.ActualHeight,-10}\n" +
+                    Debug.WriteLine($"hostingWindow.ActualHeight: {hostingWindow.ActualHeight,-10}\n" +
                                     $"headerPoint.Y + popupHeigth + headHeigth: {headerPoint.Y + popupHeigth + headHeigth,-10}\n" +
                                     $"headerPoint.Y: {headerPoint.Y}\n" +
                                     $"popupHeigth: {popupHeigth}\n" +
@@ -1257,7 +1264,7 @@ namespace FilterDataGrid
                                     $"deltaY: {deltaY}\n");
 
                     // if the headerPoint.X is larger than the window, the delta is positive
-                    var delta = headerPoint.X + popupWidth - (mainWindow.ActualWidth - 16d);
+                    var delta = headerPoint.X + popupWidth - (hostingWindow.ActualWidth - 16d);
 
                     if (delta > 0d)
                     {
