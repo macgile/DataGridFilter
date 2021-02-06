@@ -12,7 +12,7 @@ A custom DataGrid control that inherits from the base DataGrid control class and
 Translation of information displayed and formatting of dates in the chosen language.  
 Languages available: English, French, Russian, German, Italian, Chinese.
 
- > *The translations are from google translate, if you find any errors please let me know.*
+ > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
 
 ## How to use
