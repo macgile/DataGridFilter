@@ -362,3 +362,13 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /DataGridFilter/ClassDiagram1.cd
+
+# NuGet package file
+*.nuspec
+*.nupkg
+icon.png
+nuget/
+
+# Batch construct file
+*.bat
+*.exe
