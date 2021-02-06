@@ -1130,11 +1130,6 @@ namespace FilterDataGrid
                     // get X,Y position
                     var headerMainPoint = header.TransformToVisual(mainWindow).Transform(new Point(0, 0));
                     var popupHeaderPoint = popup.TransformToVisual(header).Transform(new Point(0, 0));
-
-                    var popupMainPoint = popup.TransformToVisual(mainWindow).Transform(new Point(0, 0));
-                    var datagridMain = this.TransformToVisual(mainWindow).Transform(new Point(0, 0));
-                    var popupDatagrid = popup.TransformToVisual(this).Transform(new Point(0, 0));
-
                     var headHeigth = header.ActualHeight;
 
                     var popupHeigth = originalPopUpHeight;
@@ -1151,15 +1146,7 @@ namespace FilterDataGrid
                         popup.HorizontalOffset = col.ActualWidth - popupWidth - popupHeaderPoint.X + 3d;
                         grid.MaxWidth += Math.Abs(popup.HorizontalOffset) -1d;
                     }
-
-                    // var maxpoint = headerMainPoint.X + popupWidth;
-
-                    //Debug.WriteLine($"datagridMain:{datagridMain.X,-10}popupDatagrid: {popupDatagrid.X,-10}\n" +
-                    //                $"headerMainPoint: {headerMainPoint.X,-8}popupMainPoint: {popupMainPoint.X,-8}\n" +
-                    //                $"popupHeaderPoint.X : {popupHeaderPoint.X,-8}mainWidth: {mainWidth}");
-
-                    //Debug.WriteLine($"HorizontalOffset: {popup.HorizontalOffset,-10}deltaX :{deltaX,-10}col {col.ActualWidth,-6}maxpoint :{maxpoint,-6}");
-
+  
                     // delta > 0 : main  > popup
                     // delta < 0 : popup > main
                     if (deltaY >= 0)
@@ -1172,27 +1159,6 @@ namespace FilterDataGrid
                         grid.Height = grid.MaxHeight;
                         grid.MinHeight = grid.MaxHeight;
                     }
-
-                    /*******************/
-                    // var canvas = (Canvas)mainWindow.Content;
-                    var rect = new Rectangle
-                    {
-                        Stroke = new SolidColorBrush(Colors.Black),
-                        StrokeThickness = 1,
-                        Fill = new SolidColorBrush(Colors.Transparent),
-                        Width = col.ActualWidth,
-                        Height = headHeigth
-                    };
-                    Canvas.SetLeft(rect, headerMainPoint.X);
-                    Canvas.SetTop(rect, headerMainPoint.Y);
-
-                    //canvas.Children.Add(rect);
-
-                    //if (deltaX < 0d)
-                    //{
-                    //    var offset = Math.Abs(popupWidth - header.ActualWidth) * -1d;
-                    //    popup.HorizontalOffset = offset - 2d;
-                    //}
                 }
             }
             catch (Exception ex)
@@ -1201,78 +1167,7 @@ namespace FilterDataGrid
                 throw;
             }
         }
-
-        private void _PopupPlacement(FrameworkElement grid, FrameworkElement header)
-        {
-            try
-            {
-                popup.PlacementTarget = header;
-                popup.HorizontalOffset = -1d;
-                popup.VerticalOffset = -1d;
-                popup.Placement = PlacementMode.Bottom;
-
-                if (Application.Current?.MainWindow != null)
-                {
-                    var mainWindow = Application.Current.MainWindow;
-
-                    var content = (FrameworkElement)mainWindow.Content;
-                    var testheigth = mainWindow.ActualHeight - content?.ActualHeight ?? 0;
-                    var margin = (Thickness)content?.Margin;
-                    testheigth += margin.Bottom + margin.Top;
-
-                    Debug.WriteLine($"testheigth: {testheigth}");
-
-                    //margin.Value.Bottom
-                    // get X,Y position of header
-                    var headerPoint = header.TransformToVisual(mainWindow).Transform(new Point(0, 0));
-                    var headHeigth = header.ActualHeight;
-
-                    var popupHeigth = originalPopUpHeight; //grid.Height > 0 ? grid.Height : grid.ActualHeight;
-                    var popupWidth = grid.Width > 0 ? grid.Width : grid.ActualWidth;
-
-                    // delta for max size popup
-                    var deltaX = mainWindow.ActualWidth - (headerPoint.X + popupWidth);
-                    var deltaY = mainWindow.ActualHeight - (headerPoint.Y + popupHeigth + headHeigth);
-
-                    // delta > 0 : main > popup   le popup est plus petit
-                    // delta < 0 : main < popup   le popup est plus grand
-
-                    // maximum popup size, does not overflow the main window
-                    grid.MaxWidth = Math.Ceiling(popupWidth + deltaX - 18d - 16d);
-                    grid.MaxHeight = Math.Ceiling(popupHeigth + deltaY - 39d /*40d - 16d*/);
-
-                    Debug.WriteLine($"popupHeigth: {popupHeigth}\n"
-                                    + $"grid.MaxHeight: {grid.MaxHeight}\n");
-
-                    // grid.Height = deltaY <= 0d && grid.MaxHeight <= originalPopUpHeight ? grid.MaxHeight : originalPopUpHeight;
-
-                    //grid.Height = originalPopUpHeight - Math.Abs(deltaY) -16d -40d;
-                    //  grid.MinHeight = grid.Height;
-
-                    Debug.WriteLine($"mainWindow.ActualHeight: {mainWindow.ActualHeight,-10}\n" +
-                                    $"headerPoint.Y + popupHeigth + headHeigth: {headerPoint.Y + popupHeigth + headHeigth,-10}\n" +
-                                    $"headerPoint.Y: {headerPoint.Y}\n" +
-                                    $"popupHeigth: {popupHeigth}\n" +
-                                    $"grid.Height: {grid.Height}\n" +
-                                    $"deltaY: {deltaY}\n");
-
-                    // if the headerPoint.X is larger than the window, the delta is positive
-                    var delta = headerPoint.X + popupWidth - (mainWindow.ActualWidth - 16d);
-
-                    if (delta > 0d)
-                    {
-                        var offset = Math.Abs(popupWidth - header.ActualWidth) * -1d;
-                        popup.HorizontalOffset = offset - 2d;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"PopupPlacement error : {ex.Message}");
-                throw;
-            }
-        }
-
+        
         #endregion Private Methods
     }
 
