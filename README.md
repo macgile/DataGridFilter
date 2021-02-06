@@ -22,7 +22,7 @@ Languages available: English, French, Russian, German, Italian, Chinese.
  
       - **Namespace**  
 		```xml 
-		<Window xmlns:control="http://control.filterdatagrid.com/2021" ...
+		<Window xmlns:control="http://filterdatagrid.control.com/2021" ...
 		```
 	  - **Control**   
 		```xml 

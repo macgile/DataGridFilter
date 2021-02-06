@@ -39,7 +39,7 @@ using System.Windows.Markup;
                                               // dans l'application ou dans l'un des dictionnaires de ressources spécifiques à un thème)
 )]
 
-[assembly: XmlnsDefinition("http://control.filterdatagrid.com/2021", "FilterDataGrid")]
+[assembly: XmlnsDefinition("http://filterdatagrid.control.com/2021", "FilterDataGrid")]
 
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :

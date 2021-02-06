@@ -384,7 +384,9 @@ namespace FilterDataGrid
                 }
 
                 CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(ItemsSource);
+
                 // set Filter
+                // thank's Stefan Heimel for this contribution
                 if (CollectionViewSource.CanFilter)
                 {
                     CollectionViewSource.Filter = Filter;
@@ -483,7 +485,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void CanShowFilter(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = CollectionViewSource.CanFilter && (!popup?.IsOpen ?? true) && !pending;
+            e.CanExecute = CollectionViewSource?.CanFilter == true && (!popup?.IsOpen ?? true) && !pending;
         }
 
         /// <summary>
@@ -1126,6 +1128,8 @@ namespace FilterDataGrid
                 popup.VerticalOffset = -1d;
                 popup.Placement = PlacementMode.Bottom;
 
+                // get the host window of the datagrid
+                // thank's Stefan Heimel for this contribution
                 var hostingWindow = Window.GetWindow(this);
 
                 if (hostingWindow != null)
@@ -1146,19 +1150,21 @@ namespace FilterDataGrid
                     var deltaX = mainWidth - (headerMainPoint.X + popupWidth);
                     var deltaY = mainHeight - (headerMainPoint.Y + popupHeigth + headHeigth);
 
+                    // first column
                     grid.MaxWidth = popupWidth + deltaX - 17d;
 
+                    // the other columns
                     if (col.DisplayIndex > 0)
                     {
                         popup.HorizontalOffset = col.ActualWidth - popupWidth - popupHeaderPoint.X + 3d;
-                        grid.MaxWidth += Math.Abs(popup.HorizontalOffset) -1d;
+                        grid.MaxWidth += Math.Abs(popup.HorizontalOffset) - 1d;
                     }
-  
+
                     // delta > 0 : main  > popup
                     // delta < 0 : popup > main
                     if (deltaY >= 0)
                     {
-                        grid.MaxHeight = mainHeight - (headerMainPoint.Y + headHeigth) -1d;
+                        grid.MaxHeight = mainHeight - (headerMainPoint.Y + headHeigth) - 1d;
                     }
                     else
                     {
@@ -1174,6 +1180,7 @@ namespace FilterDataGrid
                 throw;
             }
         }
+
         #endregion Private Methods
     }
 
