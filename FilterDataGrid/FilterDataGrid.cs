@@ -483,7 +483,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void CanShowFilter(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = (!popup?.IsOpen ?? true) && !pending;
+            e.CanExecute = CollectionViewSource.CanFilter && (!popup?.IsOpen ?? true) && !pending;
         }
 
         /// <summary>
