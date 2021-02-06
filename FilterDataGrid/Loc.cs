@@ -49,7 +49,7 @@ namespace FilterDataGrid
                     "(Select all)",
                     "(Sélectionner tout)",
                     "(Выбрать все)",
-                    "(Wählen Sie Alle)",
+                    "(Alles auswählen)",
                     "(Seleziona tutto)",
                     "(全选)"
                 }
@@ -60,7 +60,7 @@ namespace FilterDataGrid
                     "(Blank)",
                     "(Vides)",
                     "(Заготовки)",
-                    "(Rohlinge)",
+                    "(Leer)",
                     "(Vuoto)",
                     "(空白)",
                 }
@@ -71,7 +71,7 @@ namespace FilterDataGrid
                     "Clear filter \"{0}\"",
                     "Effacer le filtre \"{0}\"",
                     "Очистить фильтр \"{0}\"",
-                    "Filter löschen \"{0}\"",
+                    "Filter leeren \"{0}\"",
                     "Cancella filtro \"{0}\"",
                     "清除过滤器 \"{0}\"",
                 }
@@ -104,7 +104,7 @@ namespace FilterDataGrid
                     "Cancel",
                     "Annuler",
                     "Отмена",
-                    "Stornieren",
+                    "Abbrechen",
                     "Annulla",
                     "撤消",
                 }
@@ -115,7 +115,7 @@ namespace FilterDataGrid
                     "{0:### ### ###} record(s) found on {1:### ### ###}",
                     "{0:### ### ###} enregistrement(s) trouvé(s) sur {1:### ### ###}",
                     "{0:### ### ###} записей найдено на {1:### ### ###}",
-                    "{0:### ### ###} datensatz(e) gefunden am {1:### ### ###}",
+                    "{0:### ### ###} Zeilen gefunden in {1:### ### ###}",
                     "{0:### ### ###} record trovati su {1:### ### ###}",
                     "{0:### ### ###}找到了{1:### ### ###}条记录",
                 }

@@ -385,7 +385,10 @@ namespace FilterDataGrid
 
                 CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(ItemsSource);
                 // set Filter
-                CollectionViewSource.Filter = Filter;
+                if (CollectionViewSource.CanFilter)
+                {
+                    CollectionViewSource.Filter = Filter;
+                }
 
                 GlobalFilterList = new List<FilterCommon>();
                 ItemsSourceCount = Items.Count;
@@ -480,7 +483,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void CanShowFilter(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = (!popup?.IsOpen ?? true) && !pending;
+            e.CanExecute = CollectionViewSource.CanFilter && (!popup?.IsOpen ?? true) && !pending;
         }
 
         /// <summary>
@@ -945,7 +948,10 @@ namespace FilterDataGrid
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(filterItemList);
 
                 // set filter in popup
-                ItemCollectionView.Filter = SearchFilter;
+                if (ItemCollectionView.CanFilter)
+                {
+                    ItemCollectionView.Filter = SearchFilter;
+                }
 
                 // set the placement and offset of the PopUp in relation to the header and
                 // the main window of the application (placement : bottom left or bottom right)
@@ -1120,15 +1126,16 @@ namespace FilterDataGrid
                 popup.VerticalOffset = -1d;
                 popup.Placement = PlacementMode.Bottom;
 
-                if (Application.Current?.MainWindow != null)
+                var hostingWindow = Window.GetWindow(this);
+
+                if (hostingWindow != null)
                 {
-                    var mainWindow = Application.Current.MainWindow;
-                    var mainHeight = mainWindow.ActualHeight - 39d;
-                    var mainWidth = mainWindow.ActualWidth;
+                    var mainHeight = hostingWindow.ActualHeight - 39d;
+                    var mainWidth = hostingWindow.ActualWidth;
                     var col = ((DataGridColumnHeader)header).Column;
 
                     // get X,Y position
-                    var headerMainPoint = header.TransformToVisual(mainWindow).Transform(new Point(0, 0));
+                    var headerMainPoint = header.TransformToVisual(hostingWindow).Transform(new Point(0, 0));
                     var popupHeaderPoint = popup.TransformToVisual(header).Transform(new Point(0, 0));
                     var headHeigth = header.ActualHeight;
 
@@ -1167,7 +1174,6 @@ namespace FilterDataGrid
                 throw;
             }
         }
-        
         #endregion Private Methods
     }
 
