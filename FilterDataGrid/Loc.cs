@@ -49,7 +49,7 @@ namespace FilterDataGrid
                     "(Select all)",
                     "(Sélectionner tout)",
                     "(Выбрать все)",
-                    "(Alles auswählen)",
+                    "(Alle auswählen)",
                     "(Seleziona tutto)",
                     "(全选)"
                 }
@@ -71,7 +71,7 @@ namespace FilterDataGrid
                     "Clear filter \"{0}\"",
                     "Effacer le filtre \"{0}\"",
                     "Очистить фильтр \"{0}\"",
-                    "Filter leeren \"{0}\"",
+                    "Filter löschen \"{0}\"",
                     "Cancella filtro \"{0}\"",
                     "清除过滤器 \"{0}\"",
                 }
@@ -112,12 +112,12 @@ namespace FilterDataGrid
             {
                 "Status", new[]
                 {
-                    "{0:### ### ###} record(s) found on {1:### ### ###}",
-                    "{0:### ### ###} enregistrement(s) trouvé(s) sur {1:### ### ###}",
-                    "{0:### ### ###} записей найдено на {1:### ### ###}",
-                    "{0:### ### ###} Zeilen gefunden in {1:### ### ###}",
-                    "{0:### ### ###} record trovati su {1:### ### ###}",
-                    "{0:### ### ###}找到了{1:### ### ###}条记录",
+                    "{0:n0} record(s) found on {1:n0}",
+                    "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}",
+                    "{0:n0} записей найдено на {1:n0}",
+                    "{0:n0} Zeilen angezeigt von {1:n0}",
+                    "{0:n0} record trovati su {1:n0}",
+                    "{0:n0} 找到了 {1:n0} 条记录",
                 }
             },
             {
@@ -132,7 +132,6 @@ namespace FilterDataGrid
                 }
             }
         };
-
 
         #endregion Private Fields
 
