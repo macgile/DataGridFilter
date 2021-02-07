@@ -315,7 +315,7 @@
 
                 <!--  STATUS BAR & RESULT FILTER  -->
                 <Border
-                    x:Name="StackPanelStatusBar"
+                    x:Name="BorderStatusBar"
                     Grid.Row="1"
                     Padding="4,2"
                     Background="Transparent"
@@ -335,11 +335,7 @@
                     <UniformGrid Columns="2" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
 
                         <!--  RESULT STATUS  -->
-                        <TextBlock
-                            Margin="0,0,0,0"
-                            HorizontalAlignment="Left"
-                            FontSize="11"
-                            FontWeight="Normal">
+                        <TextBlock Margin="0,0,0,0" HorizontalAlignment="Left">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource StringFormatConverter}">
                                     <Binding Path="Translate.Status" />
@@ -378,32 +374,32 @@
     <!--  FILTERDATAGRID STYLE BASED ON DATAGRID  -->
     <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="control:FilterDataGrid">
         <Setter Property="Template" Value="{StaticResource ControlTemplateDatagrid}" />
-        <Setter Property="ColumnWidth" Value="*" />
+        <Setter Property="CanUserAddRows" Value="False" />
+        <!--<Setter Property="ColumnWidth" Value="*" />-->
     </Style>
 
-    <!--  DATATEMPLATE OF DATAGRIDCOLUMNHEADER  -->
+    <!--  DATAGRIDCOLUMNHEADER  -->
+    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="DataGridColumnHeader">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <!--  DATAGRIDCOLUMNHEADER DATATEMPLATE  -->
     <DataTemplate x:Key="DataGridHeaderTemplate">
         <Grid
             x:Name="ContainerFilterGrid"
-            Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}, Path=ActualWidth}"
-            Background="Transparent">
+            Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}, Mode=FindAncestor, AncestorLevel=1}, Path=ActualWidth}"
+            HorizontalAlignment="Stretch"
+            ZIndex="1">
 
             <!--  HEADER/BUTTON  -->
-            <Grid
-                x:Name="GridHeaderButton"
-                Margin="0,0,10,0"
-                ShowGridLines="False">
+            <Grid x:Name="GridHeaderButton" ShowGridLines="False">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <!--  RENDER THE HEADER TEXT  -->
-                <TextBlock
-                    Grid.Column="0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
-                    Text="{Binding}" />
+                <TextBlock Grid.Column="0" Text="{Binding}" />
 
                 <!--  FILTER BUTTON  -->
                 <Button
@@ -411,12 +407,6 @@
                     Grid.Column="1"
                     Width="19"
                     Height="19"
-                    Margin="0"
-                    Padding="0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
                     Background="Transparent"
                     BorderBrush="DarkGray"
                     BorderThickness="1"
@@ -872,4 +862,5 @@
             </Popup>
         </Grid>
     </DataTemplate>
+
 </ResourceDictionary>

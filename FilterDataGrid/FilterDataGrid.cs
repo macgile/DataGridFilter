@@ -1144,7 +1144,7 @@ namespace FilterDataGrid
                     var headHeigth = header.ActualHeight;
 
                     var popupHeigth = originalPopUpHeight;
-                    var popupWidth = grid.Width > 0 ? grid.Width : grid.ActualWidth;
+                    var popupWidth = grid.Width > 0d ? grid.Width : grid.ActualWidth;
 
                     // delta for max size popup
                     var deltaX = mainWidth - (headerMainPoint.X + popupWidth);
