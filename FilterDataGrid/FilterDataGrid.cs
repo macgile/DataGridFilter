@@ -833,12 +833,14 @@ namespace FilterDataGrid
                 // List of raw values of the current column
                 await Task.Run(() =>
                 {
-                    sourceObjectList = Items.Cast<object>()
+                    Dispatcher.Invoke(() =>
+                    {
+                        sourceObjectList = Items.Cast<object>()
                         .Select(x => x.GetType().GetProperty(fieldName)?.GetValue(x, null))
                         .Distinct() // clear duplicate values first
                         .Select(item => item)
                         .ToList();
-
+                    });
                     // only the raw values of the items of the datagrid view
                     rawValuesDataGridItems = new List<object>(sourceObjectList);
 
