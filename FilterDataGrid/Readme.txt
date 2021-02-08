@@ -6,8 +6,8 @@ General use:
 2) Add FilterDataGrid control into your xaml :
 
     Namespace : 
-        xmlns:control="clr-namespace:FilterDataGrid;assembly=FilterDataGrid"
-
+        xmlns:control="http://filterdatagrid.control.com/2021"
+        
     Control : 
         <control:FilterDataGrid ShowStatusBar="False" ShowElapsedTime="False" 
                                 DateFormatString="d"  FilterLanguage="English"
