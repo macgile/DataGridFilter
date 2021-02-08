@@ -115,7 +115,7 @@ namespace FilterDataGrid
                     "{0:n0} record(s) found on {1:n0}",
                     "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}",
                     "{0:n0} записей найдено на {1:n0}",
-                    "{0:n0} Zeilen angezeigt von {1:n0}",
+                    "{0:n0} zeilen angezeigt von {1:n0}",
                     "{0:n0} record trovati su {1:n0}",
                     "{0:n0} 找到了 {1:n0} 条记录",
                 }
