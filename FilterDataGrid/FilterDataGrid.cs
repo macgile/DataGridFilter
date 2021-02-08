@@ -142,7 +142,7 @@ namespace FilterDataGrid
         private ListBox listBox;
         private double minHeight;
         private double minWidth;
-        private double originalPopUpHeight;
+        private readonly double originalPopUpHeight;
         private Path pathFilterIcon;
         private bool pending;
         private Popup popup;
@@ -691,8 +691,6 @@ namespace FilterDataGrid
 
             searchText = textBox.Text;
 
-            // Debug.WriteLine($"{searchText} == {textBox?.Text}");
-
             search = !string.IsNullOrEmpty(searchText);
 
             // apply filter
@@ -779,8 +777,6 @@ namespace FilterDataGrid
                 minHeight = sizableContentGrid.MinHeight;
                 minWidth = sizableContentGrid.MinWidth;
 
-                // Debug.WriteLine($"\nMinHeight: {minHeight, -8}Height :{sizableContentGrid.Height}\n");
-
                 // thumb handle event
                 thumb.DragCompleted += OnResizeThumbDragCompleted;
                 thumb.DragDelta += OnResizeThumbDragDelta;
@@ -841,10 +837,9 @@ namespace FilterDataGrid
                         .Select(item => item)
                         .ToList();
                     });
+
                     // only the raw values of the items of the datagrid view
                     rawValuesDataGridItems = new List<object>(sourceObjectList);
-
-                    // rawValuesDataGridItems.RemoveAll(v => v == null || string.IsNullOrEmpty((string)v));
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
                     // displays new (checked) and already filtered (unchecked) items

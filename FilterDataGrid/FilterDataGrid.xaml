@@ -374,8 +374,9 @@
     <!--  FILTERDATAGRID STYLE BASED ON DATAGRID  -->
     <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="control:FilterDataGrid">
         <Setter Property="Template" Value="{StaticResource ControlTemplateDatagrid}" />
+
+        <!--  This feature is temporarily disabled because it causes an error  -->
         <Setter Property="CanUserAddRows" Value="False" />
-        <!--<Setter Property="ColumnWidth" Value="*" />-->
     </Style>
 
     <!--  DATAGRIDCOLUMNHEADER  -->
@@ -862,5 +863,4 @@
             </Popup>
         </Grid>
     </DataTemplate>
-
 </ResourceDictionary>
