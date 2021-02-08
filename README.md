@@ -16,7 +16,9 @@ Languages available: English, French, Russian, German, Italian, Chinese.
 
 
 ## How to use
- - Add **FilterDataGrid.dll** as reference in your project
+ - There are two ways to install :
+   + NuGet command : **Install-Package FilterDataGrid -Version 1.1.0**
+   + Or manually add **FilterDataGrid.dll** as reference in your project
    
  - Add **FilterDatagrid** into your xaml :   
  
