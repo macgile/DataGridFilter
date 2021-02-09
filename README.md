@@ -7,10 +7,10 @@ https://dillinger.io/
 ![datagrid image demo](FilterDataGrid.png)
 
 
-A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters for each column  
-like Excel, in automatic or custom generation.  
+A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
+for each column like Excel, in automatic or custom generation.  
 
-Translation of labels and formatting of dates in the available languages : English, French, Russian, German, Italian, Chinese.
+Translation of labels and formatting of dates in the following languages: English, French, Russian, German, Italian, Chinese.
 
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
