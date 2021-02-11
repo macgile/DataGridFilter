@@ -35,8 +35,6 @@ using System.Windows.Threading;
 // https://www.c-sharpcorner.com/UploadFile/mahesh/binding-static-properties-in-wpf-4-5/
 // https://www.csharp-examples.net/string-format-datetime/
 
-// Tools.DiffFiles FilterDataGrid.cs FilterDataGrid\Properties\FilterDataGrid.cs
-
 namespace FilterDataGrid
 {
     /// <summary>
@@ -46,6 +44,9 @@ namespace FilterDataGrid
     {
         #region Public Constructors
 
+        /// <summary>
+        ///  FilterDataGrid constructor
+        /// </summary>
         public FilterDataGrid()
         {
             Debug.WriteLineIf(DebugMode, "Constructor");
@@ -53,7 +54,11 @@ namespace FilterDataGrid
             // load resources
             Resources = new FilterDataGridDictionary();
 
-            originalPopUpHeight = (double)FindResource("PopupHeight");
+            popUpSize = new Point
+            {
+                X = (double)FindResource("PopupWidth"),
+                Y = (double)FindResource("PopupHeight")
+            };
 
             CommandBindings.Add(new CommandBinding(ShowFilter, ShowFilterCommand, CanShowFilter));
             CommandBindings.Add(new CommandBinding(ApplyFilter, ApplyFilterCommand, CanApplyFilter)); // Ok
@@ -142,7 +147,6 @@ namespace FilterDataGrid
         private ListBox listBox;
         private double minHeight;
         private double minWidth;
-        private readonly double originalPopUpHeight;
         private Path pathFilterIcon;
         private bool pending;
         private Popup popup;
@@ -156,6 +160,8 @@ namespace FilterDataGrid
         private List<object> sourceObjectList;
         private Thumb thumb;
         private TreeView treeview;
+
+        private Point popUpSize;
 
         #endregion Private Fields
 
@@ -179,8 +185,6 @@ namespace FilterDataGrid
             set
             {
                 elased = value;
-
-                //Debug.WriteLine("OnPropertyChanged");
                 OnPropertyChanged();
             }
         }
@@ -771,8 +775,8 @@ namespace FilterDataGrid
                 sizableContentHeight = 0;
                 sizableContentWidth = 0;
 
-                sizableContentGrid.Height = originalPopUpHeight;
-                sizableContentGrid.MinHeight = originalPopUpHeight;
+                sizableContentGrid.Height = popUpSize.Y;
+                sizableContentGrid.MinHeight = popUpSize.Y;
 
                 minHeight = sizableContentGrid.MinHeight;
                 minWidth = sizableContentGrid.MinWidth;
@@ -848,6 +852,7 @@ namespace FilterDataGrid
                         sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems);
 
                     // sorting is a slow operation, using ParallelQuery
+                    // TODO : AggregateException when user can add row
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
 
                     var emptyItem = false;
@@ -1116,12 +1121,13 @@ namespace FilterDataGrid
         /// </summary>
         /// <param name="grid"></param>
         /// <param name="header"></param>
+
         private void PopupPlacement(FrameworkElement grid, FrameworkElement header)
         {
             try
             {
                 popup.PlacementTarget = header;
-                popup.HorizontalOffset = -1d;
+                popup.HorizontalOffset = 0d;
                 popup.VerticalOffset = -1d;
                 popup.Placement = PlacementMode.Bottom;
 
@@ -1131,41 +1137,50 @@ namespace FilterDataGrid
 
                 if (hostingWindow != null)
                 {
-                    var mainHeight = hostingWindow.ActualHeight - 39d;
-                    var mainWidth = hostingWindow.ActualWidth;
-                    var col = ((DataGridColumnHeader)header).Column;
+                    const double border = 1d;
 
-                    // get X,Y position
-                    var headerMainPoint = header.TransformToVisual(hostingWindow).Transform(new Point(0, 0));
-                    var popupHeaderPoint = popup.TransformToVisual(header).Transform(new Point(0, 0));
-                    var headHeigth = header.ActualHeight;
+                    // get the ContentPresenter from the hostingWindow
+                    var contentPresenter = VisualTreeHelpers.FindChild<ContentPresenter>(hostingWindow);
 
-                    var popupHeigth = originalPopUpHeight;
-                    var popupWidth = grid.Width > 0d ? grid.Width : grid.ActualWidth;
+                    // get the X, Y position of the header
+                    var headerContentOrigin = header.TransformToVisual(contentPresenter).Transform(new Point(0, 0));
+                    var headerDataGridOrigin = header.TransformToVisual(this).Transform(new Point(0, 0));
+
+                    var hostSize = new Point
+                    {
+                        X = contentPresenter.ActualWidth,
+                        Y = contentPresenter.ActualHeight
+                    };
+
+                    var headerSize = new Point { X = header.ActualWidth, Y = header.ActualHeight };
+                    var offset = popUpSize.X - headerSize.X + border;
+
+                    // the popup must stay in the DataGrid, move it to the left of the header,
+                    // because it overflows on the right.
+                    if (headerDataGridOrigin.X + headerSize.X > popUpSize.X)
+                    {
+                        popup.HorizontalOffset -= offset;
+                    }
 
                     // delta for max size popup
-                    var deltaX = mainWidth - (headerMainPoint.X + popupWidth);
-                    var deltaY = mainHeight - (headerMainPoint.Y + popupHeigth + headHeigth);
-
-                    // first column
-                    grid.MaxWidth = popupWidth + deltaX - 17d;
-
-                    // the other columns
-                    if (col.DisplayIndex > 0)
+                    var delta = new Point
                     {
-                        popup.HorizontalOffset = col.ActualWidth - popupWidth - popupHeaderPoint.X + 3d;
-                        grid.MaxWidth += Math.Abs(popup.HorizontalOffset) - 1d;
-                    }
+                        X = hostSize.X - (headerContentOrigin.X + headerSize.X),
+                        Y = hostSize.Y - (headerContentOrigin.Y + headerSize.Y + popUpSize.Y)
+                    };
 
-                    // delta > 0 : main  > popup
-                    // delta < 0 : popup > main
-                    if (deltaY >= 0)
+                    // max size
+                    grid.MaxWidth = popUpSize.X + delta.X - border;
+                    grid.MaxHeight = popUpSize.Y + delta.Y - border;
+
+                    // remove offset
+                    if (popup.HorizontalOffset == 0)
+                        grid.MaxWidth -= offset;
+
+                    // the height of popup is too large, reduce it, because it overflows down.
+                    if (delta.Y <= 0d)
                     {
-                        grid.MaxHeight = mainHeight - (headerMainPoint.Y + headHeigth) - 1d;
-                    }
-                    else
-                    {
-                        grid.MaxHeight = popupHeigth + deltaY;
+                        grid.MaxHeight = popUpSize.Y - Math.Abs(delta.Y) - border;
                         grid.Height = grid.MaxHeight;
                         grid.MinHeight = grid.MaxHeight;
                     }
