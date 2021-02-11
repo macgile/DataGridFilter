@@ -16,6 +16,8 @@ Translation of labels and formatting of dates in the following languages: Englis
 
 You can download the Nuget package [here](https://www.nuget.org/packages/FilterDataGrid/).
 
+You can download the Nuget package <a href="https://www.nuget.org/packages/FilterDataGrid" target="_blank">here</a>.
+
 ## How to use
  - There are two ways to install :
    + NuGet command : **Install-Package FilterDataGrid -Version 1.1.0**
