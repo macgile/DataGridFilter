@@ -833,6 +833,7 @@ namespace FilterDataGrid
                 // List of raw values of the current column
                 await Task.Run(() =>
                 {
+                    // thank's Stefan Heimel for this contribution
                     Dispatcher.Invoke(() =>
                     {
                         sourceObjectList = Items.Cast<object>()
