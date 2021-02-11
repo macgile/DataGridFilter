@@ -14,6 +14,7 @@ Translation of labels and formatting of dates in the following languages: Englis
 
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
+You can download the Nuget package [here](https://www.nuget.org/packages/FilterDataGrid/).
 
 ## How to use
  - There are two ways to install :
