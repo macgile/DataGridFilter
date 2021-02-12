@@ -18,7 +18,7 @@ The **Nuget package** is available [here](https://www.nuget.org/packages/FilterD
 
 ## How to use
  - There are two ways to install :
-   + NuGet command : **Install-Package FilterDataGrid -Version 1.1.0**
+   + NuGet command : **Install-Package FilterDataGrid**
    + Or manually add **FilterDataGrid.dll** as reference in your project
    
  - Add **FilterDatagrid** into your xaml :   
