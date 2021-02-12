@@ -1204,6 +1204,9 @@ namespace FilterDataGrid
     {
         #region Public Constructors
 
+        /// <summary>
+        /// FilterDataGrid Dictionary
+        /// </summary>
         public FilterDataGridDictionary()
         {
             InitializeComponent();

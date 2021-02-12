@@ -90,7 +90,7 @@ namespace FilterDataGrid
         /// </summary>
         /// <param name="o"></param>
         /// <param name="e"></param>
-        private void UpdateTree(object o, bool? e)
+        public void UpdateTree(object o, bool? e)
         {
             if (o == null) return;
             var item = (FilterItem) o;
@@ -172,14 +172,11 @@ namespace FilterDataGrid
 
                 Tree = new List<FilterItem>
                 {
-                    new FilterItem
+                    new FilterItem(this)
                     {
                         Label = Translate.All, CurrentFilter = this, Content = 0, Level = 0, SetDateState = true
                     }
                 };
-
-                // event subscription
-                Tree.First().OnIsCheckedDate += UpdateTree;
 
                 // iterate over all items that are not null
                 // INFO:
@@ -191,19 +188,19 @@ namespace FilterDataGrid
                         .Select(d => (DateTime) d).OrderBy(o => o.Year)
                     group date by date.Year
                     into year
-                    select new FilterItem
+                    select new FilterItem(this)
                     {
                         // YEAR
                         Level = 1,
                         CurrentFilter = this,
                         Content = year.Key,
-                        Label = year.First().ToString("yyyy"),
+                        Label = year.First().ToString("yyyy", Translate.Culture),
                         SetDateState = true,
 
                         Children = (from date in year
                             group date by date.Month
                             into month
-                            select new FilterItem
+                            select new FilterItem(this)
                             {
                                 // MOUNTH
                                 Level = 2,
@@ -213,7 +210,7 @@ namespace FilterDataGrid
                                 SetDateState = true,
 
                                 Children = (from day in month
-                                    select new FilterItem
+                                    select new FilterItem(this)
                                     {
                                         // DAY
                                         Level = 3,
@@ -231,12 +228,10 @@ namespace FilterDataGrid
                     y.Children.ForEach(m =>
                     {
                         m.Parent = y;
-                        m.OnIsCheckedDate += UpdateTree;
 
                         m.Children.ForEach(d =>
                         {
                             d.Parent = m;
-                            d.OnIsCheckedDate += UpdateTree;
 
                             if (PreviouslyFilteredItems != null && uncheckPrevious)
                                 d.IsDateChecked = PreviouslyFilteredItems
@@ -250,7 +245,7 @@ namespace FilterDataGrid
                 // last empty item
                 if (dateTimes.Any(d => d == null))
                     Tree.Add(
-                        new FilterItem
+                        new FilterItem(this)
                         {
                             Label = Translate.Empty, // translation
                             CurrentFilter = this,
@@ -260,10 +255,6 @@ namespace FilterDataGrid
                             Children = new List<FilterItem>()
                         }
                     );
-
-                // event subscription if an empty element exists
-                if (Tree.LastOrDefault(c => c.Level == -1) != null)
-                    Tree.Last(c => c.Level == -1).OnIsCheckedDate += UpdateTree;
             }
             catch (Exception ex)
             {

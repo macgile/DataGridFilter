@@ -24,6 +24,15 @@ namespace FilterDataGrid
 {
     public class FilterItem : NotifyProperty
     {
+        
+        public FilterItem(FilterCommon action = null)
+        {
+           // event subscription
+            if (action != null)
+                OnIsCheckedDate += action.UpdateTree;
+        }
+
+
         #region Public Events
 
         public event EventHandler<bool?> OnIsCheckedDate;
