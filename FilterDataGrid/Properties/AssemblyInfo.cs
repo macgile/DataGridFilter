@@ -12,7 +12,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Macabies Gilles")]
 [assembly: AssemblyProduct("FilterDataGrid")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
+[assembly: AssemblyCopyright("Copyright © 2021 Gilles Macabies")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
