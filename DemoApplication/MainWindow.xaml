@@ -117,7 +117,7 @@
                     IsColumnFiltered="True" />
 
                 <control:DataGridTextColumn
-                    Binding="{Binding StartDate, StringFormat=\{0:MM/dd/yy\}}"
+                    Binding="{Binding StartDate, StringFormat=d}"
                     Header="Start Date"
                     IsColumnFiltered="True" />
             </control:FilterDataGrid.Columns>
