@@ -95,7 +95,7 @@ namespace FilterDataGrid
                     "Ok",
                     "Ok",
                     "Ok",
-                    "好",
+                    "确定",
                 }
             },
             {
@@ -106,7 +106,7 @@ namespace FilterDataGrid
                     "Отмена",
                     "Abbrechen",
                     "Annulla",
-                    "撤消",
+                    "取消",
                 }
             },
             {
