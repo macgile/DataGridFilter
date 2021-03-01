@@ -5,9 +5,9 @@
 // Projet     : DataGridFilter
 // File       : FilterCommon.cs
 // Created    : 26/01/2021
-// 
+//
 
-#endregion
+#endregion (c) 2019 Gilles Macabies All right reserved
 
 using System;
 using System.Collections.Generic;
@@ -63,42 +63,42 @@ namespace FilterDataGrid
         {
             try
             {
-                if (state == item.IsDateChecked) return;
+                if (state == item.IsChecked) return;
                 item.SetDateState = state;
 
                 // select all / unselect all
                 if (item.Level == 0)
                     Tree.Where(t => t.Level != 0).ToList().ForEach(c => { SetIsChecked(c, state, true, true); });
 
-                if (updateChildren && item.IsDateChecked.HasValue)
+                // update children
+                if (updateChildren && item.IsChecked.HasValue)
                     item.Children?.ForEach(c => { SetIsChecked(c, state, true, false); });
 
+                // update parent
                 if (updateParent && item.Parent != null)
                     VerifyCheckedState(item.Parent);
-
-                item.OnPropertyChanged("IsDateChecked");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"SetDateState : {ex.Message}");
+                Debug.WriteLine($"FilterCommon.SetDateState : {ex.Message}");
                 throw;
             }
         }
 
         /// <summary>
-        ///     Update the item tree when the state of the IsDateChecked property changes
+        ///     Update the tree when the state of the IsChecked property changes
         /// </summary>
-        /// <param name="o"></param>
-        /// <param name="e"></param>
+        /// <param name="o">item</param>
+        /// <param name="e">state</param>
         public void UpdateTree(object o, bool? e)
         {
             if (o == null) return;
-            var item = (FilterItem) o;
+            var item = (FilterItem)o;
             SetIsChecked(item, e, true, true);
         }
 
         /// <summary>
-        ///     check or uncheck parents or children
+        ///     Check or uncheck parents or children
         /// </summary>
         private void VerifyCheckedState(FilterItem item)
         {
@@ -106,7 +106,7 @@ namespace FilterDataGrid
 
             for (var i = 0; i < item.Children?.Count; ++i)
             {
-                var current = item.Children[i].IsDateChecked;
+                var current = item.Children[i].IsChecked;
 
                 if (i == 0)
                 {
@@ -133,25 +133,38 @@ namespace FilterDataGrid
         {
             if (IsFiltered) return;
 
+            // predicate of filter
             bool Predicate(object o)
             {
                 var value = o.GetType().GetProperty(FieldName)?.GetValue(o, null);
                 return !PreviouslyFilteredItems.Contains(value);
             }
 
+            // add to list of predicates
             criteria.Add(FieldName, Predicate);
 
             IsFiltered = true;
         }
 
         /// <summary>
-        ///     Check if any tree item is checked (can apply filter)
+        ///    Any Date IsChecked, check if any tree item is checked (can apply filter)
         /// </summary>
         /// <returns></returns>
         public bool AnyDateIsChecked()
         {
-            // any IsDateChecked is != false
-            return Tree?.Skip(1).Any(t => t.IsDateChecked != false) ?? false;
+            // any IsChecked is true or null
+            // IsDate Checked has three states, isChecked: null and true
+            return Tree != null && Tree.Skip(1).Any(t => t.IsChecked != false);
+        }
+
+        /// <summary>
+        /// Any state of Date Changed, check if at least one date is checked and another is changed
+        /// </summary>
+        /// <returns></returns>
+        public bool AnyDateChanged()
+        {
+            // any date status changed
+            return Tree != null && Tree.Skip(1).Any(t => t.Changed) && AnyDateIsChecked();
         }
 
         /// <summary>
@@ -169,62 +182,63 @@ namespace FilterDataGrid
             {
                 var dateTimes = dates.ToList();
                 var uncheckPrevious = FieldName == lastFilter;
+                var type = typeof(DateTime); //dateTimes.GetType().GenericTypeArguments[0];
 
                 Tree = new List<FilterItem>
                 {
                     new FilterItem(this)
                     {
-                        Label = Translate.All, CurrentFilter = this, Content = 0, Level = 0, SetDateState = true
+                        Label = Translate.All, CurrentFilter = this, Content = 0, Level = 0, SetDateState = true, FieldType = type
                     }
                 };
 
                 // iterate over all items that are not null
                 // INFO:
-                // SetDateState  : does not raise OnIsCheckedDate event
-                // IsDateChecked : raise OnIsCheckedDate event
+                // SetDateState : does not raise OnDateStatusChanged event
+                // IsChecked    : raise OnDateStatusChanged event
                 // (see the FilterItem class for more informations)
 
                 foreach (var y in from date in dateTimes.Where(d => d != null)
-                        .Select(d => (DateTime) d).OrderBy(o => o.Year)
-                    group date by date.Year
-                    into year
-                    select new FilterItem(this)
-                    {
-                        // YEAR
-                        Level = 1,
-                        CurrentFilter = this,
-                        Content = year.Key,
-                        Label = year.First().ToString("yyyy", Translate.Culture),
-                        SetDateState = true,
+                        .Select(d => (DateTime)d).OrderBy(o => o.Year)
+                                  group date by date.Year into year
+                                  select new FilterItem(this)
+                                  {
+                                      // YEAR
+                                      Level = 1,
+                                      CurrentFilter = this,
+                                      Content = year.Key,
+                                      Label = year.First().ToString("yyyy", Translate.Culture),
+                                      SetDateState = true,
+                                      FieldType = type,
 
-                        Children = (from date in year
-                            group date by date.Month
-                            into month
-                            select new FilterItem(this)
-                            {
-                                // MOUNTH
-                                Level = 2,
-                                CurrentFilter = this,
-                                Content = month.Key,
-                                Label = month.First().ToString("MMMM", Translate.Culture),
-                                SetDateState = true,
+                                      Children = (from date in year
+                                                  group date by date.Month
+                                          into month
+                                                  select new FilterItem(this)
+                                                  {
+                                                      // MOUNTH
+                                                      Level = 2,
+                                                      CurrentFilter = this,
+                                                      Content = month.Key,
+                                                      Label = month.First().ToString("MMMM", Translate.Culture),
+                                                      SetDateState = true,
+                                                      FieldType = type,
 
-                                Children = (from day in month
-                                    select new FilterItem(this)
-                                    {
-                                        // DAY
-                                        Level = 3,
-                                        CurrentFilter = this,
-                                        Content = day.Day,
-                                        Label = day.ToString("dd", Translate.Culture),
-                                        SetDateState = true,
-                                        Children = new List<FilterItem>()
-                                    }).ToList()
-                            }).ToList()
-                    })
+                                                      Children = (from day in month
+                                                                  select new FilterItem(this)
+                                                                  {
+                                                                      // DAY
+                                                                      Level = 3,
+                                                                      CurrentFilter = this,
+                                                                      Content = day.Day,
+                                                                      Label = day.ToString("dd", Translate.Culture),
+                                                                      SetDateState = true,
+                                                                      FieldType = type,
+                                                                      Children = new List<FilterItem>()
+                                                                  }).ToList()
+                                                  }).ToList()
+                                  })
                 {
-                    y.OnIsCheckedDate += UpdateTree;
-
                     y.Children.ForEach(m =>
                     {
                         m.Parent = y;
@@ -233,32 +247,43 @@ namespace FilterDataGrid
                         {
                             d.Parent = m;
 
+                            // set the state of the ischecked property based on the items already filtered (unchecked)
                             if (PreviouslyFilteredItems != null && uncheckPrevious)
-                                d.IsDateChecked = PreviouslyFilteredItems
-                                    .Any(u => u != null && u.Equals(new DateTime((int) y.Content, (int) m.Content,
-                                        (int) d.Content))) == false;
+                                d.IsChecked = PreviouslyFilteredItems
+                                    .Any(u => u != null && u.Equals(new DateTime((int)y.Content, (int)m.Content, (int)d.Content))) == false;
+
+                            // reset initialization
+                            d.InitialState = d.IsChecked;
                         });
+
+                        // reset initialization
+                        m.InitialState = m.IsChecked;
                     });
+
+                    // reset initialization
+                    y.InitialState = y.IsChecked;
+
                     Tree.Add(y);
                 }
 
-                // last empty item
+                // last empty item if exist in collection
                 if (dateTimes.Any(d => d == null))
                     Tree.Add(
                         new FilterItem(this)
                         {
                             Label = Translate.Empty, // translation
                             CurrentFilter = this,
-                            Content = -1,
+                            Content = null,
                             Level = -1,
-                            SetDateState = !PreviouslyFilteredItems?.Any(u => u == null) == true,
+                            FieldType = type,
+                            SetDateState = PreviouslyFilteredItems?.Any(u => u == null) == false,
                             Children = new List<FilterItem>()
                         }
                     );
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"BuildTree : {ex.Message}");
+                Debug.WriteLine($"FilterCommon.BuildTree : {ex.Message}");
                 throw;
             }
 
@@ -269,12 +294,13 @@ namespace FilterDataGrid
         ///     Get all the items from the tree (checked or unchecked)
         /// </summary>
         /// <returns></returns>
-        public List<FilterItem> GetAllItemsTree()
+        public IEnumerable<FilterItem> GetAllItemsTree()
         {
             var filterCommon = new List<FilterItem>();
 
             try
             {
+                // skip first item (select all)
                 foreach (var y in Tree.Skip(1))
                     if (y.Level > 0)
                         filterCommon.AddRange(
@@ -282,19 +308,19 @@ namespace FilterDataGrid
                             from d in m.Children
                             select new FilterItem
                             {
-                                Content = new DateTime((int) y.Content, (int) m.Content, (int) d.Content),
-                                IsChecked = d.IsDateChecked ?? false
+                                Content = new DateTime((int)y.Content, (int)m.Content, (int)d.Content),
+                                IsChecked = d.IsChecked ?? false,
                             });
-                    else
+                    else // null date
                         filterCommon.Add(new FilterItem
                         {
                             Content = null,
-                            IsChecked = y.IsDateChecked ?? false
+                            IsChecked = y.IsChecked ?? false,
                         });
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"GetAllItemsTree : {ex.Message}");
+                Debug.WriteLine($"FilterCommon.GetAllItemsTree : {ex.Message}");
                 throw;
             }
 

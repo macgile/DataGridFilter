@@ -5,13 +5,14 @@
 // Projet     : DataGridFilter
 // File       : FilterItem.cs
 // Created    : 26/01/2021
-// 
+//
 
-#endregion
+#endregion (c) 2019 Gilles Macabies All right reserved
 
 using System;
 using System.Collections.Generic;
 
+// ReSharper disable ConvertToAutoProperty
 // ReSharper disable ConvertToAutoPropertyWhenPossible
 // ReSharper disable InconsistentNaming
 // ReSharper disable ArrangeAccessorOwnerBody
@@ -24,84 +25,132 @@ namespace FilterDataGrid
 {
     public class FilterItem : NotifyProperty
     {
-        
-        public FilterItem(FilterCommon action = null)
-        {
-           // event subscription
-            if (action != null)
-                OnIsCheckedDate += action.UpdateTree;
-        }
-
-
         #region Public Events
 
-        public event EventHandler<bool?> OnIsCheckedDate;
+        private event EventHandler<bool?> OnDateStatusChanged;
 
         #endregion Public Events
 
+        #region Constructor
+
+        public FilterItem(FilterCommon action = null)
+        {
+            // event subscription
+            if (action != null)
+                OnDateStatusChanged += action.UpdateTree;
+        }
+
+        #endregion Constructor
+
         #region Private Fields
 
-        private bool isChecked;
-        private bool? isDateChecked;
-        private bool notify;
+        private bool? isChecked;
+        private bool initialized;
 
         #endregion Private Fields
 
         #region Public Properties
 
+        /// <summary>
+        ///Children higher levels (years, months)
+        /// </summary>
         public List<FilterItem> Children { get; set; }
 
-        // raw value of the item (not displayed, see Label property)
+        /// <summary>
+        /// Raw value of the item (not displayed, see Label property)
+        /// </summary>
         public object Content { get; set; }
 
+        /// <summary>
+        /// Current filter
+        /// </summary>
         public FilterCommon CurrentFilter { get; set; }
 
+        /// <summary>
+        /// Field type
+        /// </summary>
         public Type FieldType { get; set; }
+
+        /// <summary>
+        /// Initial state
+        /// </summary>
+        public bool? InitialState { get; set; }
 
         public int Id { get; set; }
 
-        public bool IsChecked
+        /// <summary>
+        /// State of checkbox
+        /// </summary>
+        public bool? IsChecked
         {
             get => isChecked;
             set
             {
-                if (value == isChecked) return;
-                isChecked = value;
+                if (!initialized)
+                {
+                    InitialState = value;
+                    initialized = true;
+                    isChecked = value; // don't remove
 
-                if (notify)
-                    OnPropertyChanged("IsChecked");
+                    // the iteration over an Collection triggers the notification
+                    // of the "IsChecked" property and slows the performance of the loop
+                    // the return prevents the notification at initialization
+                    if (FieldType != typeof(DateTime)) return;
+                }
 
-                // reactivate notify
-                // the iteration over an Collection triggers the notification
-                // of the "IsChecked" property and slows the performance of the loop
-                notify = true;
-            }
-        }
-
-        public bool? IsDateChecked
-        {
-            get => isDateChecked;
-            set
-            {
                 // raise event to update the date tree
                 // see FilterCommon class
-                OnIsCheckedDate?.Invoke(this, value);
+                if (FieldType == typeof(DateTime))
+                {
+                    OnDateStatusChanged?.Invoke(this, value);
+                }
+                else
+                {
+                    isChecked = value;
+                    OnPropertyChanged("IsChecked");
+                }
             }
         }
 
-        // content displayed
+        /// <summary>
+        /// Content displayed
+        /// </summary>
         public string Label { get; set; }
 
+        /// <summary>
+        /// Hierarchical level for the date
+        /// </summary>
         public int Level { get; set; }
 
+        /// <summary>
+        /// Parent of lower levels (days, months)
+        /// </summary>
         public FilterItem Parent { get; set; }
 
-        // don't invoke update tree
+        /// <summary>
+        /// Set the state of the IsChecked property for date, does not invoke the update of the tree
+        /// </summary>
         public bool? SetDateState
         {
-            get => isDateChecked;
-            set => isDateChecked = value;
+            get => isChecked;
+            set
+            {
+                isChecked = value;
+
+                if (!initialized)
+                {
+                    InitialState = value;
+                    initialized = true;
+                }
+
+                OnPropertyChanged("IsChecked");
+            }
         }
+
+        /// <summary>
+        /// Checks if the initial state has changed
+        /// </summary>
+        public bool Changed => isChecked != InitialState;
 
         #endregion Public Properties
     }

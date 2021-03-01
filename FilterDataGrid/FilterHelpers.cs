@@ -29,14 +29,20 @@ namespace FilterDataGrid
 {
     public static class Extensions
     {
+        #region Public Methods
+
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
         {
             return new HashSet<T>(source, comparer);
         }
+
+        #endregion Public Methods
     }
 
     public static class Helpers
     {
+        #region Public Methods
+
         /// <summary>
         ///     Print elapsed time
         /// </summary>
@@ -45,27 +51,63 @@ namespace FilterDataGrid
         public static void Elapsed(string label, DateTime start)
         {
             var span = DateTime.Now - start;
-            Debug.WriteLine($"{label,-20}m:{span.Minutes,-2}s:{span.Seconds}");
+            Debug.WriteLine($"{label,-20}{span:mm\\:ss\\.ff}");
         }
 
-        public static bool TryFormat(string format, params object[] args)
-        {
-            try
-            {
-                var result = string.Format(format, args);
-                var s = DateTime.Now.ToString(format);
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-        }
+        #endregion Public Methods
     }
 
     public static class VisualTreeHelpers
     {
         #region Private Methods
+
+        private static T FindVisualChild<T>(this DependencyObject dependencyObject, string name)
+                    where T : DependencyObject
+        {
+            // Search immediate children first (breadth-first)
+            var childrenCount = VisualTreeHelper.GetChildrenCount(dependencyObject);
+
+            //http://stackoverflow.com/questions/12304904/why-visualtreehelper-getchildrencount-returns-0-for-popup
+
+            if (childrenCount == 0 && dependencyObject is Popup)
+            {
+                var popup = dependencyObject as Popup;
+                return popup.Child?.FindVisualChild<T>(name);
+            }
+
+            for (var i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(dependencyObject, i);
+                var nameOfChild = child.GetValue(FrameworkElement.NameProperty) as string;
+
+                if (child is T && (name == string.Empty || name == nameOfChild))
+                    return (T)child;
+                var childOfChild = child.FindVisualChild<T>(name);
+                if (childOfChild != null)
+                    return childOfChild;
+            }
+
+            return null;
+        }
+
+        private static IEnumerable<T> GetChildrenOf<T>(this DependencyObject obj, bool recursive) where T : DependencyObject
+        {
+            var count = VisualTreeHelper.GetChildrenCount(obj);
+            for (var i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(obj, i);
+                if (child is T) yield return (T)child;
+
+                if (recursive)
+                    foreach (var item in child.GetChildrenOf<T>())
+                        yield return item;
+            }
+        }
+
+        private static IEnumerable<T> GetChildrenOf<T>(this DependencyObject obj) where T : DependencyObject
+        {
+            return obj.GetChildrenOf<T>(false);
+        }
 
         /// <summary>
         ///     This method is an alternative to WPF's
@@ -104,58 +146,9 @@ namespace FilterDataGrid
             //if it's not a ContentElement/FrameworkElement, rely on VisualTreeHelper
             return VisualTreeHelper.GetParent(child);
         }
-
         #endregion Private Methods
 
         #region Public Methods
-
-        public static DataGridColumnHeader GetHeader(DataGridColumn column, DependencyObject reference)
-        {
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(reference); i++)
-            {
-                var child = VisualTreeHelper.GetChild(reference, i);
-
-                if (child is DataGridColumnHeader colHeader && colHeader.Column == column) return colHeader;
-
-                colHeader = GetHeader(column, child);
-                if (colHeader != null) return colHeader;
-            }
-
-            return null;
-        }
-
-        #endregion Public Methods
-
-        #region Public Methods
-
-        private static T FindVisualChild<T>(this DependencyObject dependencyObject, string name)
-            where T : DependencyObject
-        {
-            // Search immediate children first (breadth-first)
-            var childrenCount = VisualTreeHelper.GetChildrenCount(dependencyObject);
-
-            //http://stackoverflow.com/questions/12304904/why-visualtreehelper-getchildrencount-returns-0-for-popup
-
-            if (childrenCount == 0 && dependencyObject is Popup)
-            {
-                var popup = dependencyObject as Popup;
-                return popup.Child?.FindVisualChild<T>(name);
-            }
-
-            for (var i = 0; i < childrenCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(dependencyObject, i);
-                var nameOfChild = child.GetValue(FrameworkElement.NameProperty) as string;
-
-                if (child is T && (name == string.Empty || name == nameOfChild))
-                    return (T)child;
-                var childOfChild = child.FindVisualChild<T>(name);
-                if (childOfChild != null)
-                    return childOfChild;
-            }
-
-            return null;
-        }
 
         /// <summary>
         ///     Returns the first ancester of specified type
@@ -309,24 +302,35 @@ namespace FilterDataGrid
             return dependencyObject.FindVisualChild<T>(string.Empty);
         }
 
-        public static IEnumerable<T> GetChildrenOf<T>(this DependencyObject obj, bool recursive)
-            where T : DependencyObject
+        public static Visual GetDescendantByType(Visual element, Type type)
         {
-            var count = VisualTreeHelper.GetChildrenCount(obj);
-            for (var i = 0; i < count; i++)
+            if (element == null) return null;
+            if (element.GetType() == type) return element;
+            Visual foundElement = null;
+            if (element is FrameworkElement frameworkElement) frameworkElement.ApplyTemplate();
+            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
             {
-                var child = VisualTreeHelper.GetChild(obj, i);
-                if (child is T) yield return (T)child;
-
-                if (recursive)
-                    foreach (var item in child.GetChildrenOf<T>())
-                        yield return item;
+                var visual = VisualTreeHelper.GetChild(element, i) as Visual;
+                foundElement = GetDescendantByType(visual, type);
+                if (foundElement != null) break;
             }
+
+            return foundElement;
         }
 
-        public static IEnumerable<T> GetChildrenOf<T>(this DependencyObject obj) where T : DependencyObject
+        public static DataGridColumnHeader GetHeader(DataGridColumn column, DependencyObject reference)
         {
-            return obj.GetChildrenOf<T>(false);
+            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(reference); i++)
+            {
+                var child = VisualTreeHelper.GetChild(reference, i);
+
+                if (child is DataGridColumnHeader colHeader && colHeader.Column == column) return colHeader;
+
+                colHeader = GetHeader(column, child);
+                if (colHeader != null) return colHeader;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -356,23 +360,6 @@ namespace FilterDataGrid
                 return parent;
             return TryFindParent<T>(parentObject);
         }
-
-        public static Visual GetDescendantByType(Visual element, Type type)
-        {
-            if (element == null) return null;
-            if (element.GetType() == type) return element;
-            Visual foundElement = null;
-            if (element is FrameworkElement frameworkElement) frameworkElement.ApplyTemplate();
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
-            {
-                var visual = VisualTreeHelper.GetChild(element, i) as Visual;
-                foundElement = GetDescendantByType(visual, type);
-                if (foundElement != null) break;
-            }
-
-            return foundElement;
-        }
-
         #endregion Public Methods
     }
 
@@ -410,7 +397,7 @@ namespace FilterDataGrid
 
         #endregion Private Methods
 
-        #region Protected Methods
+        #region Public Methods
 
         /// <summary>
         ///     Raises this object's PropertyChanged event.
@@ -422,6 +409,6 @@ namespace FilterDataGrid
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        #endregion Protected Methods
+        #endregion Public Methods
     }
 }

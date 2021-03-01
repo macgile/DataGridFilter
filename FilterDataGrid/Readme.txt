@@ -1,7 +1,8 @@
 ﻿
 General use:
 
-1) Add FilterDataGrid.dll as reference in your project
+1) Add FilterDataGrid.dll as reference in your project 
+   or install NuGet package : Install-Package FilterDataGrid
 
 2) Add FilterDataGrid control into your xaml :
 

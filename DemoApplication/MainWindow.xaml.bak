@@ -76,7 +76,7 @@
             Background="Transparent"
             CanUserAddRows="False"
             ColumnWidth="*"
-            DateFormatString="d"
+            DateFormatString=""
             FilterLanguage="English"
             HorizontalGridLinesBrush="LightGray"
             IsReadOnly="True"
@@ -117,7 +117,7 @@
                     IsColumnFiltered="True" />
 
                 <control:DataGridTextColumn
-                    Binding="{Binding StartDate}"
+                    Binding="{Binding StartDate, StringFormat=d}"
                     Header="Start Date"
                     IsColumnFiltered="True" />
             </control:FilterDataGrid.Columns>
@@ -136,12 +136,12 @@
             x:Name="FilterDataGridAuto"
             Grid.Row="4"
             Margin="10,10,0,2"
+            ColumnWidth="*"
             AlternatingRowBackground="WhiteSmoke"
             AlternationCount="2"
             AutoGenerateColumns="True"
             Background="Transparent"
             CanUserAddRows="False"
-            ColumnWidth="*"
             FilterLanguage="Russian"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             LoadingRow="DataGrid_LoadingRow"

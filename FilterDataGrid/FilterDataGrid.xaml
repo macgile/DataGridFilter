@@ -13,38 +13,40 @@
     <sys:Double x:Key="PopupWidth">250</sys:Double>
     <sys:Boolean x:Key="StayOpen">False</sys:Boolean>
 
-    <!--  PATH MAGNIFIER ICON  -->
+    <!--  https://yqnn.github.io/svg-path-editor/  -->
+
+    <!--  MAGNIFIER ICON  -->
     <Geometry x:Key="Magnifier">
-        M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59
-        4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z
+        M9.6 8.5H9L8.7 8.2C9.6 7.4 10 6.2 10 5C10 2.2 7.8 0 5 0S0 2.2 0 5S2.2 10 5 10C6.2 10 7.4 9.6 8.2 8.7L8.5
+        9V9.6L12.3 13.5L13.5 12.3L9.6 8.5ZM5 8.5C3.1 8.5 1.5 6.9 1.5 5S3.1 1.5 5 1.5S8.5 3.1 8.5 5S6.9 8.5 5 8.5Z
     </Geometry>
 
-    <!--  PATH DELETE FILTER ICON  -->
+    <!--  DELETE FILTER ICON  -->
     <Geometry x:Key="FilterDelete">
-        m 15.101978,15.368316 -2.55778,-2.548773 1.269884,-1.269884 2.548774,2.530761 2.548773,-2.530761 1.269884,1.269884 -2.530761,2.548773 2.530761,2.548774 -1.269884,1.269884 -2.548773,-2.55778 -2.548774,2.55778 -1.269884,-1.269884 z M 2.0225,2 H 19.98 v 0 0 2 l -8.576669,8.546471 1.604969,1.604972 v 2.047821 l -1.60741,1.601747 1.60741,1.607409 v 1.507432 L 9,16.91 v -6 L 2.0225,4 Z
+        M11.1 11.4L8.5 8.9L9.8 7.6L12.3 10.1L14.8 7.6L16.1 8.9L13.6 11.4L16.1 13.9L14.8 15.2L12.3 12.6L9.8 15.2L8.5 13.9ZM0 0H13L13 2L8 6V14L5 11V6L0 2Z
     </Geometry>
 
-    <!--  PATH FILTERCHECKED ICON  -->
+    <!--  BOX CHECKED ICON  -->
     <Geometry x:Key="FilterChecked">
-        m 990,990 h -980 v -980 h 980 z m -972,-10 h 962 v -962 h -962 z m 442,-290 -70,-80 430,-350 70,80 z m 0,0 -90,70 -200,-260 80,-70 z
+        M 125 125 L 0 125 V 0 H 125 Z M 1 124 H 124 V 1 H 1 Z M 20 68 L 29 57 L 56 80 L 98 25 L 110 35 L 59 101 Z
     </Geometry>
 
     <!--  GRIPSIZE ICON  -->
     <Geometry x:Key="GripSizeIcon">
-        F1 M1,10 L3,10 M5,10 L7,10 M9,10 L11,10 M2,9 L2,11 M6,9 L6,11 M10,9 L10,11 M5,6 L7,6 M9,6 L11,6 M6,5 L6,7 M10,5 L10,7 M9,2 L11,2 M10,1 L10,3
+        M0 9L2 9M4 9L6 9M8 9L10 9M1 8L1 10M5 8L5 10M9 8L9 10M4 5L6 5M8 5L10 5M5 4L5 6M9 4L9 6M8 1L10 1M9 0L9 2
     </Geometry>
 
     <!--  FILTER SET ICON  -->
     <Geometry x:Key="FilterSet">
-        m71.624 156.35h1.4111l-0.70556 0.88194zm0.87209-2.0488h2.2931l-2e-6 0.35278-0.88195 0.52916 1e-6 1.2347h-0.52917l-2e-6 -1.2347-0.88194-0.52916z
+        M 0 17 H 13 L 7 25 Z M 8 0 H 28 L 28 2 L 20 8 L 20 18 H 16 L 16 8 L 8 2 Z
     </Geometry>
 
-    <!--  FILTER ICON  -->
+    <!--  FILTER BUTTON ICON  -->
     <Geometry x:Key="Filter">
-        M7,10L12,15L17,10H7Z
+        M 7 10 L 12 15 L 17 10 H 7 Z
     </Geometry>
 
-    <!--  PLACEHOLDER  SEARCH BOX  -->
+    <!--  PLACEHOLDER SEARCH BOX  -->
     <Style x:Key="PlaceHolder" TargetType="{x:Type TextBox}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -54,7 +56,7 @@
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Grid>
                         <TextBox
-                            x:Name="textSource"
+                            x:Name="TextSource"
                             Margin="{TemplateBinding Margin}"
                             Padding="{TemplateBinding Padding}"
                             HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
@@ -82,12 +84,11 @@
                             FontWeight="{TemplateBinding FontWeight}"
                             MaxLength="{TemplateBinding MaxLength}"
                             Text="{TemplateBinding Tag}">
-
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}">
                                     <Setter Property="Foreground" Value="Transparent" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Text, ElementName=textSource}" Value="">
+                                        <DataTrigger Binding="{Binding Path=Text, ElementName=TextSource}" Value="">
                                             <Setter Property="Foreground" Value="LightGray" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -95,137 +96,6 @@
                             </TextBox.Style>
                         </TextBox>
                     </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!--  TREEVIEW  -->
-    <Style x:Key="TreeViewItemFocusVisual">
-        <Setter Property="Control.Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <Rectangle />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!--  TREEVIEW EXPAND/COLLAPSE TOGGLE  -->
-    <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
-        <Setter Property="Focusable" Value="False" />
-        <Setter Property="Width" Value="19" />
-        <Setter Property="Height" Value="13" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ToggleButton}">
-                    <Border
-                        Width="19"
-                        Height="13"
-                        Background="Transparent">
-                        <Border
-                            Width="9"
-                            Height="9"
-                            BorderBrush="#FF7898B5"
-                            BorderThickness="1"
-                            CornerRadius="1"
-                            SnapsToDevicePixels="true">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Offset=".2" Color="White" />
-                                    <GradientStop Offset="1" Color="#FFC0B7A6" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Path
-                                x:Name="ExpandPath"
-                                Margin="1,1,1,1"
-                                Data="M 0 2 L 0 3 L 2 3 L 2 5 L 3 5 L 3 3 L 5 3 L 5 2 L 3 2 L 3 0 L 2 0 L 2 2 Z"
-                                Fill="Black" />
-                        </Border>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="ExpandPath" Property="Data" Value="M 0 2 L 0 3 L 5 3 L 5 2 Z" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!--  TREEVIEW TREEVIEWITEM STYLE  -->
-    <Style x:Key="StyleTreeViewItem" TargetType="{x:Type TreeViewItem}">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Padding" Value="1,0,0,0" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-        <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="19" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <ToggleButton
-                            x:Name="Expander"
-                            ClickMode="Press"
-                            IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                            Style="{StaticResource ExpandCollapseToggleStyle}" />
-                        <Border
-                            x:Name="Bd"
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Padding="{TemplateBinding Padding}"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            SnapsToDevicePixels="true">
-                            <ContentPresenter
-                                x:Name="PART_Header"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                ContentSource="Header"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </Border>
-                        <ItemsPresenter
-                            x:Name="ItemsHost"
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsExpanded" Value="false">
-                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
-                        </Trigger>
-                        <Trigger Property="HasItems" Value="false">
-                            <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="true">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="true" />
-                                <Condition Property="IsSelectionActive" Value="false" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-                        </MultiTrigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                        </Trigger>
-
-                        <DataTrigger Binding="{Binding Path=IsLoaded, RelativeSource={RelativeSource Self}}" Value="True">
-                            <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
-                            <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -335,7 +205,7 @@
                     <UniformGrid Columns="2" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
 
                         <!--  RESULT STATUS  -->
-                        <TextBlock Margin="0,0,0,0" HorizontalAlignment="Left">
+                        <TextBlock HorizontalAlignment="Left">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource StringFormatConverter}">
                                     <Binding Path="Translate.Status" />
@@ -353,7 +223,6 @@
                                     <Binding Path="ElapsedTime" />
                                 </MultiBinding>
                             </TextBlock.Text>
-
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -384,13 +253,15 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
-    <!--  DATAGRIDCOLUMNHEADER DATATEMPLATE  -->
+    <!--  DATATEMPLATE OF DATAGRIDCOLUMNHEADER  -->
     <DataTemplate x:Key="DataGridHeaderTemplate">
+
+        <!--  HEADER STRECH TO CONTENTPRESENTER OF DATAGRIDCOLUMNHEADER  -->
         <Grid
             x:Name="ContainerFilterGrid"
             Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}, Mode=FindAncestor, AncestorLevel=1}, Path=ActualWidth}"
             HorizontalAlignment="Stretch"
-            ZIndex="1">
+            Background="Transparent">
 
             <!--  HEADER/BUTTON  -->
             <Grid x:Name="GridHeaderButton" ShowGridLines="False">
@@ -413,7 +284,9 @@
                     BorderThickness="1"
                     Command="{x:Static control:FilterDataGrid.ShowFilter}"
                     Cursor="Hand"
-                    Opacity="0.5">
+                    Opacity="0.5"
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -423,11 +296,11 @@
                                             Padding="2"
                                             Background="{TemplateBinding Background}"
                                             BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="1">
+                                            BorderThickness="1"
+                                            SnapsToDevicePixels="True"
+                                            UseLayoutRounding="True">
                                             <Path
                                                 x:Name="PathFilterIcon"
-                                                Width="Auto"
-                                                Height="Auto"
                                                 Margin="0"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
@@ -458,7 +331,6 @@
 
                 <Border
                     x:Name="PopUpBorder"
-                    Height="Auto"
                     Padding="0"
                     Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                     BorderBrush="LightGray"
@@ -466,8 +338,6 @@
 
                     <Grid
                         x:Name="SizableContentGrid"
-                        Width="{StaticResource PopupWidth}"
-                        Height="{StaticResource PopupHeight}"
                         MinWidth="{StaticResource PopupWidth}"
                         MinHeight="{StaticResource PopupHeight}"
                         Focusable="False"
@@ -505,6 +375,7 @@
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
                                     <Setter Property="Foreground" Value="DarkSlateGray" />
+                                    <Setter Property="SnapsToDevicePixels" Value="True" />
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type Button}">
@@ -512,16 +383,17 @@
                                                     x:Name="BorderContent"
                                                     Padding="{TemplateBinding Padding}"
                                                     BorderBrush="Transparent"
-                                                    BorderThickness="0">
+                                                    BorderThickness="0"
+                                                    SnapsToDevicePixels="True"
+                                                    UseLayoutRounding="True">
                                                     <Grid x:Name="ContentGrid" Background="Transparent">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto" />
                                                             <ColumnDefinition Width="*" />
                                                         </Grid.ColumnDefinitions>
-
                                                         <Path
                                                             Grid.Column="0"
-                                                            Height="16"
+                                                            Width="16"
                                                             Margin="0,0,10,0"
                                                             Data="{StaticResource FilterDelete}"
                                                             Fill="{TemplateBinding Foreground}"
@@ -614,13 +486,18 @@
                                     Grid.Column="1"
                                     Margin="2"
                                     Background="Transparent"
-                                    Command="{x:Static control:FilterDataGrid.ClearSearchBox}">
+                                    Command="{x:Static control:FilterDataGrid.ClearSearchBox}"
+                                    SnapsToDevicePixels="True"
+                                    UseLayoutRounding="True">
                                     <Button.Style>
                                         <Style TargetType="{x:Type Button}">
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Button">
-                                                        <Border Background="Transparent">
+                                                        <Border
+                                                            Background="Transparent"
+                                                            SnapsToDevicePixels="True"
+                                                            UseLayoutRounding="True">
                                                             <Path
                                                                 x:Name="PathButton"
                                                                 Width="14"
@@ -732,7 +609,8 @@
                                                 CommandParameter="{Binding}"
                                                 Content="{Binding Label}"
                                                 FontWeight="Normal"
-                                                IsChecked="{Binding IsChecked}" />
+                                                IsChecked="{Binding IsChecked}"
+                                                IsThreeState="False" />
                                             <DataTemplate.Triggers>
                                                 <DataTrigger Binding="{Binding Level}" Value="1">
                                                     <Setter TargetName="CheckBox" Property="Margin" Value="4,0,0,0" />
@@ -750,12 +628,6 @@
                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                                     Visibility="Collapsed">
-                                    <TreeView.Resources>
-                                        <Style TargetType="{x:Type TreeViewItem}">
-                                            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                        </Style>
-                                    </TreeView.Resources>
                                     <TreeView.ItemTemplate>
                                         <HierarchicalDataTemplate DataType="control:FilterItem" ItemsSource="{Binding Children}">
                                             <StackPanel Orientation="Horizontal">
@@ -763,7 +635,7 @@
                                                     x:Name="CheckBoxTree"
                                                     VerticalAlignment="Center"
                                                     Focusable="False"
-                                                    IsChecked="{Binding IsDateChecked}" />
+                                                    IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" />
                                                 <ContentPresenter Margin="2" Content="{Binding Label}" />
                                             </StackPanel>
                                             <DataTemplate.Triggers>
@@ -774,7 +646,8 @@
                                         </HierarchicalDataTemplate>
                                     </TreeView.ItemTemplate>
                                     <TreeView.ItemContainerStyle>
-                                        <Style TargetType="{x:Type TreeViewItem}">
+                                        <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
+                                            <Setter Property="OverridesDefaultStyle" Value="True" />
                                             <Setter Property="IsExpanded" Value="False" />
                                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                             <Setter Property="VerticalContentAlignment" Value="Stretch" />
@@ -820,7 +693,9 @@
                             Height="Auto"
                             Margin="0,0,2,2"
                             HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom">
+                            VerticalAlignment="Bottom"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True">
                             <Thumb.Style>
                                 <Style TargetType="{x:Type Thumb}">
                                     <Style.Setters>
@@ -832,7 +707,9 @@
                                                         HorizontalAlignment="Right"
                                                         VerticalAlignment="Bottom"
                                                         Background="Transparent"
-                                                        DockPanel.Dock="Right">
+                                                        DockPanel.Dock="Right"
+                                                        SnapsToDevicePixels="True"
+                                                        UseLayoutRounding="True">
                                                         <Path
                                                             Width="12"
                                                             Height="12"
