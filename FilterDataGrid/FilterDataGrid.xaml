@@ -506,24 +506,7 @@
                                                                 Data="M 10 10 L 40 40 M 40 10  L 10 40"
                                                                 Fill="Transparent"
                                                                 Stretch="Uniform"
-                                                                StrokeThickness="2">
-                                                                <Path.Style>
-                                                                    <Style TargetType="{x:Type Path}">
-                                                                        <Style.Triggers>
-                                                                            <Trigger Property="IsEnabled" Value="False">
-                                                                                <Setter Property="Stroke" Value="LightGray" />
-                                                                            </Trigger>
-                                                                            <Trigger Property="IsEnabled" Value="True">
-                                                                                <Setter Property="Stroke" Value="DarkSlateGray" />
-                                                                            </Trigger>
-                                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                                <Setter Property="Cursor" Value="Hand" />
-                                                                                <Setter Property="Stroke" Value="Red" />
-                                                                            </Trigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Path.Style>
-                                                            </Path>
+                                                                StrokeThickness="2" />
                                                         </Border>
                                                         <ControlTemplate.Triggers>
                                                             <DataTrigger Binding="{Binding ElementName=SearchBox, Path=Text}" Value="">
@@ -536,6 +519,16 @@
                                                                 <Setter TargetName="PathButton" Property="StrokeThickness" Value="0" />
                                                                 <Setter TargetName="PathButton" Property="Width" Value="18" />
                                                             </DataTrigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter TargetName="PathButton" Property="Stroke" Value="LightGray" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsEnabled" Value="True">
+                                                                <Setter TargetName="PathButton" Property="Stroke" Value="DarkSlateGray" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Cursor" Value="Hand" />
+                                                                <Setter TargetName="PathButton" Property="Stroke" Value="Red" />
+                                                            </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
                                                 </Setter.Value>
