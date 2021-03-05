@@ -351,16 +351,16 @@ namespace FilterDataGrid
 
                 ElapsedTime = new TimeSpan(0, 0, 0);
 
-                // if there is no item in ItemsSource, the Cast fails and an error occurs
+                // get collection type
                 if (ItemsSourceCount > 0)
                 {
                     if (ItemsSource is ICollectionView collectionView)
                     {
-                        collectionType = collectionView.SourceCollection?.GetType()?.GenericTypeArguments?.FirstOrDefault();
+                        collectionType = collectionView.SourceCollection?.GetType().GenericTypeArguments?.FirstOrDefault();
                     }
                     else
                     {
-                        collectionType = ItemsSource?.GetType()?.GenericTypeArguments?.FirstOrDefault();
+                        collectionType = ItemsSource?.GetType().GenericTypeArguments?.FirstOrDefault();
                     }
                 }
 
