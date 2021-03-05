@@ -353,7 +353,16 @@ namespace FilterDataGrid
 
                 // if there is no item in ItemsSource, the Cast fails and an error occurs
                 if (ItemsSourceCount > 0)
-                    collectionType = ItemsSource?.GetType().GenericTypeArguments[0];
+                {
+                    if (ItemsSource is ICollectionView collectionView)
+                    {
+                        collectionType = collectionView.SourceCollection?.GetType()?.GenericTypeArguments?.FirstOrDefault();
+                    }
+                    else
+                    {
+                        collectionType = ItemsSource?.GetType()?.GenericTypeArguments?.FirstOrDefault();
+                    }
+                }
 
                 // generating custom columns
                 if (!AutoGenerateColumns && collectionType != null)
