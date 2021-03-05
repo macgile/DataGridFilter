@@ -354,6 +354,7 @@ namespace FilterDataGrid
                 // get collection type
                 if (ItemsSourceCount > 0)
                 {
+                    // Apflkuacha contribution 
                     if (ItemsSource is ICollectionView collectionView)
                     {
                         collectionType = collectionView.SourceCollection?.GetType().GenericTypeArguments?.FirstOrDefault();
