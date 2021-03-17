@@ -64,7 +64,7 @@ namespace FilterDataGrid
             try
             {
                 if (state == item.IsChecked) return;
-                item.SetDateState = state;
+                item.SetState = state;
 
                 // select all / unselect all
                 if (item.Level == 0)
@@ -80,7 +80,7 @@ namespace FilterDataGrid
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"FilterCommon.SetDateState : {ex.Message}");
+                Debug.WriteLine($"FilterCommon.SetState : {ex.Message}");
                 throw;
             }
         }
@@ -163,8 +163,12 @@ namespace FilterDataGrid
         /// <returns></returns>
         public bool AnyDateChanged()
         {
-            // any date status changed
-            return Tree != null && Tree.Skip(1).Any(t => t.Changed) && AnyDateIsChecked();
+            // any (year, month, day) status changed
+            return Tree != null &&
+                   Tree.Skip(1)
+                       .Any(year => year.Changed || year.Children
+                           .Any(month => month.Changed || month.Children
+                               .Any(day => day.Changed))) && AnyDateIsChecked();
         }
 
         /// <summary>
@@ -182,19 +186,19 @@ namespace FilterDataGrid
             {
                 var dateTimes = dates.ToList();
                 var uncheckPrevious = FieldName == lastFilter;
-                var type = typeof(DateTime); //dateTimes.GetType().GenericTypeArguments[0];
+                var type = typeof(DateTime);
 
                 Tree = new List<FilterItem>
                 {
                     new FilterItem(this)
                     {
-                        Label = Translate.All, CurrentFilter = this, Content = 0, Level = 0, SetDateState = true, FieldType = type
+                        Label = Translate.All, CurrentFilter = this, Content = 0, Level = 0, SetState = true, FieldType = type
                     }
                 };
 
                 // iterate over all items that are not null
                 // INFO:
-                // SetDateState : does not raise OnDateStatusChanged event
+                // SetState : does not raise OnDateStatusChanged event
                 // IsChecked    : raise OnDateStatusChanged event
                 // (see the FilterItem class for more informations)
 
@@ -208,12 +212,11 @@ namespace FilterDataGrid
                                       CurrentFilter = this,
                                       Content = year.Key,
                                       Label = year.First().ToString("yyyy", Translate.Culture),
-                                      SetDateState = true,
+                                      SetState = true, // default state
                                       FieldType = type,
 
                                       Children = (from date in year
-                                                  group date by date.Month
-                                          into month
+                                                  group date by date.Month into month
                                                   select new FilterItem(this)
                                                   {
                                                       // MOUNTH
@@ -221,7 +224,7 @@ namespace FilterDataGrid
                                                       CurrentFilter = this,
                                                       Content = month.Key,
                                                       Label = month.First().ToString("MMMM", Translate.Culture),
-                                                      SetDateState = true,
+                                                      SetState = true, // default state
                                                       FieldType = type,
 
                                                       Children = (from day in month
@@ -232,13 +235,14 @@ namespace FilterDataGrid
                                                                       CurrentFilter = this,
                                                                       Content = day.Day,
                                                                       Label = day.ToString("dd", Translate.Culture),
-                                                                      SetDateState = true,
+                                                                      SetState = true, // default state
                                                                       FieldType = type,
                                                                       Children = new List<FilterItem>()
                                                                   }).ToList()
                                                   }).ToList()
                                   })
                 {
+                    // set parent and IsChecked property if uncheckPrevious items
                     y.Children.ForEach(m =>
                     {
                         m.Parent = y;
@@ -252,15 +256,15 @@ namespace FilterDataGrid
                                 d.IsChecked = PreviouslyFilteredItems
                                     .Any(u => u != null && u.Equals(new DateTime((int)y.Content, (int)m.Content, (int)d.Content))) == false;
 
-                            // reset initialization
+                            // reset initialization with new state
                             d.InitialState = d.IsChecked;
                         });
 
-                        // reset initialization
+                        // reset initialization with new state
                         m.InitialState = m.IsChecked;
                     });
 
-                    // reset initialization
+                    // reset initialization with new state
                     y.InitialState = y.IsChecked;
 
                     Tree.Add(y);
@@ -276,7 +280,7 @@ namespace FilterDataGrid
                             Content = null,
                             Level = -1,
                             FieldType = type,
-                            SetDateState = PreviouslyFilteredItems?.Any(u => u == null) == false,
+                            SetState = PreviouslyFilteredItems?.Any(u => u == null) == false,
                             Children = new List<FilterItem>()
                         }
                     );
@@ -302,7 +306,7 @@ namespace FilterDataGrid
             {
                 // skip first item (select all)
                 foreach (var y in Tree.Skip(1))
-                    if (y.Level > 0)
+                    if (y.Level > 0) // year :1, mounth : 2, day : 3
                         filterCommon.AddRange(
                             from m in y.Children
                             from d in m.Children
@@ -311,7 +315,7 @@ namespace FilterDataGrid
                                 Content = new DateTime((int)y.Content, (int)m.Content, (int)d.Content),
                                 IsChecked = d.IsChecked ?? false,
                             });
-                    else // null date
+                    else // null date (Level -1)
                         filterCommon.Add(new FilterItem
                         {
                             Content = null,

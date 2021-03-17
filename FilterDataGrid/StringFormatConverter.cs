@@ -26,8 +26,9 @@ namespace FilterDataGrid
         {
             try
             {
-                // values[0] contains format
-                if (values[0] == DependencyProperty.UnsetValue || string.IsNullOrEmpty(values[0]?.ToString())) return "";
+                // values [0] contains the format
+                if (values[0] == DependencyProperty.UnsetValue || string.IsNullOrEmpty(values[0]?.ToString()))
+                    return string.Empty;
 
                 var stringFormat = values[0].ToString();
 
@@ -35,7 +36,7 @@ namespace FilterDataGrid
             }
             catch (FormatException ex)
             {
-                Debug.WriteLine($"StringFormatConverter error: {ex.Message}");
+                Debug.WriteLine($"StringFormatConverter.Convert error: {ex.Message}");
                 return string.Empty;
             }
         }

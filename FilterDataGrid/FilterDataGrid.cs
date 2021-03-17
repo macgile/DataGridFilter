@@ -927,6 +927,7 @@ namespace FilterDataGrid
                     };
 
                     // add all items to the filterItemList
+                    // filterItemList is used only for search and string list, the dates list is computed by FilterCommon.BuildTree
                     for (var i = 0; i < sourceObjectList.Count; i++)
                     {
                         var item = sourceObjectList[i];
@@ -938,8 +939,9 @@ namespace FilterDataGrid
                             Label = item?.ToString(), // Content displayed
                             Level = 1,
 
-                            // check or uncheck if the content of item exists in the previously filtered elements
-                            IsChecked = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
+                            // check or uncheck if the content of current item exists in the list of previously filtered items
+                            // SetState doesn't raise OnpropertyChanged notification
+                            SetState = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
                         };
                         filterItemList.Add(filterItem);
                     }
@@ -955,7 +957,7 @@ namespace FilterDataGrid
                             FieldType = fieldType,
                             Content = null,
                             Label = Translate.Empty,
-                            IsChecked = CurrentFilter.PreviouslyFilteredItems?.Contains(null) == false
+                            SetState = CurrentFilter.PreviouslyFilteredItems?.Contains(null) == false
                         });
                     }
                 }); // and task
@@ -967,8 +969,8 @@ namespace FilterDataGrid
 
                     if (treeview != null)
                     {
-                        // fill the treeview with CurrentFilter.BuildTree
-                        // and if it is the last filter, uncheck the elements already filtered
+                        // fill the treeview with CurrentFilter.BuildTree method
+                        // and if it's the last filter, uncheck the items already filtered
                         treeview.ItemsSource =
                             CurrentFilter?.BuildTree(sourceObjectList, lastFilter);
                         treeview.Visibility = Visibility.Visible;

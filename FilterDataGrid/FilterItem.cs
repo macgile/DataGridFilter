@@ -93,13 +93,15 @@ namespace FilterDataGrid
                     isChecked = value; // don't remove
 
                     // the iteration over an Collection triggers the notification
-                    // of the "IsChecked" property and slows the performance of the loop
-                    // the return prevents the notification at initialization
-                    if (FieldType != typeof(DateTime)) return;
+                    // of the "IsChecked" property and slows the performance of the loop,
+                    // the return prevents the OnPropertyChanged
+                    // notification at initialization
+                    return;
                 }
 
-                // raise event to update the date tree
-                // see FilterCommon class
+                // raise event to update the date tree, see FilterCommon class
+                // only type date type fields are subscribed to the OnDateStatusChanged event
+                // OnDateStatusChanged is not triggered at tree initialization
                 if (FieldType == typeof(DateTime))
                 {
                     OnDateStatusChanged?.Invoke(this, value);
@@ -130,7 +132,7 @@ namespace FilterDataGrid
         /// <summary>
         /// Set the state of the IsChecked property for date, does not invoke the update of the tree
         /// </summary>
-        public bool? SetDateState
+        public bool? SetState
         {
             get => isChecked;
             set
@@ -142,8 +144,10 @@ namespace FilterDataGrid
                     InitialState = value;
                     initialized = true;
                 }
-
-                OnPropertyChanged("IsChecked");
+                else
+                {
+                    OnPropertyChanged("IsChecked");
+                }
             }
         }
 
