@@ -354,7 +354,7 @@ namespace FilterDataGrid
                 // get collection type
                 if (ItemsSourceCount > 0)
                 {
-                    // Apflkuacha contribution 
+                    // Apflkuacha contribution
                     if (ItemsSource is ICollectionView collectionView)
                     {
                         collectionType = collectionView.SourceCollection?.GetType().GenericTypeArguments?.FirstOrDefault();
@@ -505,11 +505,25 @@ namespace FilterDataGrid
             if ((popup?.IsOpen ?? false) == false)
             {
                 e.CanExecute = false;
-                return;
             }
-            e.CanExecute = CurrentFilter?.FieldType == typeof(DateTime)
-                ? search && PopupViewItems.Any(f => f.IsChecked == true) || CurrentFilter.AnyDateChanged()
-                : search && PopupViewItems.Any(f => f.IsChecked == true) || PopupViewItems.Any(f => f.Changed) && PopupViewItems.Any(f => f.IsChecked == true);
+            else
+            {
+                if (search)
+                {
+                    // in search, at least one article must be checked
+                    e.CanExecute = CurrentFilter?.FieldType == typeof(DateTime)
+                    ? CurrentFilter.AnyDateIsChecked()
+                    : PopupViewItems.Any(f => f?.IsChecked == true);
+                }
+                else
+                {
+                    // on change state, at least one item must be checked
+                    // and another must have changed status
+                    e.CanExecute = CurrentFilter?.FieldType == typeof(DateTime)
+                        ? CurrentFilter.AnyDateChanged()
+                        : PopupViewItems.Any(f => f.Changed) && PopupViewItems.Any(f => f?.IsChecked == true);
+                }
+            }
         }
 
         /// <summary>
@@ -726,9 +740,9 @@ namespace FilterDataGrid
 
             if (item.FieldType == typeof(DateTime))
                 return ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
-                    .IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                    .IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1;
 
-            return item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+            return item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1;
         }
 
         /// <summary>
