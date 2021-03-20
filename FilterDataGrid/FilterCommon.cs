@@ -180,11 +180,9 @@ namespace FilterDataGrid
         /// <returns></returns>
         public IEnumerable<FilterItem> BuildTree(IEnumerable<object> dates, string lastFilter = null)
         {
-            if (dates == null) return null;
 
             try
             {
-                var dateTimes = dates.ToList();
                 var uncheckPrevious = FieldName == lastFilter;
                 var type = typeof(DateTime);
 
@@ -196,11 +194,14 @@ namespace FilterDataGrid
                     }
                 };
 
+                if (dates == null) return Tree;
                 // iterate over all items that are not null
                 // INFO:
                 // SetState : does not raise OnDateStatusChanged event
                 // IsChecked    : raise OnDateStatusChanged event
                 // (see the FilterItem class for more informations)
+               
+                var dateTimes = dates.ToList();
 
                 foreach (var y in from date in dateTimes.Where(d => d != null)
                         .Select(d => (DateTime)d).OrderBy(o => o.Year)

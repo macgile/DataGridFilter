@@ -740,9 +740,9 @@ namespace FilterDataGrid
 
             if (item.FieldType == typeof(DateTime))
                 return ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
-                    .IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1;
+                    .IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >=0;
 
-            return item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1;
+            return item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         /// <summary>
@@ -779,8 +779,9 @@ namespace FilterDataGrid
                 var items = PopupViewItems.Where(i => i.IsChecked == true)
                     .Select(f => f.Content).ToList();
 
-                if (items.Any())
-                    treeview.ItemsSource = CurrentFilter.BuildTree(items);
+                // if at least one item is not null, fill in the tree structure
+                // otherwise the tree structure contains only the item (select all).
+                treeview.ItemsSource = CurrentFilter.BuildTree(items.Any() ? items : null);
             }
         }
 
