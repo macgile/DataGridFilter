@@ -771,7 +771,7 @@ namespace FilterDataGrid
             if (string.IsNullOrEmpty(searchText))
             {
                 // fill the tree with the elements of the list of the original items
-                treeview.ItemsSource = CurrentFilter.BuildTree(sourceObjectList);
+                treeview.ItemsSource = CurrentFilter.BuildTree(sourceObjectList, lastFilter);
             }
             else
             {
