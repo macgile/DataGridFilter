@@ -33,10 +33,6 @@ namespace FilterDataGrid
 
         private int language;
 
-        #endregion Private Fields
-
-        #region Private Fields
-
         // culture name(used for dates)
         private static readonly string[] CultureNames = { "en-US", "fr-FR", "ru-RU", "de-DE", "it-IT", "zh-Hans", "nl-NL" };
 
