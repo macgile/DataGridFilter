@@ -1,4 +1,4 @@
-﻿#region (c) 2019 Gilles Macabies All right reserved
+#region (c) 2019 Gilles Macabies All right reserved
 
 // Author     : Gilles Macabies
 // Solution   : DataGridFilter
@@ -136,6 +136,8 @@ namespace FilterDataGrid
         public event PropertyChangedEventHandler PropertyChanged;
 
         public event EventHandler Sorted;
+
+        public event EventHandler ItemsChanged; 
 
         #endregion Public Event
 
@@ -348,6 +350,8 @@ namespace FilterDataGrid
 
                 ItemsSourceCount = Items.Count;
                 OnPropertyChanged("ItemsSourceCount");
+
+                ItemsChanged?.Invoke(this, EventArgs.Empty);
 
                 ElapsedTime = new TimeSpan(0, 0, 0);
 
@@ -709,6 +713,8 @@ namespace FilterDataGrid
 
             if (GlobalFilterList.Contains(CurrentFilter))
                 GlobalFilterList.Remove(CurrentFilter);
+
+            ItemsChanged?.Invoke(this, EventArgs.Empty);
 
             // set the last filter applied
             lastFilter = GlobalFilterList.LastOrDefault()?.FieldName;
@@ -1168,6 +1174,7 @@ namespace FilterDataGrid
                 ReactivateSorting();
                 pending = false;
                 ResetCursor();
+                ItemsChanged?.Invoke(this, EventArgs.Empty);
                 ElapsedTime = elased.Add(DateTime.Now - start);
 
                 Debug.WriteLineIf(DebugMode, $"Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
