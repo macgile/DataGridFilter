@@ -23,7 +23,8 @@ namespace FilterDataGrid
         Russian,
         German,
         Italian,
-        Chinese
+        Chinese,
+        Dutch
     }
 
     public class Loc
@@ -37,7 +38,7 @@ namespace FilterDataGrid
         #region Private Fields
 
         // culture name(used for dates)
-        private static readonly string[] CultureNames = { "en-US", "fr-FR", "ru-RU", "de-DE", "it-IT", "zh-Hans" };
+        private static readonly string[] CultureNames = { "en-US", "fr-FR", "ru-RU", "de-DE", "it-IT", "zh-Hans", "nl-NL" };
 
         // RESPECT THE ORDER OF THE Local ENUMERATION
         // translation
@@ -51,7 +52,8 @@ namespace FilterDataGrid
                     "(Выбрать все)",
                     "(Alle auswählen)",
                     "(Seleziona tutto)",
-                    "(全选)"
+                    "(全选)",
+                    "(Alles selecteren)"
                 }
             },
             {
@@ -63,6 +65,7 @@ namespace FilterDataGrid
                     "(Leer)",
                     "(Vuoto)",
                     "(空白)",
+                    "(Leeg)"
                 }
             },
             {
@@ -74,6 +77,7 @@ namespace FilterDataGrid
                     "Filter löschen \"{0}\"",
                     "Cancella filtro \"{0}\"",
                     "清除过滤器 \"{0}\"",
+                    "Filter \"{0}\" verwijderen"
                 }
             },
             {
@@ -85,6 +89,7 @@ namespace FilterDataGrid
                     "Suche (enthält)",
                     "Cerca (contiene)",
                     "搜索（包含)",
+                    "Zoek (bevat)"
                 }
             },
             {
@@ -96,6 +101,7 @@ namespace FilterDataGrid
                     "Ok",
                     "Ok",
                     "确定",
+                    "Ok"
                 }
             },
             {
@@ -107,6 +113,7 @@ namespace FilterDataGrid
                     "Abbrechen",
                     "Annulla",
                     "取消",
+                    "Annuleren"
                 }
             },
             {
@@ -118,6 +125,7 @@ namespace FilterDataGrid
                     "{0:n0} zeilen angezeigt von {1:n0}",
                     "{0:n0} record trovati su {1:n0}",
                     "{0:n0} 找到了 {1:n0} 条记录",
+                    "{0:n0} rij(en) gevonden op {1:n0}",
                 }
             },
             {
@@ -129,6 +137,7 @@ namespace FilterDataGrid
                     "Verstrichene Zeit {0:mm}:{0:ss}.{0:ff}",
                     "Tempo trascorso {0:mm}:{0:ss}.{0:ff}",
                     "经过时间{0:mm}:{0:ss}.{0:ff}",
+                    "Verstreken tijd {0:mm}:{0:ss}.{0:ff}",
                 }
             }
         };
