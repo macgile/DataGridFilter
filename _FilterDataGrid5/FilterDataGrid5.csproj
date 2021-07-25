@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+     <OutputType>Library</OutputType>
+     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+     <UseWPF>true</UseWPF>
+     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+  </PropertyGroup>
+
+</Project>
