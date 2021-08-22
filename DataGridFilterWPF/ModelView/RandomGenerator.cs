@@ -61,6 +61,8 @@ namespace DemoApplication.ModelView
                 FirstNames[Rnd.Next(FirstNames.Length)],
                 // salary
                 Rnd.Next(1, 11) * 10,
+                // salary
+                Rnd.NextDouble() * 1000,
                 // start date
                 Rnd.Next(0, 10) != 1 ? new DateTime(2015 + Rnd.Next(4), Rnd.Next(12) + 1, Rnd.Next(28) + 1) : (DateTime?)null,
                 // is manager

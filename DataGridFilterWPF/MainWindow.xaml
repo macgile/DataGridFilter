@@ -123,7 +123,7 @@
       </control:FilterDataGrid>
 
       <!--  AUTO GENERATE COLUMNS  -->
-      <!--<TextBlock
+      <TextBlock
             Grid.Row="3"
             Margin="10,10,0,2"
             FontSize="13"
@@ -141,7 +141,7 @@
             Background="Transparent"
             CanUserAddRows="False"
             ColumnWidth="*"
-            FilterLanguage="Russian"
+            FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             LoadingRow="DataGrid_LoadingRow"
             RowHeaderWidth="30"
@@ -149,7 +149,7 @@
             ShowStatusBar="True"
             VerticalScrollBarVisibility="Visible"
             VirtualizingStackPanel.IsVirtualizing="True"
-            Visibility="Visible" />-->
+            Visibility="Visible" />
    </Grid>
 
 </Window>
