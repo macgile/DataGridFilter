@@ -11,7 +11,7 @@
 using System;
 using System.Windows.Input;
 
-namespace DemoApplication.ModelView
+namespace DemoAppNet5.ModelView
 {
     /// <summary>
     ///     DelegateCommand borrowed from

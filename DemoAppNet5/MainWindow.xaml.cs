@@ -13,9 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using DemoApplication;
+using DemoAppNet5;
 
-namespace DataGridFilterWPF
+namespace DemoAppNet5
 {
    /// <summary>
    /// Interaction logic for MainWindow.xaml
@@ -35,7 +35,7 @@ namespace DataGridFilterWPF
                 AppDomain.CurrentDomain.FriendlyName, e.Exception.Message);
          };
 #endif
-         DataContext = new DemoApplication.ModelView.ModelView();
+         DataContext = new DemoAppNet5.ModelView.ModelView();
       }
 
 #endregion Public Constructors

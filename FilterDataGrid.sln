@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApplication", "DemoAppl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilterDataGrid5", "FilterDataGrid5\FilterDataGrid5.csproj", "{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGridFilterWPF", "DataGridFilterWPF\DataGridFilterWPF.csproj", "{03366D93-4240-4880-A847-2326A7C324C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoAppNet5", "DemoAppNet5\DemoAppNet5.csproj", "{03366D93-4240-4880-A847-2326A7C324C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

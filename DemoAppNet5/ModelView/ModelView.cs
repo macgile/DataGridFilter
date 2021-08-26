@@ -18,7 +18,7 @@ using System.Windows.Input;
 
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace DemoApplication.ModelView
+namespace DemoAppNet5.ModelView
 {
    public class ModelView : INotifyPropertyChanged
    {

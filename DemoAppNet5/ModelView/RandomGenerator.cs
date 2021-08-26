@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 // ReSharper disable CheckNamespace
 
-namespace DemoApplication.ModelView
+namespace DemoAppNet5.ModelView
 {
     public static class RandomGenerator
     {

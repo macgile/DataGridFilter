@@ -18,7 +18,7 @@ using System;
 // ReSharper disable ArrangeAccessorOwnerBody
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace DemoApplication
+namespace DemoAppNet5
 {
    public class Employe
    {
@@ -28,12 +28,12 @@ namespace DemoApplication
       {
       }
 
-      public Employe(string lastName, string firstName, int? salary, Double? test, DateTime? startDate, bool? manager = false)
+      public Employe(string lastName, string firstName, int? salary, Double? doubleTest, DateTime? startDate, bool? manager = false)
       {
          LastName = lastName;
          FirstName = firstName;
          Salary = salary;
-         Test = test;
+         DoubleTest = doubleTest;
          StartDate = startDate;
          Manager = manager;
       }
@@ -46,7 +46,7 @@ namespace DemoApplication
       public string LastName { get; set; }
       public bool? Manager { get; set; }
       public int? Salary { get; set; }
-      public Double? Test { get; set; }
+      public Double? DoubleTest { get; set; }
       public DateTime? StartDate { get; set; }
 
       #endregion Public Properties
