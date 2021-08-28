@@ -24,7 +24,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Windows.Markup;
+
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable ArrangeAccessorOwnerBody
 // ReSharper disable InvertIf
@@ -52,7 +52,7 @@ namespace FilterDataGrid
             Debug.WriteLineIf(DebugMode, "Constructor");
 
             // load resources
-        Resources = new FilterDataGridDictionary();
+            Resources = new FilterDataGridDictionary();
 
             // initial popup size
             popUpSize = new Point
@@ -414,12 +414,26 @@ namespace FilterDataGrid
                 {
                     var columnType = col.GetType();
 
+                    // reset icon filter
+                    // for some reason the button icon doesn't reset when the template is reloaded,
+                    // I could not find other solution to this problem.
+                    var header = VisualTreeHelpers.GetHeader(col, this);
+                    var buttonFilter = header?.FindVisualChild<Button>();
+
+                    if (buttonFilter != null)
+                    {
+                        buttonFilter.Opacity = 0.5;
+                        pathFilterIcon = VisualTreeHelpers.FindChild<Path>(buttonFilter, "PathFilterIcon");
+                        if (pathFilterIcon != null)
+                            pathFilterIcon.Data = iconFilter;
+                    }
+
+
                     if (columnType == typeof(DataGridTextColumn))
                     {
                         var column = (DataGridTextColumn)col;
-
+                     
                         // reset template
-                        column.HeaderTemplate = null;
                         column.HeaderTemplate = (DataTemplate)FindResource("DataGridHeaderTemplate");
 
                         Type fieldType = null;
@@ -448,7 +462,6 @@ namespace FilterDataGrid
                         var column = (DataGridTemplateColumn)col;
 
                         // reset template
-                        column.HeaderTemplate = null;
                         column.HeaderTemplate = (DataTemplate)FindResource("DataGridHeaderTemplate");
                     }
                 }
