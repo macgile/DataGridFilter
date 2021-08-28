@@ -285,6 +285,7 @@
                     Command="{x:Static control:FilterDataGrid.ShowFilter}"
                     Cursor="Hand"
                     Opacity="0.5"
+                    OverridesDefaultStyle="True"
                     SnapsToDevicePixels="True"
                     UseLayoutRounding="True">
                     <Button.Style>
