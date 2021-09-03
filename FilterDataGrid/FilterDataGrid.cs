@@ -844,7 +844,8 @@ namespace FilterDataGrid
                 searchTextBox = VisualTreeHelpers.FindChild<TextBox>(popup.Child, "SearchBox");
                 searchTextBox.Text = string.Empty;
                 searchTextBox.TextChanged += SearchTextBoxOnTextChanged;
-
+                searchTextBox.Focusable = true;
+               
                 // clear SearchBox button
                 var clearSearchBoxBtn = VisualTreeHelpers.FindChild<Button>(popup.Child, "ClearSearchBoxBtn");
                 clearSearchBoxBtn.Click += ClearSearchBoxClick;
@@ -1050,6 +1051,10 @@ namespace FilterDataGrid
 
                 // open popup
                 popup.IsOpen = true;
+
+                // set focus on searchTextBox
+                Keyboard.Focus(searchTextBox);
+
             }
             catch (Exception ex)
             {
