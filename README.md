@@ -39,7 +39,8 @@ For an understanding of how it works you can consult the article I posted on [Co
 		- Properties
 		  - **ShowStatusBar** : *displays the status bar*, default : false
 		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false
-		  - **DateFormatString** : *date display format*, default : "d"
+		  - **DateFormatString** : *date display format*, default : "d"  
+		  [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 		  - **FilterLanguage** : *translation into available language*, default : English   
 
 		>  
