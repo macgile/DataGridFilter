@@ -1,6 +1,7 @@
 <!--
 Edited
 https://dillinger.io/
+https://kramdown.gettalong.org/quickref.html
 -->
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
 
