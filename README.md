@@ -1,6 +1,7 @@
 <!--
 Edited
 https://dillinger.io/
+https://kramdown.gettalong.org/quickref.html
 -->
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
 
@@ -16,6 +17,9 @@ Translation of labels and formatting of dates in the following languages: Englis
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
 The **Nuget package** is available [here](https://www.nuget.org/packages/FilterDataGrid/).
+
+To understand how the filter works, you can consult the article posted on [CodeProject](https://www.codeproject.com/Articles/5292782/WPF-DataGrid-Filterable-multi-language).
+
 
 ## How to use
  - There are two ways to install :
@@ -36,7 +40,8 @@ The **Nuget package** is available [here](https://www.nuget.org/packages/FilterD
 		- Properties
 		  - **ShowStatusBar** : *displays the status bar*, default : false
 		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false
-		  - **DateFormatString** : *date display format*, default : "d"
+		  - **DateFormatString** : *date display format*, default : "d"  
+[see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 		  - **FilterLanguage** : *translation into available language*, default : English   
 
 		>  
