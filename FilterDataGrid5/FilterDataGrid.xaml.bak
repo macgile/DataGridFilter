@@ -66,7 +66,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
-                            Focusable="True"
                             FontSize="{TemplateBinding FontSize}"
                             FontWeight="{TemplateBinding FontWeight}"
                             MaxLength="{TemplateBinding MaxLength}"
@@ -97,11 +96,6 @@
                             </TextBox.Style>
                         </TextBox>
                     </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="TextSource" Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -486,11 +480,7 @@
                                     FontSize="13"
                                     MaxLength="20"
                                     Style="{StaticResource PlaceHolder}"
-                                    Tag="{Binding Translate.Search}">
-                                    <TextBox.InputBindings>
-                                        <KeyBinding Key="Enter" Command="{x:Static control:FilterDataGrid.ApplyFilter}" />
-                                    </TextBox.InputBindings>
-                                </TextBox>
+                                    Tag="{Binding Translate.Search}" />
 
                                 <Button
                                     x:Name="ClearSearchBoxBtn"
