@@ -57,7 +57,7 @@ namespace FilterDataGrid
                 {
                     "(Blank)",
                     "(Vides)",
-                    "(Заготовки)",
+                    "(Пусто)",
                     "(Leer)",
                     "(Vuoto)",
                     "(空白)",
@@ -81,7 +81,7 @@ namespace FilterDataGrid
                 {
                     "Search (contains)",
                     "Rechercher (contient)",
-                    "Искать (содержит)",
+                    "Поиск (содержит)",
                     "Suche (enthält)",
                     "Cerca (contiene)",
                     "搜索（包含)",
@@ -117,7 +117,7 @@ namespace FilterDataGrid
                 {
                     "{0:n0} record(s) found on {1:n0}",
                     "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}",
-                    "{0:n0} записей найдено на {1:n0}",
+                    "{0:n0} записей найдено из {1:n0}",
                     "{0:n0} zeilen angezeigt von {1:n0}",
                     "{0:n0} record trovati su {1:n0}",
                     "{0:n0} 找到了 {1:n0} 条记录",
@@ -129,7 +129,7 @@ namespace FilterDataGrid
                 {
                     "Elapsed time {0:mm}:{0:ss}.{0:ff}",
                     "Temps écoulé {0:mm}:{0:ss}.{0:ff}",
-                    "Пройденное время {0:mm}:{0:ss}.{0:ff}",
+                    "Затраченное время {0:mm}:{0:ss}.{0:ff}",
                     "Verstrichene Zeit {0:mm}:{0:ss}.{0:ff}",
                     "Tempo trascorso {0:mm}:{0:ss}.{0:ff}",
                     "经过时间{0:mm}:{0:ss}.{0:ff}",
