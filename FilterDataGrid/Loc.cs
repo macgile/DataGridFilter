@@ -142,9 +142,31 @@ namespace FilterDataGrid
 
         #region Constructors
 
-        public Loc()
+        public Loc(Local? filterLanguage)
         {
-            Language = (int)Local.English;
+            int language = (int)Local.English;
+
+            if (filterLanguage is null)
+            {
+                CultureInfo cultureInfo = CultureInfo.CurrentCulture;
+
+                if (cultureInfo is null)
+                {
+                    cultureInfo = new CultureInfo("en-US");
+                }
+
+                int CultureNameIndex = Array.IndexOf(CultureNames, cultureInfo.Name);
+                if (CultureNameIndex >= 0)
+                {
+                    language = CultureNameIndex;
+                }
+            }
+            else
+            {
+                language = (int)filterLanguage;
+            }
+
+            Language = language;
         }
 
         #endregion Constructors

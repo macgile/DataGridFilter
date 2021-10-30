@@ -107,9 +107,9 @@ namespace FilterDataGrid
         /// </summary>
         public static readonly DependencyProperty FilterLanguageProperty =
             DependencyProperty.Register("FilterLanguage",
-                typeof(Local),
+                typeof(Local?),
                 typeof(FilterDataGrid),
-                new PropertyMetadata(Local.English));
+                new PropertyMetadata(null));
 
         /// <summary>
         ///     Show elapsed time in status bar
@@ -202,9 +202,9 @@ namespace FilterDataGrid
         /// <summary>
         ///     Language
         /// </summary>
-        public Local FilterLanguage
+        public Local? FilterLanguage
         {
-            get { return (Local)GetValue(FilterLanguageProperty); }
+            get { return (Local?)GetValue(FilterLanguageProperty); }
             set { SetValue(FilterLanguageProperty, value); }
         }
 
@@ -262,8 +262,9 @@ namespace FilterDataGrid
 
             try
             {
-                // FilterLanguage : default : 0 (english)
-                Translate = new Loc { Language = (int)FilterLanguage };
+                // FilterLanguage : default : CurrentCulture or English
+                Translate = new Loc(FilterLanguage);
+                FilterLanguage = (Local)Translate.Language;
 
                 // sorting event
                 Sorted += OnSorted;

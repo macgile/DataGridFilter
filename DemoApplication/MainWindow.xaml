@@ -77,7 +77,6 @@
             CanUserAddRows="False"
             ColumnWidth="*"
             DateFormatString="d"
-            FilterLanguage="English"
             HorizontalGridLinesBrush="LightGray"
             IsReadOnly="True"
             ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
