@@ -129,6 +129,21 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata(false));
 
+        /// <summary>
+        ///     Show a button in the column header to clear the filter directly
+        /// </summary>
+        public static readonly DependencyProperty ShowClearFilterButtonProperty =
+            DependencyProperty.Register("ShowClearFilterButton",
+                typeof(bool),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(false, new PropertyChangedCallback(OnShowClearFilterButtonPropertyChanged)));
+
+        private static void OnShowClearFilterButtonPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FilterDataGrid filterDataGrid)
+                filterDataGrid.ShowClearFilterButton = (bool)e.NewValue;
+        }
+
         #endregion Public DependencyProperty
 
         #region Public Event
@@ -144,6 +159,7 @@ namespace FilterDataGrid
         private bool pending;
         private bool search;
         private Button button;
+        private Button clearFilterButton;
         private const bool DebugMode = false;
         private Cursor cursor;
         private double minHeight;
@@ -229,6 +245,19 @@ namespace FilterDataGrid
         {
             get { return (bool)GetValue(ShowStatusBarProperty); }
             set { SetValue(ShowStatusBarProperty, value); }
+        }
+
+        /// <summary>
+        ///     Show a button in the column header to clear the filter directly
+        /// </summary>
+        public bool ShowClearFilterButton
+        {
+            get { return (bool)GetValue(ShowClearFilterButtonProperty); }
+            set
+            {
+                SetValue(ShowClearFilterButtonProperty, value);
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -437,7 +466,7 @@ namespace FilterDataGrid
                         column.HeaderTemplate = (DataTemplate)FindResource("DataGridHeaderTemplate");
 
                         Type fieldType = null;
-                        var fieldProperty = collectionType.GetProperty(((Binding)column.Binding).Path.Path);
+                        var fieldProperty = collectionType.GetProperty(((Binding)column.Binding).Path?.Path);
 
                         // get type or underlying type if nullable
                         if (fieldProperty != null)
@@ -711,6 +740,7 @@ namespace FilterDataGrid
             popup.IsOpen = false;
             button.Opacity = 0.5;
             pathFilterIcon.Data = iconFilter;
+            clearFilterButton.Visibility = Visibility.Collapsed;
 
             var start = DateTime.Now;
             ElapsedTime = new TimeSpan(0, 0, 0);
@@ -738,6 +768,27 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void RemoveFilterCommand(object sender, ExecutedRoutedEventArgs e)
         {
+            if (e.OriginalSource is Button clickedButton && clickedButton.Name == "clearFilterButton" && clearFilterButton != clickedButton)
+            {
+                // the previously selected button from the popup is replaced with the new filter column where the clicked clearFilterButton is located
+                button = VisualTreeHelpers.FindChild<Button>(clickedButton.Parent, "filterButton");
+                pathFilterIcon = VisualTreeHelpers.FindChild<Path>(clickedButton.Parent, "PathFilterIcon");
+                clearFilterButton = clickedButton;
+
+                var header = VisualTreeHelpers.FindAncestor<DataGridColumnHeader>(button);
+                var columnType = header.Column.GetType();
+                if (columnType == typeof(DataGridTextColumn))
+                {
+                    var column = (DataGridTextColumn)header.Column;
+                    fieldName = column.FieldName;
+                }
+                if (columnType == typeof(DataGridTemplateColumn))
+                {
+                    var column = (DataGridTemplateColumn)header.Column;
+                    fieldName = column.FieldName;
+                }
+                CurrentFilter = GlobalFilterList.FirstOrDefault(f => f.FieldName == fieldName);
+            }
             RemoveCurrentFilter();
         }
 
@@ -836,6 +887,7 @@ namespace FilterDataGrid
 
                 // icon filter
                 pathFilterIcon = VisualTreeHelpers.FindChild<Path>(button, "PathFilterIcon");
+                clearFilterButton = VisualTreeHelpers.FindChild<Button>(button.Parent, "clearFilterButton");
 
                 // resizable grid
                 sizableContentGrid = VisualTreeHelpers.FindChild<Grid>(popup.Child, "SizableContentGrid");
@@ -1168,6 +1220,7 @@ namespace FilterDataGrid
 
                 // set icon filter
                 pathFilterIcon.Data = iconFilterSet;
+                clearFilterButton.Visibility = Visibility.Visible;
 
                 // apply filter
                 CollectionViewSource.Refresh();

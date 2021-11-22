@@ -70,10 +70,22 @@ namespace FilterDataGrid
                     "Clear filter \"{0}\"",
                     "Effacer le filtre \"{0}\"",
                     "Очистить фильтр \"{0}\"",
-                    "Filter löschen \"{0}\"",
+                    "Filter \"{0}\" löschen",
                     "Cancella filtro \"{0}\"",
                     "清除过滤器 \"{0}\"",
                     "Filter \"{0}\" verwijderen"
+                }
+            },
+            {
+                "ClearFilter", new[]
+                {
+                    "Clear filter",
+                    "Effacer le filtre",
+                    "Очистить фильтр",
+                    "Filter löschen",
+                    "Cancella filtro",
+                    "清除过滤器",
+                    "Filter verwijderen"
                 }
             },
             {
@@ -118,7 +130,7 @@ namespace FilterDataGrid
                     "{0:n0} record(s) found on {1:n0}",
                     "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}",
                     "{0:n0} записей найдено на {1:n0}",
-                    "{0:n0} zeilen angezeigt von {1:n0}",
+                    "{0:n0} Zeilen angezeigt von {1:n0}",
                     "{0:n0} record trovati su {1:n0}",
                     "{0:n0} 找到了 {1:n0} 条记录",
                     "{0:n0} rij(en) gevonden op {1:n0}",
@@ -156,6 +168,8 @@ namespace FilterDataGrid
         public string Cancel => Translation["Cancel"][Language];
 
         public string Clear => Translation["Clear"][Language];
+
+        public string ClearFilter => Translation["ClearFilter"][Language];
 
         public CultureInfo Culture { get; set; }
 
