@@ -35,7 +35,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 	  - **Control**   
 		```xml 
 		<control:FilterDataGrid 
-		 FilterLanguage="English" DateFormatString="d" ShowStatusBar="True" ShowElapsedTime="False" ...
+		 FilterLanguage="English" DateFormatString="d" ShowStatusBar="True" ShowElapsedTime="False" ShowClearFilterButton="True" ...
 		```   
 		- Properties
 		  - **ShowStatusBar** : *displays the status bar*, default : false
@@ -43,6 +43,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 		  - **DateFormatString** : *date display format*, default : "d"  
 [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 		  - **FilterLanguage** : *translation into available language*, default : English   
+		  - **ShowClearFilterButton** : *displays a button in the column header to clear the filter directly*, default : false
 
 		>  
 
