@@ -772,7 +772,7 @@ namespace FilterDataGrid
             {
                 // the previously selected button from the popup is replaced with the new filter column where the clicked clearFilterButton is located
                 button = VisualTreeHelpers.FindChild<Button>(((FrameworkElement)clickedButton.Parent).Parent, "filterButton");
-                pathFilterIcon = VisualTreeHelpers.FindChild<Path>(clickedButton.Parent, "PathFilterIcon");
+                pathFilterIcon = VisualTreeHelpers.FindChild<Path>(button, "PathFilterIcon");
                 clearFilterButton = clickedButton;
 
                 var header = VisualTreeHelpers.FindAncestor<DataGridColumnHeader>(button);
