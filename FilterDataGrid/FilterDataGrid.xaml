@@ -305,8 +305,16 @@
                                                     BorderBrush="{TemplateBinding BorderBrush}"
                                                     BorderThickness="1"
                                                     SnapsToDevicePixels="True"
-                                                    ToolTip="{Binding Translate.ClearFilter, RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}"
                                                     UseLayoutRounding="True">
+                                                <Border.ToolTip>
+                                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                        <MultiBinding.Bindings>
+                                                            <Binding Path="Translate.Clear" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}"
+                                                                     TargetNullValue="" UpdateSourceTrigger="PropertyChanged" />
+                                                            <Binding ElementName="ClearFilterBnt" Path="Content" />
+                                                        </MultiBinding.Bindings>
+                                                    </MultiBinding>
+                                                </Border.ToolTip>
                                                 <Path x:Name="PathFilterClearIcon" Width="14" Data="{StaticResource FilterDelete}" Fill="Black" Stretch="Uniform" />
                                             </Border>
                                         </ControlTemplate>

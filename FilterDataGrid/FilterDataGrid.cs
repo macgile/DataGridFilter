@@ -771,7 +771,7 @@ namespace FilterDataGrid
             if (e.OriginalSource is Button clickedButton && clickedButton.Name == "clearFilterButton" && clearFilterButton != clickedButton)
             {
                 // the previously selected button from the popup is replaced with the new filter column where the clicked clearFilterButton is located
-                button = VisualTreeHelpers.FindChild<Button>(clickedButton.Parent, "filterButton");
+                button = VisualTreeHelpers.FindChild<Button>(((FrameworkElement)clickedButton.Parent).Parent, "filterButton");
                 pathFilterIcon = VisualTreeHelpers.FindChild<Path>(clickedButton.Parent, "PathFilterIcon");
                 clearFilterButton = clickedButton;
 

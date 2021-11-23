@@ -77,18 +77,6 @@ namespace FilterDataGrid
                 }
             },
             {
-                "ClearFilter", new[]
-                {
-                    "Clear filter",
-                    "Effacer le filtre",
-                    "Очистить фильтр",
-                    "Filter löschen",
-                    "Cancella filtro",
-                    "清除过滤器",
-                    "Filter verwijderen"
-                }
-            },
-            {
                 "Search", new[]
                 {
                     "Search (contains)",
@@ -168,8 +156,6 @@ namespace FilterDataGrid
         public string Cancel => Translation["Cancel"][Language];
 
         public string Clear => Translation["Clear"][Language];
-
-        public string ClearFilter => Translation["ClearFilter"][Language];
 
         public CultureInfo Culture { get; set; }
 
