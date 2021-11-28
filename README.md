@@ -40,7 +40,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 		- Properties
 		  - **ShowStatusBar** : *displays the status bar*, default : false  
 		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
-		  - **ShowRowsCount** : *display the number of rows, default false  
+		  - **ShowRowsCount** : *display the number of rows*, default : false  
 		  - **DateFormatString** : *date display format*, default : "d"  
 [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 		  - **FilterLanguage** : *translation into available language*, default : English   
