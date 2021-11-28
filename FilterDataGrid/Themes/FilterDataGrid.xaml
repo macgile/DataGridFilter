@@ -66,6 +66,7 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0"
+                            Focusable="True"
                             FontSize="{TemplateBinding FontSize}"
                             FontWeight="{TemplateBinding FontWeight}"
                             MaxLength="{TemplateBinding MaxLength}"
@@ -96,155 +97,168 @@
                             </TextBox.Style>
                         </TextBox>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="TextSource" Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <!--  CONTROL TEMPLATE FOR DATAGRID  -->
-    <ControlTemplate x:Key="ControlTemplateDatagrid" TargetType="{x:Type DataGrid}">
+    <!--  CONTROLTEMPLATE FOR DATAGRID  -->
+    <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type control:FilterDataGrid}">
 
-        <Border
-            Padding="{TemplateBinding Padding}"
-            Background="{TemplateBinding Background}"
-            BorderBrush="{TemplateBinding BorderBrush}"
-            BorderThickness="{TemplateBinding BorderThickness}"
-            SnapsToDevicePixels="True">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <!--  ROWS COUNT TEMPLATE  -->
+        <Setter Property="RowHeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Header}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGrid}">
+                    <Border
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                <!--  CONTENT DATAGRID  -->
-                <ScrollViewer
-                    x:Name="DG_ScrollViewer"
-                    Grid.Row="0"
-                    CanContentScroll="True"
-                    Focusable="false">
-                    <ScrollViewer.Template>
-                        <ControlTemplate TargetType="{x:Type ScrollViewer}">
-                            <Grid ShowGridLines="False">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                            <!--  CONTENT DATAGRID  -->
+                            <ScrollViewer
+                                x:Name="DG_ScrollViewer"
+                                Grid.Row="0"
+                                CanContentScroll="True"
+                                Focusable="false">
+                                <ScrollViewer.Template>
+                                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                        <Grid ShowGridLines="False">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
 
-                                <Button
-                                    Width="{Binding CellsPanelHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    Command="{x:Static DataGrid.SelectAllCommand}"
-                                    Focusable="false"
-                                    Style="{DynamicResource {ComponentResourceKey ResourceId=DataGridSelectAllButtonStyle,
-                                                                                  TypeInTargetAssembly={x:Type DataGrid}}}"
-                                    Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.All}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                <DataGridColumnHeadersPresenter
-                                    x:Name="PART_ColumnHeadersPresenter"
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Column}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                <ScrollContentPresenter
-                                    x:Name="PART_ScrollContentPresenter"
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    CanContentScroll="{TemplateBinding CanContentScroll}" />
-                                <ScrollBar
-                                    x:Name="PART_VerticalScrollBar"
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Maximum="{TemplateBinding ScrollableHeight}"
-                                    Orientation="Vertical"
-                                    ViewportSize="{TemplateBinding ViewportHeight}"
-                                    Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                                    Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <Grid Grid.Row="2" Grid.Column="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="{Binding NonFrozenColumnsViewportHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <ScrollBar
-                                        x:Name="PART_HorizontalScrollBar"
-                                        Grid.Column="1"
-                                        Maximum="{TemplateBinding ScrollableWidth}"
-                                        Orientation="Horizontal"
-                                        ViewportSize="{TemplateBinding ViewportWidth}"
-                                        Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
-                                        Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
-                                </Grid>
-                            </Grid>
-                        </ControlTemplate>
-                    </ScrollViewer.Template>
-                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                </ScrollViewer>
+                                            <Button
+                                                Width="{Binding CellsPanelHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                Command="{x:Static DataGrid.SelectAllCommand}"
+                                                Focusable="false"
+                                                Style="{DynamicResource {ComponentResourceKey ResourceId=DataGridSelectAllButtonStyle,
+                                                                                              TypeInTargetAssembly={x:Type DataGrid}}}"
+                                                Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.All}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                            <DataGridColumnHeadersPresenter
+                                                x:Name="PART_ColumnHeadersPresenter"
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Column}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                            <ScrollContentPresenter
+                                                x:Name="PART_ScrollContentPresenter"
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="2"
+                                                CanContentScroll="{TemplateBinding CanContentScroll}" />
+                                            <ScrollBar
+                                                x:Name="PART_VerticalScrollBar"
+                                                Grid.Row="1"
+                                                Grid.Column="2"
+                                                Maximum="{TemplateBinding ScrollableHeight}"
+                                                Orientation="Vertical"
+                                                ViewportSize="{TemplateBinding ViewportHeight}"
+                                                Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                                Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                                            <Grid Grid.Row="2" Grid.Column="1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="{Binding NonFrozenColumnsViewportHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <ScrollBar
+                                                    x:Name="PART_HorizontalScrollBar"
+                                                    Grid.Column="1"
+                                                    Maximum="{TemplateBinding ScrollableWidth}"
+                                                    Orientation="Horizontal"
+                                                    ViewportSize="{TemplateBinding ViewportWidth}"
+                                                    Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                                                    Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                                            </Grid>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </ScrollViewer.Template>
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </ScrollViewer>
 
-                <!--  STATUS BAR & RESULT FILTER  -->
-                <Border
-                    x:Name="BorderStatusBar"
-                    Grid.Row="1"
-                    Padding="4,2"
-                    Background="Transparent"
-                    BorderBrush="LightGray"
-                    BorderThickness="0,1">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=ShowStatusBar, RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
+                            <!--  STATUS BAR & RESULT FILTER  -->
+                            <Border
+                                x:Name="BorderStatusBar"
+                                Grid.Row="1"
+                                Padding="4,2"
+                                Background="Transparent"
+                                BorderBrush="LightGray"
+                                BorderThickness="0,1">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=ShowStatusBar, RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
 
-                    <UniformGrid Columns="2" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
+                                <UniformGrid Columns="2" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
 
-                        <!--  RESULT STATUS  -->
-                        <TextBlock HorizontalAlignment="Left">
-                            <TextBlock.Text>
-                                <MultiBinding Converter="{StaticResource StringFormatConverter}">
-                                    <Binding Path="Translate.Status" />
-                                    <Binding Path="Items.Count" UpdateSourceTrigger="PropertyChanged" />
-                                    <Binding Path="ItemsSourceCount" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
+                                    <!--  RESULT STATUS  -->
+                                    <TextBlock HorizontalAlignment="Left">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                <Binding Path="Translate.Status" />
+                                                <Binding Path="Items.Count" UpdateSourceTrigger="PropertyChanged" />
+                                                <Binding Path="ItemsSourceCount" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
 
-                        <!--  ELAPSED TIME  -->
-                        <TextBlock HorizontalAlignment="Right">
-                            <TextBlock.Text>
-                                <MultiBinding Converter="{StaticResource StringFormatConverter}">
-                                    <Binding Path="Translate.ElapsedTime" UpdateSourceTrigger="PropertyChanged" />
-                                    <Binding Path="ElapsedTime" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ShowElapsedTime}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </UniformGrid>
-                </Border>
-            </Grid>
-        </Border>
-    </ControlTemplate>
+                                    <!--  ELAPSED TIME  -->
+                                    <TextBlock HorizontalAlignment="Right">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                <Binding Path="Translate.ElapsedTime" UpdateSourceTrigger="PropertyChanged" />
+                                                <Binding Path="ElapsedTime" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ShowElapsedTime}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </UniformGrid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
 
-    <!--  FILTERDATAGRID STYLE BASED ON DATAGRID  -->
-    <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="control:FilterDataGrid">
-        <Setter Property="Template" Value="{StaticResource ControlTemplateDatagrid}" />
-
-        <!--  This feature is temporarily disabled because it causes an error  -->
+            </Setter.Value>
+        </Setter>
         <Setter Property="CanUserAddRows" Value="False" />
     </Style>
 
@@ -480,7 +494,11 @@
                                     FontSize="13"
                                     MaxLength="20"
                                     Style="{StaticResource PlaceHolder}"
-                                    Tag="{Binding Translate.Search}" />
+                                    Tag="{Binding Translate.Search}">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Enter" Command="{x:Static control:FilterDataGrid.ApplyFilter}" />
+                                    </TextBox.InputBindings>
+                                </TextBox>
 
                                 <Button
                                     x:Name="ClearSearchBoxBtn"

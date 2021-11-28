@@ -53,14 +53,17 @@ namespace DemoApplication.ModelView
         /// Create random employee
         /// </summary>
         /// <returns></returns>
+        // Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate, bool? manager = false)
         public static Employe CreateRandomEmployee(bool distinct = false)
         {
             // distinct lastName or not
             var emp = new Employe
-                (distinct ? GenerateName() : LastNames[Rnd.Next(LastNames.Length)],
+            (distinct ? GenerateName() : LastNames[Rnd.Next(LastNames.Length)],
                 FirstNames[Rnd.Next(FirstNames.Length)],
                 // salary
-                Rnd.Next(1, 11) * 10,
+                Math.Round(Rnd.NextDouble() * (300 - 100) + 100, 1),
+                // age
+                Rnd.Next(18, 75) * 1,
                 // start date
                 Rnd.Next(0, 10) != 1 ? new DateTime(2015 + Rnd.Next(4), Rnd.Next(12) + 1, Rnd.Next(28) + 1) : (DateTime?)null,
                 // is manager
@@ -92,7 +95,7 @@ namespace DemoApplication.ModelView
         {
             var name = "";
 
-            // Capitalize the first letter 
+            // Capitalize the first letter
             name += Consonants[Rnd.Next(Consonants.Length)].ToUpper();
             name += Vowels[Rnd.Next(Vowels.Length)];
 
@@ -103,10 +106,7 @@ namespace DemoApplication.ModelView
 
             while (nameLength <= len)
             {
-                if (nameLength % 2 == 1)
-                    name += Consonants[Rnd.Next(Consonants.Length)];
-                else
-                    name += Vowels[Rnd.Next(Vowels.Length)];
+                name += nameLength % 2 == 1 ? Consonants[Rnd.Next(Consonants.Length)] : Vowels[Rnd.Next(Vowels.Length)];
 
                 nameLength++;
             }

@@ -99,7 +99,7 @@ namespace DemoApplication.ModelView
             var employe = new List<Employe>();
 
             // number of elements to be generated
-            const int @int = 100000;
+            const int @int = 100_000;
 
             // for distinct lastname set "true" at CreateRandomEmployee(true)
             for (var i = 0; i < @int; i++)

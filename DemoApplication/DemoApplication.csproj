@@ -104,9 +104,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\FilterDataGrid\FilterDataGrid.csproj">
       <Project>{1284f448-055d-49b6-9a1b-81e9bbf447c8}</Project>
       <Name>FilterDataGrid</Name>

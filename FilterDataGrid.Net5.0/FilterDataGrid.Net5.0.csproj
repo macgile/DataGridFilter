@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0-windows;net472-windows</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>FilterDataGrid</RootNamespace>
+    <AssemblyName>FilterDataGrid</AssemblyName>
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyName>FilterDataGrid</AssemblyName>
+    <RootNamespace>FilterDataGrid</RootNamespace>
+    <Authors>Macabies Gilles</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/macgile/DataGridFilter</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Copyright>Copyright © 2021 Gilles Macabies</Copyright>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageIconUrl />
+    <NeutralLanguage />
+    <Description>
+      A DataGrid control that inherits from the base DataGrid control class and override some methods to
+      implement filters for each column like Excel, in automatic or custom generation.
+      Translation of labels and formatting of dates in the available languages : English, French, Russian, German, Italian, Chinese, Dutch.
+    </Description>
+    <PackageTags>DataGrid Excel Filter WPF C# Control .Net Free</PackageTags>
+    <PackageReleaseNotes>Porting to .Net5.0</PackageReleaseNotes>
+    <Version>1.2.5</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Readme.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

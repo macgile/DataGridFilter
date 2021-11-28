@@ -16,6 +16,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
+// ReSharper disable AssignNullToNotNullAttribute
 // ReSharper disable CheckNamespace
 
 namespace FilterDataGrid

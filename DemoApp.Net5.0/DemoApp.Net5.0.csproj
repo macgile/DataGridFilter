@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>DemoAppNet5</AssemblyName>
+    <RootNamespace>DemoAppNet5</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\FilterDataGrid.Net5.0\FilterDataGrid.Net5.0.csproj" />
+  </ItemGroup>
+
+</Project>

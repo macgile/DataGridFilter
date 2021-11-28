@@ -28,12 +28,12 @@ namespace DemoAppNet5
       {
       }
 
-      public Employe(string lastName, string firstName, int? salary, Double? doubleTest, DateTime? startDate, bool? manager = false)
+      public Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate, bool? manager = false)
       {
          LastName = lastName;
          FirstName = firstName;
          Salary = salary;
-         DoubleTest = doubleTest;
+         Age = age;
          StartDate = startDate;
          Manager = manager;
       }
@@ -45,8 +45,8 @@ namespace DemoAppNet5
       public string FirstName { get; set; }
       public string LastName { get; set; }
       public bool? Manager { get; set; }
-      public int? Salary { get; set; }
-      public Double? DoubleTest { get; set; }
+      public double? Salary { get; set; }
+      public int? Age { get; set; }
       public DateTime? StartDate { get; set; }
 
       #endregion Public Properties

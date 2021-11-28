@@ -66,28 +66,24 @@
             FontWeight="DemiBold"
             Text="{Binding ElementName=FilterDataGrid, Path=Items.Count, StringFormat=Custom colums : {0:### ### ###} items, UpdateSourceTrigger=PropertyChanged}" />
 
+        <!--
+            CUSTOM COLUMNS
+            See the global style "FilterDatagridStyle" in App.xaml
+        -->
         <control:FilterDataGrid
             x:Name="FilterDataGrid"
             Grid.Row="2"
             Margin="10,10,0,2"
-            AlternatingRowBackground="WhiteSmoke"
-            AlternationCount="2"
             AutoGenerateColumns="False"
-            Background="Transparent"
             CanUserAddRows="False"
-            ColumnWidth="*"
             DateFormatString="d"
             FilterLanguage="English"
-            HorizontalGridLinesBrush="LightGray"
-            IsReadOnly="True"
             ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
-            LoadingRow="DataGrid_LoadingRow"
-            RowHeaderWidth="40"
             ShowElapsedTime="True"
+            ShowRowsCount="True"
             ShowStatusBar="True"
-            VerticalGridLinesBrush="LightGray"
-            VerticalScrollBarVisibility="Visible"
-            VirtualizingStackPanel.IsVirtualizing="True">
+            Style="{StaticResource FilterDatagridStyle}"
+            VerticalScrollBarVisibility="Visible">
             <control:FilterDataGrid.Columns>
                 <control:DataGridTemplateColumn
                     FieldName="LastName"
@@ -107,6 +103,11 @@
                     IsColumnFiltered="True" />
 
                 <control:DataGridTextColumn
+                    Binding="{Binding Age}"
+                    Header="Age"
+                    IsColumnFiltered="True" />
+
+                <control:DataGridTextColumn
                     Binding="{Binding Salary}"
                     Header="Salary"
                     IsColumnFiltered="True" />
@@ -123,8 +124,11 @@
             </control:FilterDataGrid.Columns>
         </control:FilterDataGrid>
 
-        <!--  AUTO GENERATE COLUMNS  -->
-        <!--<TextBlock
+        <!--
+            AUTO GENERATE COLUMNS
+            See the global style "FilterDatagridStyle" in App.xaml
+        -->
+        <TextBlock
             Grid.Row="3"
             Margin="10,10,0,2"
             FontSize="13"
@@ -136,21 +140,15 @@
             x:Name="FilterDataGridAuto"
             Grid.Row="4"
             Margin="10,10,0,2"
-            AlternatingRowBackground="WhiteSmoke"
-            AlternationCount="2"
             AutoGenerateColumns="True"
-            Background="Transparent"
             CanUserAddRows="False"
-            ColumnWidth="*"
             FilterLanguage="Russian"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
-            LoadingRow="DataGrid_LoadingRow"
-            RowHeaderWidth="30"
             ShowElapsedTime="True"
+            ShowRowsCount="True"
             ShowStatusBar="True"
-            VerticalScrollBarVisibility="Visible"
-            VirtualizingStackPanel.IsVirtualizing="True"
-            Visibility="Visible" />-->
+            Style="{StaticResource FilterDatagridStyle}"
+            VerticalScrollBarVisibility="Visible" />
     </Grid>
 
 </Window>

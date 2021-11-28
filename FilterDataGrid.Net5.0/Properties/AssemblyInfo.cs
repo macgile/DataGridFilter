@@ -11,8 +11,8 @@ using System.Windows.Markup;
 [assembly: AssemblyDescription("Implements a filter on the columns of a datagrid")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Macabies Gilles")]
-[assembly: AssemblyProduct("FilterDataGrid")]
-[assembly: AssemblyCopyright("Copyright © 2021 Gilles Macabies & ZPF - ChM")]
+[assembly: AssemblyProduct("FilterDataGrid Net5.0")]
+[assembly: AssemblyCopyright("Copyright © 2021 Gilles Macabies")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -56,6 +56,6 @@ using System.Windows.Markup;
 // see https://marinovdh.wordpress.com/2018/10/22/68/
 // for the incremental version, modified in the project file, set true to false : <Deterministic>false</Deterministic>
 
-[assembly: AssemblyVersion("1.2.4.0")]
-[assembly: AssemblyFileVersion("1.2.4.0")]
+[assembly: AssemblyVersion("1.2.5.0")]
+[assembly: AssemblyFileVersion("1.2.5.0")]
 [assembly: NeutralResourcesLanguage("")]
