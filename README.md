@@ -6,8 +6,8 @@ https://kramdown.gettalong.org/quickref.html
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
 
 # WPF Filterable DataGrid, multi language
-![datagrid image demo](FilterDataGrid.png)
-![datagrid image demo](capture.gif)  
+![datagrid image demo](FilterDataGrid.png)  
+
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
 for each column like Excel, in automatic or custom generation.  
 
@@ -63,6 +63,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 			                            FieldName="LastName" ...
 		```
 
+
 ## Benchmark ##
 
 > Intel Core i7, 2.93 GHz, 16 GB, Windows 10, 64 bits.  
@@ -77,3 +78,5 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 500 000 | ± 1.5 second | ± 1 second	| ± 2.5 seconds 
 1 000 000 | ± 3 seconds	| ± 1.5 seconds	| ± 4.5 seconds 
 
+## Demo ##
+![datagrid image demo](capture.gif)  
