@@ -166,7 +166,6 @@ namespace FilterDataGrid
         private readonly Dictionary<string, Predicate<object>> criteria = new Dictionary<string, Predicate<object>>();
         private readonly Geometry iconFilter;
         private readonly Geometry iconFilterSet;
-        private static readonly Dispatcher UiDispatcher = Dispatcher.CurrentDispatcher;
         private string fieldName;
         private string lastFilter;
         private string searchText;
@@ -507,7 +506,7 @@ namespace FilterDataGrid
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void OnSorted(object sender, EventArgs e)
+        private void OnSorted(object sender, EventArgs e)
         {
             ResetCursor();
         }
@@ -529,10 +528,10 @@ namespace FilterDataGrid
         /// <summary>
         /// Reset cursor
         /// </summary>
-        private static async void ResetCursor()
+        private async void ResetCursor()
         {
             // reset cursor
-            await UiDispatcher.BeginInvoke((Action)(() => { Mouse.OverrideCursor = null; }),
+            await Dispatcher.BeginInvoke((Action)(() => { Mouse.OverrideCursor = null; }),
                 DispatcherPriority.ContextIdle);
         }
 
@@ -943,7 +942,7 @@ namespace FilterDataGrid
                 await Task.Run(() =>
                 {
                     // thank's Stefan Heimel for this contribution
-                    UiDispatcher.Invoke(() =>
+                    Dispatcher.Invoke(() =>
                     {
                         sourceObjectList = Items.Cast<object>()
                         .Select(x => x.GetType().GetProperty(fieldName)?.GetValue(x, null))
