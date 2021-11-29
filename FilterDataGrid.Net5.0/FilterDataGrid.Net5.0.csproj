@@ -37,6 +37,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <Compile Remove="Themes\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <EmbeddedResource Remove="Themes\**" />
+    <None Remove="Properties\**" />
+    <None Remove="Themes\**" />
+    <Page Remove="Properties\**" />
+    <Page Remove="Themes\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DataGridColumn.cs" />
+    <Compile Remove="FilterCommon.cs" />
+    <Compile Remove="FilterDataGrid.cs" />
+    <Compile Remove="FilterDataGridDictionary.cs" />
+    <Compile Remove="FilterHelpers.cs" />
+    <Compile Remove="FilterItem.cs" />
+    <Compile Remove="Loc.cs" />
+    <Compile Remove="StringFormatConverter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Readme.txt" />
   </ItemGroup>
 
@@ -50,5 +72,7 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
+
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 
 </Project>
