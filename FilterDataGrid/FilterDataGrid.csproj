@@ -49,7 +49,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
-  <ItemGroup>
+  <!--<ItemGroup>
     <Page Include="Themes\FilterDataGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -58,8 +58,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
+  </ItemGroup>-->
+  <!--<ItemGroup>
     <Compile Include="DataGridColumn.cs" />
     <Compile Include="FilterCommon.cs" />
     <Compile Include="FilterDataGrid.cs" />
@@ -70,9 +70,14 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
+  </ItemGroup>-->
   <ItemGroup>
     <Resource Include="Readme.txt" />
+    
   </ItemGroup>
+  <!--<ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>-->
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
