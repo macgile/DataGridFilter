@@ -20,7 +20,7 @@ General use:
             ShowRowsCount      : Display the number of rows, default : false  
             DateFormatString   : Date display format, default : "d"
             FilterLanguage     : Translation into available language, default : English
-                                 Languages available : English, French, Russian, German, Italian, Chinese
+                                 Languages available : English, French, Russian, German, Italian, Chinese, Dutch
 
           * If you add custom columns, you must set the property AutoGenerateColumns to "False"
 
