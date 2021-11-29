@@ -33,7 +33,7 @@ namespace FilterDataGrid
 
                 var stringFormat = values[0].ToString();
 
-                return string.Format(stringFormat, values.ToArray().Skip(1).ToArray());
+                return string.Format(stringFormat, values.Skip(1).ToArray());
             }
             catch (FormatException ex)
             {
