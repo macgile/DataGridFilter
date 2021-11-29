@@ -7,7 +7,7 @@ https://kramdown.gettalong.org/quickref.html
 
 # WPF Filterable DataGrid, multi language
 ![datagrid image demo](FilterDataGrid.png)
-
+![datagrid image demo](capture.gif)
 
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
 for each column like Excel, in automatic or custom generation.  
