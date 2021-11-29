@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>0a802a01-9adc-423c-a2c3-f296c585e718</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>FilterDataGrid</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DataGridColumn.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FilterCommon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FilterDataGrid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FilterDataGridDictionary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FilterHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FilterItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Loc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Properties\AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringFormatConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\FilterDataGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Readme.txt" />
+  </ItemGroup>
+</Project>
