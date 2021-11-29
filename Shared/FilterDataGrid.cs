@@ -782,7 +782,7 @@ namespace FilterDataGrid
                 return ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                     .IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
 
-            return item.Content?.ToString()?.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+            return item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         /// <summary>
