@@ -35,6 +35,7 @@ namespace FilterDataGrid
             { Local.Russian, "ru-RU" },
         };
 
+        // Translation
         private static readonly Dictionary<string, Dictionary<Local, string>> Translation =
             new Dictionary<string, Dictionary<Local, string>>
             {
