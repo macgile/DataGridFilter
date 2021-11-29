@@ -287,7 +287,7 @@ namespace FilterDataGrid
             try
             {
                 // FilterLanguage : default : 0 (english)
-                Translate = new Loc { Language = (int)FilterLanguage };
+                Translate = new Loc { Language = FilterLanguage };
 
                 // Show row count
                 RowHeaderWidth = ShowRowsCount ? RowHeaderWidth > 0 ? RowHeaderWidth : double.NaN : 0;

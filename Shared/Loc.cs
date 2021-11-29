@@ -1,142 +1,140 @@
-﻿// Author     : Gilles Macabies
-// Solution   : DataGridFilter
-// Projet     : DataGridFilter
-// File       : Loc.cs
-// Created    : 18/12/2019
+﻿// Author : Gilles Macabies Solution : DataGridFilter Projet : DataGridFilter File : Loc.cs Created : 18/12/2019
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-// ReSharper disable FieldCanBeMadeReadOnly.Local
-// ReSharper disable UnusedType.Global
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable CheckNamespace
-
 namespace FilterDataGrid
 {
     public enum Local
     {
-        English = 0,
+        Chinese,
+        Dutch,
+        English,
         French,
-        Russian,
         German,
         Italian,
-        Chinese,
-        Dutch
+        Russian,
     }
 
     public class Loc
     {
         #region Private Fields
 
-        private int language;
+        private Local language;
 
         // culture name(used for dates)
-        private static readonly string[] CultureNames = { "en-US", "fr-FR", "ru-RU", "de-DE", "it-IT", "zh-Hans", "nl-NL" };
-
-        // RESPECT THE ORDER OF THE Local ENUMERATION
-        // translation
-        private static readonly Dictionary<string, string[]> Translation = new Dictionary<string, string[]>
+        private static readonly Dictionary<Local, string> CultureNames = new Dictionary<Local, string>
         {
-            {
-                "All", new[]
-                {
-                    "(Select all)",
-                    "(Sélectionner tout)",
-                    "(Выбрать все)",
-                    "(Alle auswählen)",
-                    "(Seleziona tutto)",
-                    "(全选)",
-                    "(Alles selecteren)"
-                }
-            },
-            {
-                "Empty", new[]
-                {
-                    "(Blank)",
-                    "(Vides)",
-                    "(Заготовки)",
-                    "(Leer)",
-                    "(Vuoto)",
-                    "(空白)",
-                    "(Leeg)"
-                }
-            },
-            {
-                "Clear", new[]
-                {
-                    "Clear filter \"{0}\"",
-                    "Effacer le filtre \"{0}\"",
-                    "Очистить фильтр \"{0}\"",
-                    "Filter löschen \"{0}\"",
-                    "Cancella filtro \"{0}\"",
-                    "清除过滤器 \"{0}\"",
-                    "Filter \"{0}\" verwijderen"
-                }
-            },
-            {
-                "Search", new[]
-                {
-                    "Search (contains)",
-                    "Rechercher (contient)",
-                    "Искать (содержит)",
-                    "Suche (enthält)",
-                    "Cerca (contiene)",
-                    "搜索（包含)",
-                    "Zoek (bevat)"
-                }
-            },
-            {
-                "Ok", new[]
-                {
-                    "Ok",
-                    "Ok",
-                    "Ok",
-                    "Ok",
-                    "Ok",
-                    "确定",
-                    "Ok"
-                }
-            },
-            {
-                "Cancel", new[]
-                {
-                    "Cancel",
-                    "Annuler",
-                    "Отмена",
-                    "Abbrechen",
-                    "Annulla",
-                    "取消",
-                    "Annuleren"
-                }
-            },
-            {
-                "Status", new[]
-                {
-                    "{0:n0} record(s) found on {1:n0}",
-                    "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}",
-                    "{0:n0} записей найдено на {1:n0}",
-                    "{0:n0} zeilen angezeigt von {1:n0}",
-                    "{0:n0} record trovati su {1:n0}",
-                    "{0:n0} 找到了 {1:n0} 条记录",
-                    "{0:n0} rij(en) gevonden op {1:n0}",
-                }
-            },
-            {
-                "ElapsedTime", new[]
-                {
-                    "Elapsed time {0:mm}:{0:ss}.{0:ff}",
-                    "Temps écoulé {0:mm}:{0:ss}.{0:ff}",
-                    "Пройденное время {0:mm}:{0:ss}.{0:ff}",
-                    "Verstrichene Zeit {0:mm}:{0:ss}.{0:ff}",
-                    "Tempo trascorso {0:mm}:{0:ss}.{0:ff}",
-                    "经过时间{0:mm}:{0:ss}.{0:ff}",
-                    "Verstreken tijd {0:mm}:{0:ss}.{0:ff}",
-                }
-            }
+            { Local.Chinese, "zh-Hans" },
+            { Local.Dutch,   "nl-NL" },
+            { Local.English, "en-US" },
+            { Local.French,  "fr-FR" },
+            { Local.German,  "de-DE" },
+            { Local.Italian, "it-IT" },
+            { Local.Russian, "ru-RU" },
         };
+
+        private static readonly Dictionary<string, Dictionary<Local, string>> Translation =
+            new Dictionary<string, Dictionary<Local, string>>
+            {
+                {
+                    "All", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "(全选)" },
+                        { Local.Dutch,   "(Alles selecteren)" },
+                        { Local.English, "(Select all)" },
+                        { Local.French,  "(Sélectionner tout)" },
+                        { Local.German,  "(Alle auswählen)" },
+                        { Local.Italian, "(Seleziona tutto)" },
+                        { Local.Russian, "(Выбрать все)" },
+                    }
+                },
+                {
+                    "Empty", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "(空白)" },
+                        { Local.Dutch,   "(Leeg)" },
+                        { Local.English, "(Blank)" },
+                        { Local.French,  "(Vides)" },
+                        { Local.German,  "(Leer)" },
+                        { Local.Italian, "(Vuoto)" },
+                        { Local.Russian, "(Заготовки)" },
+                    }
+                },
+                {
+                    "Clear", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "清除过滤器 \"{0}\"" },
+                        { Local.Dutch,   "Filter \"{0}\" verwijderen" },
+                        { Local.English, "Clear filter \"{0}\"" },
+                        { Local.French,  "Effacer le filtre \"{0}\"" },
+                        { Local.German,  "Filter löschen \"{0}\"" },
+                        { Local.Italian, "Cancella filtro \"{0}\"" },
+                        { Local.Russian, "Очистить фильтр \"{0}\"" },
+                    }
+                },
+                {
+                    "Search", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "搜索(包含)" },
+                        { Local.Dutch,   "Zoek (bevat)" },
+                        { Local.English, "Search (contains)" },
+                        { Local.French,  "Rechercher (contient)" },
+                        { Local.German,  "Suche (enthält)" },
+                        { Local.Italian, "Cerca (contiene)" },
+                        { Local.Russian, "Искать (содержит)" },
+                    }
+                },
+                {
+                    "Ok", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "确定" },
+                        { Local.Dutch,   "Ok" },
+                        { Local.English, "Ok" },
+                        { Local.French,  "Ok" },
+                        { Local.German,  "Ok" },
+                        { Local.Italian, "Ok" },
+                        { Local.Russian, "Ok" },
+                    }
+                },
+                {
+                    "Cancel", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "取消" },
+                        { Local.Dutch,   "Annuleren" },
+                        { Local.English, "Cancel" },
+                        { Local.French,  "Annuler" },
+                        { Local.German,  "Abbrechen" },
+                        { Local.Italian, "Annulla" },
+                        { Local.Russian, "Отмена" },
+                    }
+                },
+                {
+                    "Status", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "{0:n0} 找到了 {1:n0} 条记录" },
+                        { Local.Dutch,   "{0:n0} rij(en) gevonden op {1:n0}" },
+                        { Local.English, "{0:n0} record(s) found on {1:n0}" },
+                        { Local.French,  "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}" },
+                        { Local.German,  "{0:n0} zeilen angezeigt von {1:n0}" },
+                        { Local.Italian, "{0:n0} record trovati su {1:n0}" },
+                        { Local.Russian, "{0:n0} записей найдено на {1:n0}" },
+                    }
+                },
+                {
+                    "ElapsedTime", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "经过时间{0:mm}:{0:ss}.{0:ff}" },
+                        { Local.Dutch,   "Verstreken tijd {0:mm}:{0:ss}.{0:ff}" },
+                        { Local.English, "Elapsed time {0:mm}:{0:ss}.{0:ff}" },
+                        { Local.French,  "Temps écoulé {0:mm}:{0:ss}.{0:ff}" },
+                        { Local.German,  "Verstrichene Zeit {0:mm}:{0:ss}.{0:ff}" },
+                        { Local.Italian, "Tempo trascorso {0:mm}:{0:ss}.{0:ff}" },
+                        { Local.Russian, "Пройденное время {0:mm}:{0:ss}.{0:ff}" },
+                    }
+                }
+            };
 
         #endregion Private Fields
 
@@ -144,12 +142,24 @@ namespace FilterDataGrid
 
         public Loc()
         {
-            Language = (int)Local.English;
+            Language = Local.English;
         }
 
         #endregion Constructors
 
         #region Public Properties
+
+        public Local Language
+        {
+            get => language;
+            set
+            {
+                language = value;
+                Culture = new CultureInfo(CultureNames[value]);
+            }
+        }
+
+        public CultureInfo Culture { get; private set; }
 
         public string All => Translation["All"][Language];
 
@@ -157,27 +167,18 @@ namespace FilterDataGrid
 
         public string Clear => Translation["Clear"][Language];
 
-        public CultureInfo Culture { get; set; }
-
         public string CultureName => CultureNames[Language];
 
         public string ElapsedTime => Translation["ElapsedTime"][Language];
 
         public string Empty => Translation["Empty"][Language];
 
-        public int Language
-        {
-            get => language;
-            set
-            {
-                language = value;
-                Culture = new CultureInfo(CultureNames[Language]);
-            }
-        }
-
         public string LanguageName => Enum.GetName(typeof(Local), Language);
+
         public string Ok => Translation["Ok"][Language];
+
         public string Search => Translation["Search"][Language];
+
         public string Status => Translation["Status"][Language];
 
         #endregion Public Properties
