@@ -17,7 +17,7 @@ General use:
         - Properties :
             ShowStatusBar      : Displays the status bar, default : false
             ShowElapsedTime    : Displays the elapsed time of filtering in status bar, default : false
-            ShowRowsCount      : Display the number of rows, default false  
+            ShowRowsCount      : Display the number of rows, default : false  
             DateFormatString   : Date display format, default : "d"
             FilterLanguage     : Translation into available language, default : English
                                  Languages available : English, French, Russian, German, Italian, Chinese
