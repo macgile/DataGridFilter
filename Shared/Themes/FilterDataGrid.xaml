@@ -189,8 +189,9 @@
                             Margin="2,0,2,0"
                             VerticalAlignment="Stretch"
                             Background="Transparent"
-                            IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=StartsWith, UpdateSourceTrigger=PropertyChanged}"
-                            ToolTip="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.Toggle}">
+                            DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}"
+                            IsChecked="{Binding StartsWith, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="{Binding Translate.Toggle}">
                             <ToggleButton.Style>
                                 <Style TargetType="{x:Type ToggleButton}">
                                     <Setter Property="Cursor" Value="Hand" />
