@@ -35,14 +35,21 @@ namespace FilterDataGrid
             { Local.Russian, "ru-RU" },
         };
 
-        private string GetTranslation(string s)
+        /// <summary>
+        /// Translated into the language
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private string Translate(string key)
         {
-            return Translation.ContainsKey(s) && Translation[s].ContainsKey(Language)
-                ? Translation[s][Language]
+            return Translation.ContainsKey(key) && Translation[key].ContainsKey(Language)
+                ? Translation[key][Language]
                 : "unknow";
         }
 
-        // Translation
+        /// <summary>
+        /// Translation dictionary
+        /// </summary>
         private static readonly Dictionary<string, Dictionary<Local, string>> Translation =
             new Dictionary<string, Dictionary<Local, string>>
             {
@@ -122,7 +129,6 @@ namespace FilterDataGrid
                     }
                 },
 
-
                 {
                     "Ok", new Dictionary<Local, string>
                     {
@@ -198,29 +204,29 @@ namespace FilterDataGrid
 
         public CultureInfo Culture { get; private set; }
 
-        public string All => GetTranslation("All");
-
-        public string Cancel => GetTranslation("Cancel");
-
-        public string Clear => GetTranslation("Clear");
-
-        public string Contains => GetTranslation("Contains");
-
         public string CultureName => CultureNames[Language];
-
-        public string ElapsedTime => GetTranslation("ElapsedTime");
-
-        public string Empty => GetTranslation("Empty");
 
         public string LanguageName => Enum.GetName(typeof(Local), Language);
 
-        public string Ok => GetTranslation("Ok");
+        public string All => Translate("All");
 
-        public string StartsWith => GetTranslation("StartsWith");
+        public string Cancel => Translate("Cancel");
 
-        public string Status => GetTranslation("Status");
+        public string Clear => Translate("Clear");
 
-        public string Toggle => GetTranslation("Toggle");
+        public string Contains => Translate("Contains");
+
+        public string ElapsedTime => Translate("ElapsedTime");
+
+        public string Empty => Translate("Empty");
+
+        public string Ok => Translate("Ok");
+
+        public string StartsWith => Translate("StartsWith");
+
+        public string Status => Translate("Status");
+
+        public string Toggle => Translate("Toggle");
 
         #endregion Public Properties
     }
