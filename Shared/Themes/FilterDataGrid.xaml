@@ -10,7 +10,7 @@
 
     <!--  INITIAL POPUP SIZE  -->
     <sys:Double x:Key="PopupHeight">400</sys:Double>
-    <sys:Double x:Key="PopupWidth">250</sys:Double>
+    <sys:Double x:Key="PopupWidth">260</sys:Double>
     <sys:Boolean x:Key="StayOpen">False</sys:Boolean>
 
     <!--  https://yqnn.github.io/svg-path-editor/  -->

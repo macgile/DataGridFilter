@@ -35,6 +35,13 @@ namespace FilterDataGrid
             { Local.Russian, "ru-RU" },
         };
 
+        private string GetTranslation(string s)
+        {
+            return Translation.ContainsKey(s) && Translation[s].ContainsKey(Language)
+                ? Translation[s][Language]
+                : "unknow";
+        }
+
         // Translation
         private static readonly Dictionary<string, Dictionary<Local, string>> Translation =
             new Dictionary<string, Dictionary<Local, string>>
@@ -89,7 +96,6 @@ namespace FilterDataGrid
                     }
                 },
 
-
                 {
                     "Contains", new Dictionary<Local, string>
                     {
@@ -110,7 +116,7 @@ namespace FilterDataGrid
                         { Local.Dutch,   "Zoek (beginnen met)" },
                         { Local.English, "Search (startswith)" },
                         { Local.French,  "Rechercher (commence par)" },
-                        { Local.German,   "Suche (beginnen mit)" },
+                        { Local.German,  "Suche (beginnen mit)" },
                         { Local.Italian, "Cerca (iniziare con)" },
                         { Local.Russian, "Искать (hачни с)" },
                     }
@@ -191,29 +197,29 @@ namespace FilterDataGrid
 
         public CultureInfo Culture { get; private set; }
 
-        public string All => Translation["All"][Language];
+        public string All => GetTranslation("All");
 
-        public string Cancel => Translation["Cancel"][Language];
+        public string Cancel => GetTranslation("Cancel");
 
-        public string Clear => Translation["Clear"][Language];
+        public string Clear => GetTranslation("Clear");
 
-        public string Contains => Translation["Contains"][Language];
+        public string Contains => GetTranslation("Contains");
 
         public string CultureName => CultureNames[Language];
 
-        public string ElapsedTime => Translation["ElapsedTime"][Language];
+        public string ElapsedTime => GetTranslation("ElapsedTime");
 
-        public string Empty => Translation["Empty"][Language];
+        public string Empty => GetTranslation("Empty");
 
         public string LanguageName => Enum.GetName(typeof(Local), Language);
 
-        public string Ok => Translation["Ok"][Language];
+        public string Ok => GetTranslation("Ok");
 
-        public string Search => Translation["Search"][Language];
+        public string Search => GetTranslation("Search");
 
-        public string StartsWith => Translation["StartsWith"][Language];
+        public string StartsWith => GetTranslation("StartsWith");
 
-        public string Status => Translation["Status"][Language];
+        public string Status => GetTranslation("Status");
 
         #endregion Public Properties
     }
