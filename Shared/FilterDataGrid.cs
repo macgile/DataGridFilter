@@ -151,6 +151,7 @@ namespace FilterDataGrid
         private Button button;
         private const bool DebugMode = false;
         private Cursor cursor;
+        private int searchLength;
         private double minHeight;
         private double minWidth;
         private double sizableContentHeight;
@@ -175,11 +176,27 @@ namespace FilterDataGrid
         private TreeView treeview;
         private Type collectionType;
 
+        private bool startWith;
+
         private object currentColumn;
 
         #endregion Private Fields
 
         #region Public Properties
+
+        /// <summary>
+        /// String begins with the specified character.
+        /// Used in popup searchBox
+        /// </summary>
+        public bool StartWith
+        {
+            get => startWith;
+            set
+            {
+                startWith = value;
+                OnPropertyChanged();
+            }
+        } 
 
         /// <summary>
         /// Date format displayed
@@ -778,11 +795,25 @@ namespace FilterDataGrid
             var item = (FilterItem)obj;
             if (string.IsNullOrEmpty(searchText) || item == null || item.Id == 0) return true;
 
-            if (item.FieldType == typeof(DateTime))
-                return ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
-                    .IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+            // Contains
+            if (!StartWith)
+            {
+                return item.FieldType == typeof(DateTime)
+                    ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
+                    .IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
 
-            return item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                    : item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+            }
+
+            // StartWith
+            // preserve RangeOverflow
+            if (searchLength > item.ContentLength) return false;
+            
+            return item.FieldType == typeof(DateTime)
+                ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
+                .IndexOf(searchText, 0, searchLength, StringComparison.OrdinalIgnoreCase) >= 0
+
+                : item.Content?.ToString().IndexOf(searchText, 0, searchLength, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         /// <summary>
@@ -798,6 +829,8 @@ namespace FilterDataGrid
             if (textBox == null || textBox.Text == searchText || ItemCollectionView == null) return;
 
             searchText = textBox.Text;
+
+            searchLength = searchText.Length;
 
             search = !string.IsNullOrEmpty(searchText);
 
@@ -871,9 +904,6 @@ namespace FilterDataGrid
                 searchTextBox.TextChanged += SearchTextBoxOnTextChanged;
                 searchTextBox.Focusable = true;
 
-                // clear SearchBox button
-                var clearSearchBoxBtn = VisualTreeHelpers.FindChild<Button>(popup.Child, "ClearSearchBoxBtn");
-                clearSearchBoxBtn.Click += ClearSearchBoxClick;
 
                 // thumb resize grip
                 thumb = VisualTreeHelpers.FindChild<Thumb>(sizableContentGrid, "PopupThumb");
@@ -978,7 +1008,7 @@ namespace FilterDataGrid
                     };
 
                     // add all items to the filterItemList filterItemList is used only for search and string list, the dates list is computed by FilterCommon.BuildTree
-                    for (var i = 0; i < sourceObjectList.Count; i++)
+                    for (int i = 0; i < sourceObjectList.Count; i++)
                     {
                         var item = sourceObjectList[i];
                         var filterItem = new FilterItem
@@ -987,6 +1017,7 @@ namespace FilterDataGrid
                             FieldType = fieldType,
                             Content = item, // raw value
                             Label = item?.ToString(), // Content displayed
+                            ContentLength = item?.ToString().Length ?? 0,
                             Level = 1,
 
                             // check or uncheck if the content of current item exists in the list of previously filtered items SetState doesn't raise

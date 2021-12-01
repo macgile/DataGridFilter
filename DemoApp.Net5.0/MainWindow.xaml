@@ -73,7 +73,6 @@
         <control:FilterDataGrid
             x:Name="FilterDataGrid"
             Grid.Row="2"
-            Margin="10,10,0,2"
             AutoGenerateColumns="False"
             DateFormatString="d"
             FilterLanguage="English"
@@ -81,8 +80,7 @@
             ShowElapsedTime="True"
             ShowRowsCount="True"
             ShowStatusBar="True"
-            Style="{StaticResource FilterDatagridStyle}"
-            VerticalScrollBarVisibility="Visible">
+            Style="{StaticResource FilterDatagridStyle}">
             <control:FilterDataGrid.Columns>
                 <control:DataGridTemplateColumn
                     FieldName="LastName"
@@ -138,14 +136,12 @@
         <control:FilterDataGrid
             x:Name="FilterDataGridAuto"
             Grid.Row="4"
-            Margin="10,10,0,2"
             AutoGenerateColumns="True"
             FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             ShowElapsedTime="True"
             ShowRowsCount="False"
             ShowStatusBar="True"
-            Style="{StaticResource FilterDatagridStyle}"
-            VerticalScrollBarVisibility="Visible" />
+            Style="{StaticResource FilterDatagridStyle}" />
     </Grid>
 </Window>

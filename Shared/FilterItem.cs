@@ -62,6 +62,12 @@ namespace FilterDataGrid
         public object Content { get; set; }
 
         /// <summary>
+        /// Content length
+        /// </summary>
+        public int ContentLength { get; set; }
+
+
+        /// <summary>
         /// Current filter
         /// </summary>
         public FilterCommon CurrentFilter { get; set; }

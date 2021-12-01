@@ -10,16 +10,14 @@
             BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
                                                            ResourceId=FilterDataGridStyle}}"
             TargetType="{x:Type control:FilterDataGrid}">
-            <Setter Property="Margin" Value="20" />
-            <Setter Property="Padding" Value="1,1,1,0" />
+            <Setter Property="Margin" Value="10,10,0,2" />
             <Setter Property="AlternatingRowBackground" Value="WhiteSmoke" />
             <Setter Property="AlternationCount" Value="2" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="ColumnWidth" Value="*" />
             <Setter Property="HorizontalGridLinesBrush" Value="LightGray" />
-            <Setter Property="RowHeaderWidth" Value="NaN" />
             <Setter Property="VerticalGridLinesBrush" Value="LightGray" />
-            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
             <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
             <Setter Property="BorderBrush" Value="LightSlateGray" />
             <Setter Property="BorderThickness" Value="1" />

@@ -75,6 +75,7 @@ namespace FilterDataGrid
                         { Local.Russian, "Очистить фильтр \"{0}\"" },
                     }
                 },
+
                 {
                     "Search", new Dictionary<Local, string>
                     {
@@ -87,6 +88,34 @@ namespace FilterDataGrid
                         { Local.Russian, "Искать (содержит)" },
                     }
                 },
+
+
+                {
+                    "Contains", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "搜索(包含)" },
+                        { Local.Dutch,   "Zoek (bevat)" },
+                        { Local.English, "Search (contains)" },
+                        { Local.French,  "Rechercher (contient)" },
+                        { Local.German,  "Suche (enthält)" },
+                        { Local.Italian, "Cerca (contiene)" },
+                        { Local.Russian, "Искать (содержит)" },
+                    }
+                },
+
+                {
+                    "StartWith", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "搜索 (来自)" },
+                        { Local.Dutch,   "Zoek (beginnen met)" },
+                        { Local.English, "Search (start with)" },
+                        { Local.French,  "Rechercher (commence par)" },
+                        { Local.German,   "Suche (beginnen mit)" },
+                        { Local.Italian, "Cerca (iniziare con)" },
+                        { Local.Russian, "Искать (hачни с)" },
+                    }
+                },
+
                 {
                     "Ok", new Dictionary<Local, string>
                     {
@@ -168,6 +197,8 @@ namespace FilterDataGrid
 
         public string Clear => Translation["Clear"][Language];
 
+        public string Contains => Translation["Contains"][Language];
+
         public string CultureName => CultureNames[Language];
 
         public string ElapsedTime => Translation["ElapsedTime"][Language];
@@ -179,6 +210,8 @@ namespace FilterDataGrid
         public string Ok => Translation["Ok"][Language];
 
         public string Search => Translation["Search"][Language];
+
+        public string StartWith => Translation["StartWith"][Language];
 
         public string Status => Translation["Status"][Language];
 
