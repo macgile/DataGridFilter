@@ -23,8 +23,8 @@
         9.3H16.5L16.6 6.8 14.5 8.1 14 7.3 16.3 6.1 14 5 14.6 4.1 16.7 5.5Z
     </Geometry>
 
-    <!--  STARWITH ICON  -->
-    <Geometry x:Key="StarWith">
+    <!--  STARTSWITH ICON  -->
+    <Geometry x:Key="StartsWith">
         M7.236 11.1992V9.8992C7.736 9.7992 12.1361 8.1992 12.8361 11.4992V17.0992H11.6361V16.0992C11.1361 16.5992 10.6361 16.8992 10.1361
         17.0992H8.036C7.036 16.6992 6.736 15.9992 6.636 15.0992 6.636 14.5992 6.636 12.8992 9.636 12.6992H11.536V11.5992C11.036 10.0992 8.936
         10.4992 7.636 10.9992ZM11.536 14.9992V13.6992H9.236C7.5465 14.0397 8.1145 16.0538 9.236 16.0992 10.136 16.0992 10.636 15.7992 11.3361
@@ -192,7 +192,7 @@
                             VerticalAlignment="Stretch"
                             Background="Transparent"
                             BorderBrush="Transparent"
-                            IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=StartWith, UpdateSourceTrigger=PropertyChanged}">
+                            IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=StartsWith, UpdateSourceTrigger=PropertyChanged}">
                             <ToggleButton.Style>
                                 <Style TargetType="{x:Type ToggleButton}">
                                     <Setter Property="Cursor" Value="Hand" />
@@ -209,7 +209,7 @@
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsChecked" Value="False">
-                                                        <Setter TargetName="PathToggle" Property="Data" Value="{StaticResource StarWith}" />
+                                                        <Setter TargetName="PathToggle" Property="Data" Value="{StaticResource StartsWith}" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -222,7 +222,7 @@
                     <!--  PLACEHOLDER TEXT  -->
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding ElementName=SearchToggleButton, Path=IsChecked}" Value="True">
-                            <Setter TargetName="TextBoxPlaceHolder" Property="Text" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.StartWith, Mode=OneWay}" />
+                            <Setter TargetName="TextBoxPlaceHolder" Property="Text" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.StartsWith, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ElementName=SearchToggleButton, Path=IsChecked}" Value="False">
                             <Setter TargetName="TextBoxPlaceHolder" Property="Text" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.Contains, Mode=OneWay}" />

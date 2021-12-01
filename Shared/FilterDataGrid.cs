@@ -176,7 +176,7 @@ namespace FilterDataGrid
         private TreeView treeview;
         private Type collectionType;
 
-        private bool startWith;
+        private bool startsWith;
 
         private object currentColumn;
 
@@ -188,12 +188,12 @@ namespace FilterDataGrid
         /// String begins with the specified character.
         /// Used in popup searchBox
         /// </summary>
-        public bool StartWith
+        public bool StartsWith
         {
-            get => startWith;
+            get => startsWith;
             set
             {
-                startWith = value;
+                startsWith = value;
                 OnPropertyChanged();
             }
         } 
@@ -796,7 +796,7 @@ namespace FilterDataGrid
             if (string.IsNullOrEmpty(searchText) || item == null || item.Id == 0) return true;
 
             // Contains
-            if (!StartWith)
+            if (!StartsWith)
             {
                 return item.FieldType == typeof(DateTime)
                     ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
@@ -805,7 +805,7 @@ namespace FilterDataGrid
                     : item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
             }
 
-            // StartWith
+            // StartsWith
             // preserve RangeOverflow
             if (searchLength > item.ContentLength) return false;
             

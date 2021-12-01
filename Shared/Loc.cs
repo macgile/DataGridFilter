@@ -104,11 +104,11 @@ namespace FilterDataGrid
                 },
 
                 {
-                    "StartWith", new Dictionary<Local, string>
+                    "StartsWith", new Dictionary<Local, string>
                     {
                         { Local.Chinese, "搜索 (来自)" },
                         { Local.Dutch,   "Zoek (beginnen met)" },
-                        { Local.English, "Search (start with)" },
+                        { Local.English, "Search (startswith)" },
                         { Local.French,  "Rechercher (commence par)" },
                         { Local.German,   "Suche (beginnen mit)" },
                         { Local.Italian, "Cerca (iniziare con)" },
@@ -211,7 +211,7 @@ namespace FilterDataGrid
 
         public string Search => Translation["Search"][Language];
 
-        public string StartWith => Translation["StartWith"][Language];
+        public string StartsWith => Translation["StartsWith"][Language];
 
         public string Status => Translation["Status"][Language];
 
