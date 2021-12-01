@@ -84,19 +84,6 @@ namespace FilterDataGrid
                 },
 
                 {
-                    "Search", new Dictionary<Local, string>
-                    {
-                        { Local.Chinese, "搜索(包含)" },
-                        { Local.Dutch,   "Zoek (bevat)" },
-                        { Local.English, "Search (contains)" },
-                        { Local.French,  "Rechercher (contient)" },
-                        { Local.German,  "Suche (enthält)" },
-                        { Local.Italian, "Cerca (contiene)" },
-                        { Local.Russian, "Искать (содержит)" },
-                    }
-                },
-
-                {
                     "Contains", new Dictionary<Local, string>
                     {
                         { Local.Chinese, "搜索(包含)" },
@@ -228,8 +215,6 @@ namespace FilterDataGrid
         public string LanguageName => Enum.GetName(typeof(Local), Language);
 
         public string Ok => GetTranslation("Ok");
-
-        public string Search => GetTranslation("Search");
 
         public string StartsWith => GetTranslation("StartsWith");
 

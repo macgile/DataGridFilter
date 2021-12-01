@@ -618,7 +618,7 @@
                                     FontSize="13"
                                     MaxLength="20"
                                     Style="{StaticResource PlaceHolder}"
-                                    Tag="{Binding Translate.Search}">
+                                    Tag="{Binding Translate.Contains}">
                                     <TextBox.InputBindings>
                                         <KeyBinding Key="Enter" Command="{x:Static control:FilterDataGrid.ApplyFilter}" />
                                     </TextBox.InputBindings>
