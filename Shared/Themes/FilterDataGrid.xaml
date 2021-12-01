@@ -9,31 +9,11 @@
     <control:StringFormatConverter x:Key="StringFormatConverter" />
 
     <!--  INITIAL POPUP SIZE  -->
-    <sys:Double x:Key="PopupHeight">400</sys:Double>
-    <sys:Double x:Key="PopupWidth">260</sys:Double>
+    <sys:Double x:Key="PopupHeight">420</sys:Double>
+    <sys:Double x:Key="PopupWidth">262</sys:Double>
     <sys:Boolean x:Key="StayOpen">False</sys:Boolean>
 
     <!--  https://yqnn.github.io/svg-path-editor/  -->
-
-    <!--  CONTAINS ICON  -->
-    <Geometry x:Key="Contains">
-        M.6 3.4V2.1C1.1 2 5.5.4 6.2 3.7V9.3H5V8.3C4.5 8.8 4 9.1 3.5 9.3H1.4C.4 8.9.1 8.2 0 7.3 0 6.8 0 5.1 3 4.9H4.9V3.8C4.4 2.3 2.3 2.7 1 3.2ZM4.9
-        7.2V5.9H2.6V5.9C1 6 .9 8.3 2.6 8.3 3.5 8.3 4 8 4.7 7.4ZM9.3 3 9.5 5.6 7.4 4.1 6.9 5 9.2 6.1 6.9 7.2 7.3 8.2 9.5 6.8 9.3 9.3H10.4L10.2 6.7
-        12.3 8.1 12.8 7.2 10.5 6.2 12.8 5 12.3 4.1 10.2 5.6 10.4 3ZM16.5 3H17.6L17.4 5.5 19.5 4.1 20 5 17.7 6.1 20 7.3 19.5 8.1 17.4 6.8 17.6
-        9.3H16.5L16.6 6.8 14.5 8.1 14 7.3 16.3 6.1 14 5 14.6 4.1 16.7 5.5Z
-    </Geometry>
-
-    <!--  STARTSWITH ICON  -->
-    <Geometry x:Key="StartsWith">
-        M7.236 11.1992V9.8992C7.736 9.7992 12.1361 8.1992 12.8361 11.4992V17.0992H11.6361V16.0992C11.1361 16.5992 10.6361 16.8992 10.1361
-        17.0992H8.036C7.036 16.6992 6.736 15.9992 6.636 15.0992 6.636 14.5992 6.636 12.8992 9.636 12.6992H11.536V11.5992C11.036 10.0992 8.936
-        10.4992 7.636 10.9992ZM11.536 14.9992V13.6992H9.236C7.5465 14.0397 8.1145 16.0538 9.236 16.0992 10.136 16.0992 10.636 15.7992 11.3361
-        15.1992ZM2.4463 10.8913 2.6463 13.3913.5463 11.9913.0463 12.8913 2.2463 13.9913.0463 15.1913.4463 15.9913 2.6463 14.5913 2.4463
-        17.0759H3.5463L3.3463 14.5913 5.4463 15.9913 5.9463 15.0913 3.6463 13.9913 5.9463 12.8913 5.4463 11.9913 3.3463 13.3913 3.5463
-        10.8913ZM16.5659 10.7759H17.6659L17.4659 13.3759 19.5659 11.8759 20.0659 12.8759 17.7659 13.8759 20.0659 15.0759 19.5659 15.8759
-        17.4659 14.5759 17.6659 17.0759H16.5659L16.6659 14.5759 14.5659 15.8759 14.0659 15.0759 16.3659 13.9759 14.0659 12.7759 14.6659
-        11.8759 16.6659 13.2759Z
-    </Geometry>
 
     <!--  MAGNIFIER ICON  -->
     <Geometry x:Key="Magnifier">
@@ -64,6 +44,24 @@
     <!--  FILTER BUTTON ICON  -->
     <Geometry x:Key="Filter">
         M 7 10 L 12 15 L 17 10 H 7 Z
+    </Geometry>
+
+    <!--  CONTAINS ICON  -->
+    <Geometry x:Key="StartsWith">
+        M 0.6 1.3 V 0 C 1.1 -0.1 5.5 -1.7 6.2 1.6 V 7.2 H 5 V 6.2 C 4.5 6.7 4 7 3.5 7.2 H 1.4 C 0.4 6.8 0.1 6.1 0 5.2 C 0 4.7 0 3 3 2.8 H 4.9 V 1.7
+        C 4.4 0.2 2.3 0.6 1 1.1 Z M 4.9 5.1 V 3.8 H 2.6 V 3.8 C 1 3.9 0.9 6.2 2.6 6.2 C 3.5 6.2 4 5.9 4.7 5.3 Z M 9.3 0.9 L 9.5 3.5 L 7.4 2 L 6.9 2.9
+        L 9.2 4 L 6.9 5.1 L 7.3 6.1 L 9.5 4.7 L 9.3 7.2 H 10.4 L 10.2 4.6 L 12.3 6 L 12.8 5.1 L 10.5 4.1 L 12.8 2.9 L 12.3 2 L 10.2 3.5 L 10.4 0.9 Z
+        M 16.5 0.9 H 17.6 L 17.4 3.4 L 19.5 2 L 20 2.9 L 17.7 4 L 20 5.2 L 19.5 6 L 17.4 4.7 L 17.6 7.2 H 16.5 L 16.6 4.7 L 14.5 6 L 14 5.2 L 16.3 4
+        L 14 2.9 L 14.6 2 L 16.7 3.4 Z
+    </Geometry>
+
+    <!--  STARTSWITH ICON  -->
+    <Geometry x:Key="Contains">
+        M 7.2 1.3 V 0 C 7.7 -0.1 12.1 -1.7 12.8 1.6 V 7.2 H 11.6 V 6.2 C 11.1 6.7 10.6 7 10.1 7.2 H 8 C 7 6.8 6.7 6.1 6.6 5.2 C 6.6 4.7 6.6 3 9.6 2.8
+        H 11.5 V 1.7 C 11 0.2 8.9 0.6 7.6 1.1 Z M 11.5 5.1 V 3.8 H 9.2 C 7.5 4.1 8.1 6.2 9.2 6.2 C 10.1 6.2 10.6 5.9 11.3 5.3 Z M 2.4 1 L 2.6 3.5
+        L 0.5 2.1 L 0 3 L 2.2 4.1 L 0 5.3 L 0.4 6.1 L 2.6 4.7 L 2.4 7.2 H 3.5 L 3.3 4.7 L 5.4 6.1 L 5.9 5.2 L 3.6 4.1 L 5.9 3 L 5.4 2.1 L 3.3 3.5
+        L 3.5 1 Z M 16.5 0.9 H 17.6 L 17.4 3.5 L 19.5 2 L 20 3 L 17.7 4 L 20 5.2 L 19.5 6 L 17.4 4.7 L 17.6 7.2 H 16.5 L 16.6 4.7 L 14.5 6 L 14 5.2
+        L 16.3 4.1 L 14 2.9 L 14.6 2 L 16.6 3.4 Z
     </Geometry>
 
     <!--  PLACEHOLDER SEARCH BOX  -->
@@ -146,7 +144,7 @@
                                                         x:Name="PathButton"
                                                         Width="14"
                                                         Height="14"
-                                                        Margin="2"
+                                                        Margin="0,0,2,0"
                                                         Data="M 10 10 L 40 40 M 40 10  L 10 40"
                                                         Fill="Transparent"
                                                         Stretch="Uniform"
@@ -183,32 +181,36 @@
                         <Border
                             Grid.Column="2"
                             Width="1"
-                            Margin="2"
+                            Margin="2,0,2,0"
                             Background="LightGray" />
                         <ToggleButton
                             Name="SearchToggleButton"
                             Grid.Column="3"
-                            Margin="4,0,4,0"
+                            Margin="2,0,2,0"
                             VerticalAlignment="Stretch"
                             Background="Transparent"
-                            BorderBrush="Transparent"
-                            IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=StartsWith, UpdateSourceTrigger=PropertyChanged}">
+                            IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=StartsWith, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.Toggle}">
                             <ToggleButton.Style>
                                 <Style TargetType="{x:Type ToggleButton}">
                                     <Setter Property="Cursor" Value="Hand" />
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="ToggleButton">
-                                                <Border Background="Transparent">
+                                                <Border
+                                                    Padding="3"
+                                                    Background="Transparent"
+                                                    BorderBrush="LightGray"
+                                                    BorderThickness="0">
                                                     <Path
                                                         x:Name="PathToggle"
                                                         VerticalAlignment="Center"
                                                         Data="{StaticResource Contains}"
                                                         Fill="DarkSlateGray"
-                                                        Stretch="Uniform" />
+                                                        Stretch="UniformToFill" />
                                                 </Border>
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsChecked" Value="False">
+                                                    <Trigger Property="IsChecked" Value="True">
                                                         <Setter TargetName="PathToggle" Property="Data" Value="{StaticResource StartsWith}" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>

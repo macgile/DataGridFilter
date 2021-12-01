@@ -195,6 +195,12 @@ namespace FilterDataGrid
             {
                 startsWith = value;
                 OnPropertyChanged();
+
+                // refresh filter
+               if(!string.IsNullOrEmpty(searchText))
+               {
+                   ItemCollectionView.Refresh();
+               }
             }
         } 
 

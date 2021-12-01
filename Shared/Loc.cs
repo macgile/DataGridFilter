@@ -123,6 +123,20 @@ namespace FilterDataGrid
                 },
 
                 {
+                    "Toggle", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "切換包含/開始於" },
+                        { Local.Dutch,   "Toggle bevat/begint met" },
+                        { Local.English, "Toggle contains/startswith" },
+                        { Local.French,  "Basculer contient/commence par" },
+                        { Local.German,  "Toggle enthält/beginnt mit" },
+                        { Local.Italian, "Toggle contiene/inizia con" },
+                        { Local.Russian, "Переключить содержит/начинается с" },
+                    }
+                },
+
+
+                {
                     "Ok", new Dictionary<Local, string>
                     {
                         { Local.Chinese, "确定" },
@@ -220,6 +234,8 @@ namespace FilterDataGrid
         public string StartsWith => GetTranslation("StartsWith");
 
         public string Status => GetTranslation("Status");
+
+        public string Toggle => GetTranslation("Toggle");
 
         #endregion Public Properties
     }
