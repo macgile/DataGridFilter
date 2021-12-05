@@ -75,7 +75,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
             TargetType="{x:Type control:FilterDataGrid}">
             <Setter Property="Margin" Value="10" />
             <Setter Property="RowHeaderWidth" Value="40" />
-			...
+	    ...
 </Style>
 ```
 
