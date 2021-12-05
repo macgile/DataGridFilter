@@ -8,7 +8,7 @@ using System.Windows.Markup;
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
 [assembly: AssemblyTitle("FilterDataGrid")]
-[assembly: AssemblyDescription("Implements a filter on the columns of a datagrid")]
+[assembly: AssemblyDescription("A DataGrid control that inherits from the base DataGrid control class and override some methods to\r\nImplement filters for each column like Excel, in automatic or custom generation.\r\nTranslation of labels and formatting of dates in the available languages : Chinese, Dutch, English, French, German, Italian, Russian.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Macabies Gilles")]
 [assembly: AssemblyProduct("FilterDataGrid Net5.0")]

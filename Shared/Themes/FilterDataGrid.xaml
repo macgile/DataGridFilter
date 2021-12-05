@@ -15,10 +15,14 @@
 
     <!--  https://yqnn.github.io/svg-path-editor/  -->
 
-    <!--  MAGNIFIER ICON  -->
-    <Geometry x:Key="Magnifier">
-        M9.6 8.5H9L8.7 8.2C9.6 7.4 10 6.2 10 5C10 2.2 7.8 0 5 0S0 2.2 0 5S2.2 10 5 10C6.2 10 7.4 9.6 8.2 8.7L8.5
-        9V9.6L12.3 13.5L13.5 12.3L9.6 8.5ZM5 8.5C3.1 8.5 1.5 6.9 1.5 5S3.1 1.5 5 1.5S8.5 3.1 8.5 5S6.9 8.5 5 8.5Z
+    <!--  FILTER SET ICON  -->
+    <Geometry x:Key="FilterSet">
+        M 0 17 H 12 L 6 25 Z M 6 0 H 29 L 29 3 L 20 10 L 20 21 H 15 L 15 10 L 6 3 Z
+    </Geometry>
+
+    <!--  FILTER BUTTON ICON  -->
+    <Geometry x:Key="Filter">
+        M 7 10 L 12 15 L 17 10 H 7 Z
     </Geometry>
 
     <!--  DELETE FILTER ICON  -->
@@ -36,17 +40,18 @@
         M0 9L2 9M4 9L6 9M8 9L10 9M1 8L1 10M5 8L5 10M9 8L9 10M4 5L6 5M8 5L10 5M5 4L5 6M9 4L9 6M8 1L10 1M9 0L9 2
     </Geometry>
 
-    <!--  FILTER SET ICON  -->
-    <Geometry x:Key="FilterSet">
-        M 0 17 H 13 L 7 25 Z M 8 0 H 28 L 28 2 L 20 8 L 20 18 H 16 L 16 8 L 8 2 Z
+    <!--  SEARCH MAGNIFIER ICON  -->
+    <Geometry x:Key="Magnifier">
+        M9.6 8.5H9L8.7 8.2C9.6 7.4 10 6.2 10 5C10 2.2 7.8 0 5 0S0 2.2 0 5S2.2 10 5 10C6.2 10 7.4 9.6 8.2 8.7L8.5
+        9V9.6L12.3 13.5L13.5 12.3L9.6 8.5ZM5 8.5C3.1 8.5 1.5 6.9 1.5 5S3.1 1.5 5 1.5S8.5 3.1 8.5 5S6.9 8.5 5 8.5Z
     </Geometry>
 
-    <!--  FILTER BUTTON ICON  -->
-    <Geometry x:Key="Filter">
-        M 7 10 L 12 15 L 17 10 H 7 Z
+    <!--  SEARCH DELETE ICON  -->
+    <Geometry x:Key="Delete">
+        M 0 0 M 2 3 L 3 2 L 8 7 L 13 2 L 14 3 L 9 8 L 14 13 L 13 14 L 8 9 L 3 14 L 2 13 L 7 8 Z M 16 0 M 0 16 M 16 16
     </Geometry>
 
-    <!--  CONTAINS ICON  -->
+    <!--  SEARCH CONTAINS ICON  -->
     <Geometry x:Key="StartsWith">
         M 0.6 1.3 V 0 C 1.1 -0.1 5.5 -1.7 6.2 1.6 V 7.2 H 5 V 6.2 C 4.5 6.7 4 7 3.5 7.2 H 1.4 C 0.4 6.8 0.1 6.1 0 5.2 C 0 4.7 0 3 3 2.8 H 4.9 V 1.7
         C 4.4 0.2 2.3 0.6 1 1.1 Z M 4.9 5.1 V 3.8 H 2.6 V 3.8 C 1 3.9 0.9 6.2 2.6 6.2 C 3.5 6.2 4 5.9 4.7 5.3 Z M 9.3 0.9 L 9.5 3.5 L 7.4 2 L 6.9 2.9
@@ -55,7 +60,7 @@
         L 14 2.9 L 14.6 2 L 16.7 3.4 Z
     </Geometry>
 
-    <!--  STARTSWITH ICON  -->
+    <!--  SEARCH STARTSWITH ICON  -->
     <Geometry x:Key="Contains">
         M 7.2 1.3 V 0 C 7.7 -0.1 12.1 -1.7 12.8 1.6 V 7.2 H 11.6 V 6.2 C 11.1 6.7 10.6 7 10.1 7.2 H 8 C 7 6.8 6.7 6.1 6.6 5.2 C 6.6 4.7 6.6 3 9.6 2.8
         H 11.5 V 1.7 C 11 0.2 8.9 0.6 7.6 1.1 Z M 11.5 5.1 V 3.8 H 9.2 C 7.5 4.1 8.1 6.2 9.2 6.2 C 10.1 6.2 10.6 5.9 11.3 5.3 Z M 2.4 1 L 2.6 3.5
@@ -79,6 +84,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+
+                        <!--  SEARCH TEXTBOX  -->
                         <TextBox
                             x:Name="TextSource"
                             Grid.Column="0"
@@ -123,6 +130,8 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
+
+                        <!--  BUTTON CLEAR FILTER  -->
                         <Button
                             x:Name="ClearSearchBoxBtn"
                             Grid.Column="1"
@@ -136,39 +145,27 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="Button">
-                                                <Border
-                                                    Background="Transparent"
-                                                    SnapsToDevicePixels="True"
-                                                    UseLayoutRounding="True">
+                                                <Border Background="Transparent" SnapsToDevicePixels="True">
+                                                    <!--  MAGNIFIER / DELETE ICON  -->
                                                     <Path
                                                         x:Name="PathButton"
-                                                        Width="14"
-                                                        Height="14"
-                                                        Margin="0,0,2,0"
-                                                        Data="M 10 10 L 40 40 M 40 10  L 10 40"
-                                                        Fill="Transparent"
+                                                        Width="18"
+                                                        Height="18"
+                                                        Margin="0"
+                                                        Data="{StaticResource Delete}"
+                                                        Fill="DarkSlateGray"
                                                         Stretch="Uniform"
-                                                        StrokeThickness="2" />
+                                                        Stroke="DarkSlateGray"
+                                                        StrokeThickness="1" />
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=TextSource, Path=Text}" Value="">
                                                         <Setter Property="IsEnabled" Value="False" />
                                                         <Setter TargetName="PathButton" Property="Data" Value="{StaticResource Magnifier}" />
-                                                        <Setter TargetName="PathButton" Property="Fill" Value="DarkSlateGray" />
-                                                        <Setter TargetName="PathButton" Property="Height" Value="18" />
-                                                        <Setter TargetName="PathButton" Property="Margin" Value="0" />
-                                                        <Setter TargetName="PathButton" Property="Stroke" Value="DarkSlateGray" />
-                                                        <Setter TargetName="PathButton" Property="StrokeThickness" Value="0" />
-                                                        <Setter TargetName="PathButton" Property="Width" Value="18" />
                                                     </DataTrigger>
-                                                    <Trigger Property="IsEnabled" Value="False">
-                                                        <Setter TargetName="PathButton" Property="Stroke" Value="LightGray" />
-                                                    </Trigger>
-                                                    <Trigger Property="IsEnabled" Value="True">
-                                                        <Setter TargetName="PathButton" Property="Stroke" Value="DarkSlateGray" />
-                                                    </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Cursor" Value="Hand" />
+                                                        <Setter TargetName="PathButton" Property="Fill" Value="Red" />
                                                         <Setter TargetName="PathButton" Property="Stroke" Value="Red" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
@@ -178,11 +175,15 @@
                                 </Style>
                             </Button.Style>
                         </Button>
+
+                        <!--  SEPARATOR  -->
                         <Border
                             Grid.Column="2"
                             Width="1"
                             Margin="2,0,2,0"
                             Background="LightGray" />
+
+                        <!--  TOGGLE BUTTON  -->
                         <ToggleButton
                             Name="SearchToggleButton"
                             Grid.Column="3"
@@ -224,6 +225,9 @@
                     </Grid>
                     <!--  PLACEHOLDER TEXT  -->
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="TextSource" Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}" />
+                        </Trigger>
                         <DataTrigger Binding="{Binding ElementName=SearchToggleButton, Path=IsChecked}" Value="True">
                             <Setter TargetName="TextBoxPlaceHolder" Property="Text" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.StartsWith, Mode=OneWay}" />
                         </DataTrigger>
@@ -236,10 +240,10 @@
         </Setter>
     </Style>
 
-    <!--  DEFAULT STYLE AND  CONTROLTEMPLATE FOR DATAGRID  -->
+    <!--  DEFAULT STYLE AND CONTROLTEMPLATE FOR DATAGRID  -->
     <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type control:FilterDataGrid}">
 
-        <!--  DISABLING CANUSERADDROWS :  AggregateException when user can add row  -->
+        <!--  DISABLING CanUserAddRows :  AggregateException when user can add row  -->
         <Setter Property="CanUserAddRows" Value="False" />
 
         <!--  ROWS COUNT TEMPLATE  -->
@@ -392,7 +396,7 @@
         </Setter>
     </Style>
 
-    <!--  DATAGRIDCOLUMNHEADER  -->
+    <!--  DATAGRIDCOLUMNHEADER STYLE  -->
     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="DataGridColumnHeader">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
@@ -480,7 +484,6 @@
                         x:Name="SizableContentGrid"
                         MinWidth="{StaticResource PopupWidth}"
                         MinHeight="{StaticResource PopupHeight}"
-                        Focusable="False"
                         ShowGridLines="False"
                         ZIndex="1">
 
@@ -616,6 +619,7 @@
                                     VerticalContentAlignment="Center"
                                     AcceptsReturn="False"
                                     DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}"
+                                    Focusable="True"
                                     FontSize="13"
                                     MaxLength="20"
                                     Style="{StaticResource PlaceHolder}"
@@ -627,7 +631,7 @@
                             </Grid>
                         </Border>
 
-                        <!--  ICON (Current filter is set)  -->
+                        <!--  ICON (current filter is set)  -->
                         <Path
                             x:Name="PathIsFiltered"
                             Grid.Row="5"

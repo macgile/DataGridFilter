@@ -185,8 +185,7 @@ namespace FilterDataGrid
         #region Public Properties
 
         /// <summary>
-        /// String begins with the specified character.
-        /// Used in popup searchBox
+        /// String begins with the specified character. Used in popup searchBox
         /// </summary>
         public bool StartsWith
         {
@@ -197,12 +196,12 @@ namespace FilterDataGrid
                 OnPropertyChanged();
 
                 // refresh filter
-               if(!string.IsNullOrEmpty(searchText))
-               {
-                   ItemCollectionView.Refresh();
-               }
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    ItemCollectionView.Refresh();
+                }
             }
-        } 
+        }
 
         /// <summary>
         /// Date format displayed
@@ -811,10 +810,9 @@ namespace FilterDataGrid
                     : item.Content?.ToString().IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
             }
 
-            // StartsWith
-            // preserve RangeOverflow
+            // StartsWith preserve RangeOverflow
             if (searchLength > item.ContentLength) return false;
-            
+
             return item.FieldType == typeof(DateTime)
                 ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                 .IndexOf(searchText, 0, searchLength, StringComparison.OrdinalIgnoreCase) >= 0
@@ -909,7 +907,6 @@ namespace FilterDataGrid
                 searchTextBox.Text = string.Empty;
                 searchTextBox.TextChanged += SearchTextBoxOnTextChanged;
                 searchTextBox.Focusable = true;
-
 
                 // thumb resize grip
                 thumb = VisualTreeHelpers.FindChild<Thumb>(sizableContentGrid, "PopupThumb");
@@ -1110,6 +1107,7 @@ namespace FilterDataGrid
                 popup.IsOpen = true;
 
                 // set focus on searchTextBox
+                searchTextBox.Focus();
                 Keyboard.Focus(searchTextBox);
             }
             catch (Exception ex)

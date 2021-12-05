@@ -36,18 +36,6 @@ namespace FilterDataGrid
         };
 
         /// <summary>
-        /// Translated into the language
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        private string Translate(string key)
-        {
-            return Translation.ContainsKey(key) && Translation[key].ContainsKey(Language)
-                ? Translation[key][Language]
-                : "unknow";
-        }
-
-        /// <summary>
         /// Translation dictionary
         /// </summary>
         private static readonly Dictionary<string, Dictionary<Local, string>> Translation =
@@ -229,5 +217,21 @@ namespace FilterDataGrid
         public string Toggle => Translate("Toggle");
 
         #endregion Public Properties
+
+        #region Private Methods
+
+        /// <summary>
+        /// Translated into the language
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private string Translate(string key)
+        {
+            return Translation.ContainsKey(key) && Translation[key].ContainsKey(Language)
+                ? Translation[key][Language]
+                : "unknow";
+        }
+
+        #endregion Private Methods
     }
 }
