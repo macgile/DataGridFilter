@@ -154,9 +154,9 @@
                                                         Margin="0"
                                                         Data="{StaticResource Delete}"
                                                         Fill="DarkSlateGray"
+                                                        SnapsToDevicePixels="True"
                                                         Stretch="Uniform"
-                                                        Stroke="DarkSlateGray"
-                                                        StrokeThickness="1" />
+                                                        UseLayoutRounding="True" />
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=TextSource, Path=Text}" Value="">
@@ -214,6 +214,9 @@
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsChecked" Value="True">
                                                         <Setter TargetName="PathToggle" Property="Data" Value="{StaticResource StartsWith}" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="PathToggle" Property="Fill" Value="Black" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>

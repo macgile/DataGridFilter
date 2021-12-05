@@ -63,6 +63,21 @@ To understand how the filter works, you can consult the article posted on [CodeP
 			                            FieldName="LastName" ...
 		```
 
+## Global Style ##
+
+>You can define a global style which overrides the default style of "FilterDataGrid"  
+
+```xml
+<Style
+            x:Key="FilterDatagridStyle"
+            BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
+                                                           ResourceId=FilterDataGridStyle}}"
+            TargetType="{x:Type control:FilterDataGrid}">
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="RowHeaderWidth" Value="40" />
+			...
+</Style>
+```
 
 ## Benchmark ##
 

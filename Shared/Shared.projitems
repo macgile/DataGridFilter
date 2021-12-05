@@ -30,6 +30,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Readme.txt" />
+    <Resource Include="$(MSBuildThisFileDirectory)Readme.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 </Project>
