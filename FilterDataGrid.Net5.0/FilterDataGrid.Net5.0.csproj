@@ -21,7 +21,7 @@
     <PackageProjectUrl>https://github.com/macgile/DataGridFilter</PackageProjectUrl>
     <RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Copyright>Copyright © 2021 Gilles Macabies</Copyright>
     <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
