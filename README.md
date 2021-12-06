@@ -101,6 +101,6 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
   <img src="https://contrib.rocks/image?repo=macgile/DataGridFilter" />
 </a>
 
-Made with [contributors-img](https://contrib.rocks).
+<!-- Made with [contributors-img](https://contrib.rocks). -->
 
-
+@all-contributors please add @ChM40 for code
