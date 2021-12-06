@@ -113,7 +113,3 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-## LICENSE
-
-[MIT](LICENSE)
