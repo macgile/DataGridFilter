@@ -95,3 +95,12 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 
 ## Demonstration ##
 ![datagrid image demo](capture.gif)  
+
+## Contributors
+<a href="https://github.com/macgile/DataGridFilter/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=macgile/DataGridFilter" />
+</a>
+
+Made with [contributors-img](https://contrib.rocks).
+
+
