@@ -1,58 +1,21 @@
 {
-  "projectName": "hashmyjs",
-  "projectOwner": "Berkmann18",
+  "projectName": "DataGridFilter",
+  "projectOwner": "macgile",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "files": [
-    "README.md"
-  ],
-  "imageSize": 100,
-  "commit": true,
-  "contributors": [
-    {
-      "login": "Berkmann18",
-      "name": "Maximilian Berkmann",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/8260834?v=4",
-      "profile": "http://maxcubing.wordpress.com",
-      "contributions": [
-        "bug",
-        "code",
-        "doc",
-        "ideas",
-        "question",
-        "review",
-        "security",
-        "test"
-      ]
-    },
-    {
-      "login": "dependabot-bot",
-      "name": "Dependabot",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/36207117?v=4",
-      "profile": "https://dependabot.com",
-      "contributions": [
-        "tool"
-      ]
-    },
-    {
-      "login": "semantic-release-bot",
-      "name": "Semantic Release Bot",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/32174276?v=4",
-      "profile": "http://semantic-release.org/",
-      "contributions": [
-        "doc",
-        "platform"
-      ]
-    },
-    {
-      "login": "codacy-badger",
-      "name": "Codacy Badger",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/23704769?v=4",
-      "profile": "https://www.codacy.com",
-      "contributions": [
-        "infra"
-      ]
+  "files": ["README.md"],
+  "imageSize": 80,
+  "contributorsPerLine": 7,
+  "contributorsSortAlphabetically": false,
+  "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
+  "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
+  "types": {
+    "custom": {
+      "symbol": "🔭",
+      "description": "A custom contribution type.",
+      "link": "[<%= symbol %>](<%= url %> \"<%= description %>\"),"
     }
-  ],
-  "contributorsPerLine": 7
+  },
+  "skipCi": "true",
+  "contributors": []
 }
