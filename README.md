@@ -103,4 +103,4 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 
 <!-- Made with [contributors-img](https://contrib.rocks). -->
 
-@all-contributors please add @ChM40 for code
+<!-- @all-contributors please add @ChM40 for code -->
