@@ -232,10 +232,10 @@
                             <Setter TargetName="TextSource" Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Self}}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding ElementName=SearchToggleButton, Path=IsChecked}" Value="True">
-                            <Setter TargetName="TextBoxPlaceHolder" Property="Text" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.StartsWith, Mode=OneWay}" />
+                            <Setter TargetName="TextBoxPlaceHolder" Property="Text" Value="{Binding Translate.StartsWith, Mode=OneWay}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ElementName=SearchToggleButton, Path=IsChecked}" Value="False">
-                            <Setter TargetName="TextBoxPlaceHolder" Property="Text" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.Contains, Mode=OneWay}" />
+                            <Setter TargetName="TextBoxPlaceHolder" Property="Text" Value="{Binding Translate.Contains, Mode=OneWay}" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
