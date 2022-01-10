@@ -5,6 +5,11 @@ https://kramdown.gettalong.org/quickref.html
 -->
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
 
+<!-- [![Github All Releases](https://img.shields.io/github/downloads/<-- User Name-->/<-- Your Repo Name-->/total.svg)]() -->
+
+[![Github All Releases](https://img.shields.io/github/downloads/macgile/DataGridFilter/total.svg)]()
+
+
 # WPF Filterable DataGrid, multi language
 ![datagrid image demo](FilterDataGrid.png)  
 
