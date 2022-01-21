@@ -99,7 +99,7 @@ namespace FilterDataGrid
                         { Local.English, "Search (startswith)" },
                         { Local.French,  "Rechercher (commence par)" },
                         { Local.German,  "Suche (beginnen mit)" },
-                        { Local.Italian, "Cerca (iniziare con)" },
+                        { Local.Italian, "Cerca (inizia con)" },
                         { Local.Russian, "Искать (hачни с)" },
                     }
                 },
@@ -149,7 +149,7 @@ namespace FilterDataGrid
                         { Local.English, "{0:n0} record(s) found on {1:n0}" },
                         { Local.French,  "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}" },
                         { Local.German,  "{0:n0} zeilen angezeigt von {1:n0}" },
-                        { Local.Italian, "{0:n0} record trovati su {1:n0}" },
+                        { Local.Italian, "{0:n0} oggetti trovati su {1:n0}" },
                         { Local.Russian, "{0:n0} записей найдено на {1:n0}" },
                     }
                 },
