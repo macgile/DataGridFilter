@@ -41,7 +41,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
 		  - **ShowRowsCount** : *display the number of rows*, default : false  
 		  - **DateFormatString** : *date display format*, default : "d" 
-		  > You must delete the time or set it to zero in the DateTime field, otherwise the filter does not work.    
+		  > You must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.    
 [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 		  - **FilterLanguage** : *translation into available language*, default : English   
 
