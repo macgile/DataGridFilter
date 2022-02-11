@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;NET472</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
@@ -30,7 +30,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;NET472</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
@@ -50,34 +50,6 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
-  <!--<ItemGroup>
-    <Page Include="Themes\FilterDataGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>-->
-  <!--<ItemGroup>
-    <Compile Include="DataGridColumn.cs" />
-    <Compile Include="FilterCommon.cs" />
-    <Compile Include="FilterDataGrid.cs" />
-    <Compile Include="FilterHelpers.cs" />
-    <Compile Include="FilterItem.cs" />
-    <Compile Include="Loc.cs" />
-    <Compile Include="StringFormatConverter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>-->
-  <ItemGroup>
-    <Resource Include="Readme.txt" />
-  </ItemGroup>
-  <!--<ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>-->
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

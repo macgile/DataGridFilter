@@ -10,7 +10,7 @@
             BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
                                                            ResourceId=FilterDataGridStyle}}"
             TargetType="{x:Type control:FilterDataGrid}">
-            <Setter Property="Margin" Value="10,10,0,2" />
+            <Setter Property="Margin" Value="10,0,0,0" />
             <Setter Property="AlternatingRowBackground" Value="WhiteSmoke" />
             <Setter Property="AlternationCount" Value="2" />
             <Setter Property="Background" Value="Transparent" />

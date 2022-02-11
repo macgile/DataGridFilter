@@ -16,4 +16,6 @@
                                      FilterDataGridStyle}"
         BasedOn="{StaticResource {x:Type control:FilterDataGrid}}"
         TargetType="{x:Type control:FilterDataGrid}" />
+
+
 </ResourceDictionary>

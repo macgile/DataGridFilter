@@ -27,6 +27,22 @@ using System.Windows.Media;
 
 namespace FilterDataGrid
 {
+    public class FilterState : DependencyObject
+    {
+        public static readonly DependencyProperty IsFilteredProperty = DependencyProperty.RegisterAttached("IsFiltered",
+            typeof(bool), typeof(FilterState), new UIPropertyMetadata(false));
+
+        public static bool GetIsFiltered(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsFilteredProperty);
+        }
+
+        public static void SetIsFiltered(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsFilteredProperty, value);
+        }
+    }
+
     public static class Extensions
     {
         #region Public Methods
@@ -61,7 +77,7 @@ namespace FilterDataGrid
     {
         #region Private Methods
 
-        private static T FindVisualChild<T>(this DependencyObject dependencyObject, string name)
+        public static T FindVisualChild<T>(this DependencyObject dependencyObject, string name)
                     where T : DependencyObject
         {
             // Search immediate children first (breadth-first)
@@ -146,6 +162,7 @@ namespace FilterDataGrid
             //if it's not a ContentElement/FrameworkElement, rely on VisualTreeHelper
             return VisualTreeHelper.GetParent(child);
         }
+
         #endregion Private Methods
 
         #region Public Methods
@@ -360,6 +377,7 @@ namespace FilterDataGrid
                 return parent;
             return TryFindParent<T>(parentObject);
         }
+
         #endregion Public Methods
     }
 

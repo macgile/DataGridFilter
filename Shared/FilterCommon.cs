@@ -13,7 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Controls;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InvalidXmlDocComment
 // ReSharper disable TooManyChainedReferences
 // ReSharper disable ExcessiveIndentation
@@ -33,6 +35,7 @@ namespace FilterDataGrid
         public FilterCommon()
         {
             PreviouslyFilteredItems = new HashSet<object>(EqualityComparer<object>.Default);
+            IsFiltered = false;
         }
 
         #endregion Public Constructors
@@ -314,13 +317,13 @@ namespace FilterDataGrid
                             select new FilterItem
                             {
                                 Content = new DateTime((int)y.Content, (int)m.Content, (int)d.Content),
-                                IsChecked = d.IsChecked ?? false,
+                                IsChecked = d.IsChecked ?? false
                             });
                     else // null date (Level -1)
                         filterCommon.Add(new FilterItem
                         {
                             Content = null,
-                            IsChecked = y.IsChecked ?? false,
+                            IsChecked = y.IsChecked ?? false
                         });
             }
             catch (Exception ex)

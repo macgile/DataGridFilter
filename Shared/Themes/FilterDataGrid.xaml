@@ -404,6 +404,45 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
+    <!--  FILTER BUTTON CONTROLTEMPLATE  -->
+    <ControlTemplate x:Key="ButtonControlTemplate" TargetType="{x:Type Button}">
+
+        <Border
+            x:Name="BorderButton"
+            Padding="2"
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}"
+            SnapsToDevicePixels="True"
+            UseLayoutRounding="True">
+            <Path
+                x:Name="PathFilterIcon"
+                Margin="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Data="{StaticResource Filter}"
+                Fill="DarkSlateGray"
+                Stretch="Uniform" />
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="control:FilterState.IsFiltered" Value="True">
+                <Setter TargetName="PathFilterIcon" Property="Data" Value="{StaticResource FilterSet}" />
+                <Setter Property="Background" Value="White" />
+                <Setter Property="Opacity" Value="1" />
+            </Trigger>
+            <Trigger Property="control:FilterState.IsFiltered" Value="False">
+                <Setter TargetName="PathFilterIcon" Property="Data" Value="{StaticResource Filter}" />
+                <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="PathFilterIcon" Property="Fill" Value="Black" />
+                <Setter Property="BorderBrush" Value="DarkSlateGray" />
+                <Setter Property="Background" Value="White" />
+                <Setter Property="Opacity" Value="1" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
     <!--  DATATEMPLATE OF DATAGRIDCOLUMNHEADER  -->
     <DataTemplate x:Key="DataGridHeaderTemplate">
 
@@ -424,45 +463,27 @@
                 <!--  RENDER THE HEADER TEXT  -->
                 <TextBlock Grid.Column="0" Text="{Binding}" />
 
-                <!--  FILTER BUTTON  -->
+                <!--
+                    FILTER BUTTON
+                    FilterState.IsFiltered => Attached Property : see FilterHelpers.cs
+                -->
                 <Button
                     Name="filterButton"
                     Grid.Column="1"
                     Width="19"
                     Height="19"
-                    Background="Transparent"
-                    BorderBrush="DarkGray"
+                    control:FilterState.IsFiltered="False"
                     BorderThickness="1"
                     Command="{x:Static control:FilterDataGrid.ShowFilter}"
                     Cursor="Hand"
-                    Opacity="0.5"
-                    OverridesDefaultStyle="True"
                     SnapsToDevicePixels="True"
                     UseLayoutRounding="True">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border
-                                            Padding="2"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="1"
-                                            SnapsToDevicePixels="True"
-                                            UseLayoutRounding="True">
-                                            <Path
-                                                x:Name="PathFilterIcon"
-                                                Margin="0"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Data="{StaticResource Filter}"
-                                                Fill="DarkSlateGray"
-                                                Stretch="Uniform" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Opacity" Value="0.5" />
+                            <Setter Property="BorderBrush" Value="DarkGray" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template" Value="{StaticResource ButtonControlTemplate}" />
                         </Style>
                     </Button.Style>
                 </Button>
@@ -498,17 +519,15 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <!--  BUTTON CLEAR FILTER  -->
+                        <!--  Row 0: BUTTON CLEAR FILTER  -->
                         <Button
                             x:Name="ClearFilterBnt"
-                            Grid.Row="2"
+                            Grid.Row="0"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
                             Margin="2,10,2,2"
@@ -532,7 +551,10 @@
                                                     BorderThickness="0"
                                                     SnapsToDevicePixels="True"
                                                     UseLayoutRounding="True">
-                                                    <Grid x:Name="ContentGrid" Background="Transparent">
+                                                    <Grid
+                                                        x:Name="ContentGrid"
+                                                        Background="Transparent"
+                                                        ShowGridLines="False">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto" />
                                                             <ColumnDefinition Width="*" />
@@ -541,10 +563,10 @@
                                                             Grid.Column="0"
                                                             Width="16"
                                                             Margin="0,0,10,0"
+                                                            HorizontalAlignment="Center"
                                                             Data="{StaticResource FilterDelete}"
                                                             Fill="{TemplateBinding Foreground}"
                                                             Stretch="Uniform" />
-
                                                         <TextBlock
                                                             x:Name="ContentPresenter"
                                                             Grid.Column="1"
@@ -567,6 +589,7 @@
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="BorderContent" Property="Background" Value="#F0F0F0" />
+                                                        <Setter Property="Cursor" Value="Hand" />
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
                                                         <Setter TargetName="BorderContent" Property="Background">
@@ -590,16 +613,16 @@
                             </Button.Style>
                         </Button>
 
-                        <!--  SEPARATOR  -->
+                        <!--  Row 1: SEPARATOR  -->
                         <Separator
-                            Grid.Row="3"
+                            Grid.Row="1"
                             Grid.Column="1"
                             Margin="0,2"
                             Background="LightGray" />
 
-                        <!--  SEARCH BOX  -->
+                        <!--  Row 2: SEARCH BOX  -->
                         <Border
-                            Grid.Row="4"
+                            Grid.Row="2"
                             Grid.Column="1"
                             Margin="0,4,4,2"
                             Padding="0,2"
@@ -634,15 +657,16 @@
                             </Grid>
                         </Border>
 
-                        <!--  ICON (current filter is set)  -->
+                        <!--  Row 3: ICON (filter is active)  -->
                         <Path
                             x:Name="PathIsFiltered"
-                            Grid.Row="5"
+                            Grid.Row="3"
                             Grid.Column="0"
                             Width="19"
                             Height="20"
                             Margin="0,5,0,0"
                             VerticalAlignment="Top"
+                            Panel.ZIndex="0"
                             Data="{StaticResource FilterChecked}"
                             Fill="DarkSlateGray"
                             Stretch="Fill"
@@ -660,101 +684,98 @@
                             </Path.Style>
                         </Path>
 
-                        <!--  LISTBOX / TREEVIEW  -->
-                        <Border
-                            Grid.Row="5"
+                        <!--  Row 3: (LISTBOX/TREEVIEW)  -->
+                        <Grid
+                            x:Name="GridItemControl"
+                            Grid.Row="3"
                             Grid.Column="1"
-                            Margin="0,4,4,4"
-                            BorderThickness="0">
+                            Margin="0,4,4,4">
 
-                            <Grid x:Name="GridItemControl">
+                            <ListBox
+                                x:Name="PopupListBox"
+                                Grid.Row="0"
+                                Padding="2"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                BorderBrush="LightGray"
+                                BorderThickness="1"
+                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                Visibility="Collapsed">
+                                <ListBox.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <!--
+                                        ContentStringFormat="{}{0}"
+                                        Content="{Binding Label, ConverterCulture=en-US}"
+                                        ContentStringFormat="F2, en-US"
+                                        the value of the label is a string, so it cannot be formatted
+                                    -->
+                                    <DataTemplate DataType="{x:Type control:FilterItem}">
+                                        <CheckBox
+                                            x:Name="CheckBox"
+                                            Width="Auto"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            Command="{x:Static control:FilterDataGrid.IsChecked}"
+                                            CommandParameter="{Binding}"
+                                            Content="{Binding Label}"
+                                            FontWeight="Normal"
+                                            IsChecked="{Binding IsChecked}"
+                                            IsThreeState="False" />
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Level}" Value="1">
+                                                <Setter TargetName="CheckBox" Property="Margin" Value="4,0,0,0" />
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
-                                <ListBox
-                                    x:Name="PopupListBox"
-                                    Grid.Row="0"
-                                    Padding="2"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    BorderBrush="LightGray"
-                                    BorderThickness="1"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                    Visibility="Collapsed">
-                                    <ListBox.ItemContainerStyle>
-                                        <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="{x:Type ListBoxItem}">
-                                            <Setter Property="HorizontalContentAlignment" Value="Left" />
-                                            <Setter Property="VerticalContentAlignment" Value="Center" />
-                                        </Style>
-                                    </ListBox.ItemContainerStyle>
-                                    <ListBox.ItemTemplate>
-                                        <!--
-                                            ContentStringFormat="{}{0}"
-                                            Content="{Binding Label, ConverterCulture=en-US}"
-                                            ContentStringFormat="F2, en-US"
-                                            the value of the label is a string, so it cannot be formatted
-                                        -->
-                                        <DataTemplate DataType="{x:Type control:FilterItem}">
+                            <TreeView
+                                x:Name="PopupTreeview"
+                                Grid.Row="0"
+                                BorderBrush="LightGray"
+                                BorderThickness="1"
+                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                Visibility="Collapsed">
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate DataType="control:FilterItem" ItemsSource="{Binding Children}">
+                                        <StackPanel Orientation="Horizontal">
                                             <CheckBox
-                                                x:Name="CheckBox"
-                                                Width="Auto"
-                                                HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                Command="{x:Static control:FilterDataGrid.IsChecked}"
-                                                CommandParameter="{Binding}"
-                                                Content="{Binding Label}"
-                                                FontWeight="Normal"
-                                                IsChecked="{Binding IsChecked}"
-                                                IsThreeState="False" />
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding Level}" Value="1">
-                                                    <Setter TargetName="CheckBox" Property="Margin" Value="4,0,0,0" />
-                                                </DataTrigger>
-                                            </DataTemplate.Triggers>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                                x:Name="CheckBoxTree"
+                                                VerticalAlignment="Center"
+                                                Focusable="False"
+                                                IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" />
+                                            <ContentPresenter Margin="2" Content="{Binding Label}" />
+                                        </StackPanel>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Level}" Value="1">
+                                                <Setter TargetName="CheckBoxTree" Property="Margin" Value="4,0,0,0" />
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                                <TreeView.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
+                                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                                        <Setter Property="IsExpanded" Value="False" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                            </TreeView>
+                        </Grid>
 
-                                <TreeView
-                                    x:Name="PopupTreeview"
-                                    Grid.Row="0"
-                                    BorderBrush="LightGray"
-                                    BorderThickness="1"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                    Visibility="Collapsed">
-                                    <TreeView.ItemTemplate>
-                                        <HierarchicalDataTemplate DataType="control:FilterItem" ItemsSource="{Binding Children}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <CheckBox
-                                                    x:Name="CheckBoxTree"
-                                                    VerticalAlignment="Center"
-                                                    Focusable="False"
-                                                    IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" />
-                                                <ContentPresenter Margin="2" Content="{Binding Label}" />
-                                            </StackPanel>
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding Level}" Value="1">
-                                                    <Setter TargetName="CheckBoxTree" Property="Margin" Value="4,0,0,0" />
-                                                </DataTrigger>
-                                            </DataTemplate.Triggers>
-                                        </HierarchicalDataTemplate>
-                                    </TreeView.ItemTemplate>
-                                    <TreeView.ItemContainerStyle>
-                                        <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
-                                            <Setter Property="OverridesDefaultStyle" Value="True" />
-                                            <Setter Property="IsExpanded" Value="False" />
-                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </Style>
-                                    </TreeView.ItemContainerStyle>
-                                </TreeView>
-                            </Grid>
-                        </Border>
-
-                        <!--  OK/CANCEL BUTTON  -->
+                        <!--  Row 4: OK/CANCEL BUTTON  -->
                         <UniformGrid
-                            Grid.Row="6"
+                            Grid.Row="4"
                             Grid.Column="1"
                             Margin="0,6,4,6"
                             HorizontalAlignment="Right"
@@ -777,10 +798,10 @@
                                 Content="{Binding Translate.Cancel}" />
                         </UniformGrid>
 
-                        <!--  RESIZE GRIP  -->
+                        <!--  Row 5: RESIZE GRIP  -->
                         <Thumb
                             x:Name="PopupThumb"
-                            Grid.Row="7"
+                            Grid.Row="5"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
                             Width="20"

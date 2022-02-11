@@ -32,12 +32,14 @@
       Translation of labels and formatting of dates in the available languages : English, French, Russian, German, Italian, Chinese, Dutch.
     </Description>
     <PackageTags>DataGrid Excel Filter WPF C# Control .Net Free</PackageTags>
-    <PackageReleaseNotes>Port to .Net 5.0.
-Adding search operators "StartWith" and "Contains"
-Adding of the "ShowRowsCount" property which allows to display the row numbers.
-Ability to create a global custom style based on the original FilterDataGrid style.
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>
+</PackageReleaseNotes>
     <Version>1.2.5</Version>
+    <PackageLicenseExpression></PackageLicenseExpression>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0-windows|AnyCPU'">
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,6 +51,10 @@ Ability to create a global custom style based on the original FilterDataGrid sty
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+      <None Include="..\Shared\Readme.txt">
+          <Pack>True</Pack>
+          <PackagePath></PackagePath>
+      </None>
   </ItemGroup>
 
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
