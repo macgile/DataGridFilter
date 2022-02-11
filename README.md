@@ -41,7 +41,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 		  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
 		  - **ShowRowsCount** : *display the number of rows*, default : false  
 		  - **DateFormatString** : *date display format*, default : "d" 
-		  > :warning:You must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.    
+		  > :warning: You must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.    
                   [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 		  - **FilterLanguage** : *translation into available language*, default : English   
 
@@ -55,7 +55,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 		    <control:DataGridTextColumn IsColumnFiltered="True" ...
 		```
 	  - **Custom TemplateColumn**  
-	    > ***FieldName** property of **DataGridTemplateColumn** is required*   
+	    > :warning: ***FieldName** property of **DataGridTemplateColumn** is required*   
 	    
 		```xml
 		<control:FilterDataGrid.Columns>   
