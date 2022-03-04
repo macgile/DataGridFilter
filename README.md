@@ -2,10 +2,15 @@
 Edited
 https://dillinger.io/
 https://kramdown.gettalong.org/quickref.html
+https://shields.io/category/version
 -->
 # WPF Filterable DataGrid, multi language
 
+<!--
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
+-->
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter?include_prereleases)
 
 ![datagrid image demo](FilterDataGrid.png)  
 
