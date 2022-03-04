@@ -390,7 +390,7 @@ namespace FilterDataGrid
                     column.Binding.StringFormat = DateFormatString;
 
                 // add DataGridHeaderTemplate template if not excluded
-                if (excludedFields?.FindIndex(c => string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
+                if (excludedFields?.FindIndex(c => string.Equals(c.Trim(), e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
                 {
                     column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
                     column.IsColumnFiltered = true;
