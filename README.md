@@ -45,13 +45,12 @@ To understand how the filter works, you can consult the article posted on [CodeP
   - **ShowStatusBar** : *displays the status bar*, default : false  
   - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
   - **ShowRowsCount** : *display the number of rows*, default : false  
+  - **FilterLanguage** : *translation into available language*, default : English  
+  - **ExcludeFields** : *list of fields to exclude separated by commas, only works in AutoGenerateColumns mode*  
   - **DateFormatString** : *date display format*, default : "d"  
 
   > :warning: You must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
 [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
-
-  - **FilterLanguage** : *translation into available language*, default : English  
-  - **ExcludeFields** : *list of fields to exclude separated by commas, only works in AutoGenerateColumns mode*  
 
 - **Custom TextColumn**
      > *If you add custom columns, you must set **AutoGenerateColumns="False"***
