@@ -25,7 +25,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 // ReSharper disable InlineTemporaryVariable
-
 // ReSharper disable UnusedMember.Local
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable ArrangeAccessorOwnerBody
@@ -34,7 +33,8 @@ using System.Windows.Threading;
 // ReSharper disable CheckNamespace
 
 // https://stackoverflow.com/questions/3685566/wpf-using-resizegrip-to-resize-controls
-// https://www.c-sharpcorner.com/UploadFile/mahesh/binding-static-properties-in-wpf-4-5/ https://www.csharp-examples.net/string-format-datetime/
+// https://www.c-sharpcorner.com/UploadFile/mahesh/binding-static-properties-in-wpf-4-5/
+// https://www.csharp-examples.net/string-format-datetime/
 
 namespace FilterDataGrid
 {
@@ -94,6 +94,15 @@ namespace FilterDataGrid
         #endregion Command
 
         #region Public DependencyProperty
+
+        /// <summary>
+        /// Excluded Fields on AutoColumn
+        /// </summary>
+        public static readonly DependencyProperty ExcludeFieldsProperty =
+            DependencyProperty.Register("ExcludeFields",
+                typeof(string),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(""));
 
         /// <summary>
         ///     date format displayed
@@ -165,8 +174,8 @@ namespace FilterDataGrid
         private Grid sizableContentGrid;
 
         private List<object> sourceObjectList;
+        private List<string> excludedFields;
 
-        private ListBox listBox;
         private Point popUpSize;
         private Popup popup;
 
@@ -177,7 +186,9 @@ namespace FilterDataGrid
         private Thumb thumb;
 
         private TimeSpan elased;
+
         private TreeView treeview;
+        private ListBox listBox;
 
         private Type collectionType;
         private Type fieldType;
@@ -191,6 +202,15 @@ namespace FilterDataGrid
         #endregion Private Fields
 
         #region Public Properties
+
+        /// <summary>
+        /// Excluded Fileds
+        /// </summary>
+        public string ExcludeFields
+        {
+            get { return (string)GetValue(ExcludeFieldsProperty); }
+            set { SetValue(ExcludeFieldsProperty, value); }
+        }
 
         /// <summary>
         ///     String begins with the specified character. Used in popup searchBox
@@ -324,7 +344,11 @@ namespace FilterDataGrid
                 Translate = new Loc { Language = FilterLanguage };
 
                 // Show row count
-                RowHeaderWidth = ShowRowsCount ? RowHeaderWidth > 0 ? RowHeaderWidth : double.NaN : 0;
+                RowHeaderWidth = ShowRowsCount ? double.NaN : 0;
+
+                // fill excluded Fields list with values
+                if (AutoGenerateColumns)
+                    excludedFields = ExcludeFields.Split(',').ToList();
 
                 // sorting event
                 Sorted += OnSorted;
@@ -355,8 +379,7 @@ namespace FilterDataGrid
                     Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture /* StringFormat */ },
                     FieldName = e.PropertyName,
                     Header = e.Column.Header.ToString(),
-                    HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate"),
-                    IsColumnFiltered = true
+                    IsColumnFiltered = false
                 };
 
                 // get type
@@ -365,6 +388,13 @@ namespace FilterDataGrid
                 // apply the format string provided
                 if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
                     column.Binding.StringFormat = DateFormatString;
+
+                // add DataGridHeaderTemplate template if not excluded
+                if (excludedFields?.FindIndex(c => string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
+                {
+                    column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+                    column.IsColumnFiltered = true;
+                }
 
                 e.Column = column;
             }
@@ -1007,7 +1037,8 @@ namespace FilterDataGrid
                     if (lastFilter == CurrentFilter.FieldName)
                         sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems);
 
-                    // sorting is a slow operation, using ParallelQuery TODO : AggregateException when user can add row
+                    // sorting is a slow operation, using ParallelQuery
+                    // TODO : AggregateException when user can add row
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
 
                     // empty item flag
@@ -1069,6 +1100,7 @@ namespace FilterDataGrid
                 // the DataTemplateSelector doesn't work well with large
                 // size collections, the loading time is extremely long, that's why the "item
                 // source" property is populated by code behind.
+
                 if (fieldType == typeof(DateTime))
                 {
                     treeview = VisualTreeHelpers.FindChild<TreeView>(popup.Child, "PopupTreeview");

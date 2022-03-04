@@ -22,7 +22,6 @@
             <Setter Property="BorderBrush" Value="LightSlateGray" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="IsReadOnly" Value="True" />
-            <Setter Property="RowHeaderWidth" Value="40" />
         </Style>
     </Application.Resources>
 </Application>
