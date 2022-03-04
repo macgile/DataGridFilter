@@ -38,7 +38,8 @@ To understand how the filter works, you can consult the article posted on [CodeP
 
 ```xml
   <control:FilterDataGrid 
-   FilterLanguage="English" DateFormatString="d" ShowStatusBar="True" ShowElapsedTime="False" ...
+   FilterLanguage="English" DateFormatString="d" ShowStatusBar="True" ShowElapsedTime="False"
+   ExcludeFields="lastname,age,manager" ...
 ```
 
 - Properties
