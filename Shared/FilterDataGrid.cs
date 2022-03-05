@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 // ReSharper disable InlineTemporaryVariable
@@ -344,7 +345,8 @@ namespace FilterDataGrid
                 Translate = new Loc { Language = FilterLanguage };
 
                 // Show row count
-                RowHeaderWidth = ShowRowsCount ? double.NaN : 0;
+                // RowHeaderWidth = ShowRowsCount ? double.NaN : 0;
+                RowHeaderWidth = ShowRowsCount ? RowHeaderWidth > 0 ? RowHeaderWidth : double.NaN : 0;
 
                 // fill excluded Fields list with values
                 if (AutoGenerateColumns)
@@ -420,7 +422,7 @@ namespace FilterDataGrid
             {
                 if (newValue == null) return;
 
-                // reset current filter
+                // reset current filter, !important
                 CurrentFilter = null;
 
                 // reset GlobalFilterList list
@@ -431,7 +433,7 @@ namespace FilterDataGrid
 
                 CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(ItemsSource);
 
-                // set Filter thank's Stefan Heimel for this contribution
+                // set Filter, STEFAN HEIMEL contribution
                 if (CollectionViewSource.CanFilter) CollectionViewSource.Filter = Filter;
 
                 ItemsSourceCount = Items.Count;
@@ -441,10 +443,19 @@ namespace FilterDataGrid
 
                 // get collection type
                 if (ItemsSourceCount > 0)
-                    // Apflkuacha contribution
+                {
+                    // APFLKUACHA contribution
                     collectionType = ItemsSource is ICollectionView collectionView
                         ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
                         : ItemsSource?.GetType().GenericTypeArguments.FirstOrDefault();
+                }
+
+                // scroll to top on reload collection
+                if (oldValue != null && VisualTreeHelper.GetChild(this, 0) is Decorator border)
+                {
+                    var scrollViewer = VisualTreeHelpers.FindChild<ScrollViewer>(border, "DG_ScrollViewer");
+                    scrollViewer?.ScrollToTop();
+                }
 
                 // generating custom columns
                 if (!AutoGenerateColumns && collectionType != null) GeneratingCustomsColumn();
@@ -481,7 +492,7 @@ namespace FilterDataGrid
         #region Private Methods
 
         /// <summary>
-        ///     Handle Mousedown (contribution : wordiboi)
+        ///     Handle Mousedown, WORDIBOI : contribution
         /// </summary>
         private readonly MouseButtonEventHandler onMousedown = (o, eArgs) => { eArgs.Handled = true; };
 
@@ -929,6 +940,10 @@ namespace FilterDataGrid
 
                 if (Items.Count == 0 || button == null) return;
 
+                // OTTOSSON : contribution
+                // for the moment this functionality is not tested, I do not know if it can cause unexpected effects
+                CommitEdit(DataGridEditingUnit.Row, true);
+
                 // navigate up to the current header and get column type
                 var header = VisualTreeHelpers.FindAncestor<DataGridColumnHeader>(button);
                 var columnType = header.Column.GetType();
@@ -941,7 +956,7 @@ namespace FilterDataGrid
                 // popup handle event
                 popup.Closed += PopupClosed;
 
-                // disable popup background clickthrough (contribution : wordiboi)
+                // disable popup background clickthrough, WORDIBOI : contribution
                 popup.MouseDown += onMousedown;
 
                 // disable datagrid while popup is open
@@ -1022,7 +1037,7 @@ namespace FilterDataGrid
                 // get the list of values distinct from the list of raw values of the current column
                 await Task.Run(() =>
                 {
-                    // thank's Stefan Heimel for this contribution
+                    // STEFAN HEIMEL  contribution
                     Dispatcher.Invoke(() =>
                     {
                         sourceObjectList = Items.Cast<object>()
@@ -1309,7 +1324,7 @@ namespace FilterDataGrid
                 popup.VerticalOffset = -1d;
                 popup.Placement = PlacementMode.Bottom;
 
-                // get the host window of the datagrid thank's Stefan Heimel for this contribution
+                // get the host window of the datagrid, STEFAN HEIMEL contribution
                 var hostingWindow = Window.GetWindow(this);
 
                 if (hostingWindow != null)

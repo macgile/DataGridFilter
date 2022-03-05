@@ -267,7 +267,7 @@
                             Padding="0,0,2,0"
                             HorizontalAlignment="Left"
                             Panel.ZIndex="0"
-                            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=ItemsSourceCount, UpdateSourceTrigger=PropertyChanged}"
                             Visibility="Hidden" />
 
                         <TextBlock Panel.ZIndex="1" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Header}" />
