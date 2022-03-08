@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace DataGridFilterWPF
+namespace DemoAppNet5
 {
    /// <summary>
    /// Interaction logic for App.xaml

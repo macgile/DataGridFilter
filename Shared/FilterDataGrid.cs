@@ -345,12 +345,11 @@ namespace FilterDataGrid
                 Translate = new Loc { Language = FilterLanguage };
 
                 // Show row count
-                // RowHeaderWidth = ShowRowsCount ? double.NaN : 0;
                 RowHeaderWidth = ShowRowsCount ? RowHeaderWidth > 0 ? RowHeaderWidth : double.NaN : 0;
 
                 // fill excluded Fields list with values
                 if (AutoGenerateColumns)
-                    excludedFields = ExcludeFields.Split(',').ToList();
+                    excludedFields = ExcludeFields.Split(',').Select(p => p.Trim()).ToList();
 
                 // sorting event
                 Sorted += OnSorted;
@@ -392,7 +391,7 @@ namespace FilterDataGrid
                     column.Binding.StringFormat = DateFormatString;
 
                 // add DataGridHeaderTemplate template if not excluded
-                if (excludedFields?.FindIndex(c => string.Equals(c.Trim(), e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
+                if (excludedFields?.FindIndex(c => string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
                 {
                     column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
                     column.IsColumnFiltered = true;
@@ -790,18 +789,18 @@ namespace FilterDataGrid
 
             // unsubscribe from event and re-enable datagrid
             pop.MouseDown -= onMousedown;
-            IsEnabled = true;
+            thumb.DragCompleted -= OnResizeThumbDragCompleted;
+            thumb.DragDelta -= OnResizeThumbDragDelta;
+            thumb.DragStarted -= OnResizeThumbDragStarted;
+            searchTextBox.TextChanged -= SearchTextBoxOnTextChanged;
+            pop.Closed -= PopupClosed;
 
             sizableContentGrid.Width = sizableContentWidth;
             sizableContentGrid.Height = sizableContentHeight;
             Cursor = cursor;
 
-            // fix resize grip: unsubscribe event
-            thumb.DragCompleted -= OnResizeThumbDragCompleted;
-            thumb.DragDelta -= OnResizeThumbDragDelta;
-            thumb.DragStarted -= OnResizeThumbDragStarted;
-
-            pop.Closed -= PopupClosed;
+            // re-enable datagrid
+            IsEnabled = true;
         }
 
         /// <summary>
@@ -823,11 +822,9 @@ namespace FilterDataGrid
 
             if (CurrentFilter.IsFiltered && criteria.Remove(CurrentFilter.FieldName))
                 CollectionViewSource.Refresh();
-
-            CurrentFilter.IsFiltered = false;
-
+                
             if (GlobalFilterList.Contains(CurrentFilter))
-                GlobalFilterList.Remove(CurrentFilter);
+                _ = GlobalFilterList.Remove(CurrentFilter);
 
             CurrentFilter = null;
 
@@ -942,7 +939,7 @@ namespace FilterDataGrid
 
                 // OTTOSSON : contribution
                 // for the moment this functionality is not tested, I do not know if it can cause unexpected effects
-                CommitEdit(DataGridEditingUnit.Row, true);
+                _ = CommitEdit(DataGridEditingUnit.Row, true);
 
                 // navigate up to the current header and get column type
                 var header = VisualTreeHelpers.FindAncestor<DataGridColumnHeader>(button);

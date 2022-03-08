@@ -33,7 +33,11 @@ namespace FilterDataGrid
 
                 var stringFormat = values[0].ToString();
 
-                return string.Format(stringFormat, values.Skip(1).ToArray());
+                // the last item of values array is culture
+                if (parameter != null && parameter.Equals("Culture"))
+                    culture = values.LastOrDefault() != null ? (CultureInfo)values.Last() : culture;
+
+                return string.Format(culture, stringFormat, values.Skip(1).ToArray());
             }
             catch (FormatException ex)
             {

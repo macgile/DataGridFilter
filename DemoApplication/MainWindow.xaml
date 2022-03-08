@@ -94,7 +94,7 @@
                     SortMemberPath="LastName">
                     <control:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="local:Employe">
-                            <TextBlock Text="{Binding LastName}" Padding="2,0" />
+                            <TextBlock Padding="2,0" Text="{Binding LastName}" />
                         </DataTemplate>
                     </control:DataGridTemplateColumn.CellTemplate>
                 </control:DataGridTemplateColumn>
@@ -150,10 +150,10 @@
             x:Name="FilterDataGridAuto"
             Grid.Row="4"
             AutoGenerateColumns="True"
+            ExcludeFields="lastname, age, manager"
             FilterLanguage="Italian"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             ShowElapsedTime="True"
-            ExcludeFields="lastname, age, manager"
             ShowRowsCount="True"
             ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}" />

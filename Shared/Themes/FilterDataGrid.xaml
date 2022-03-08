@@ -15,12 +15,6 @@
 
     <!--  https://yqnn.github.io/svg-path-editor/  -->
 
-    <Style
-        x:Key="StyleCount"
-        BasedOn="{StaticResource {x:Type TextBlock}}"
-        TargetType="TextBlock" />
-
-
     <!--  FILTER SET ICON  -->
     <Geometry x:Key="FilterSet">
         M 0 17 H 12 L 6 25 Z M 6 0 H 29 L 29 3 L 20 10 L 20 21 H 15 L 15 10 L 6 3 Z
@@ -277,6 +271,7 @@
             </Setter.Value>
         </Setter>
 
+        <!--  DATAGRID TEMPLATE -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGrid}">
@@ -384,10 +379,11 @@
                                     <!--  RESULT STATUS  -->
                                     <TextBlock HorizontalAlignment="Left">
                                         <TextBlock.Text>
-                                            <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                            <MultiBinding Converter="{StaticResource StringFormatConverter}" ConverterParameter="Culture">
                                                 <Binding Path="Translate.Status" />
                                                 <Binding Path="Items.Count" UpdateSourceTrigger="PropertyChanged" />
                                                 <Binding Path="ItemsSourceCount" />
+                                                <Binding Path="Translate.Culture" />
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
@@ -395,9 +391,10 @@
                                     <!--  ELAPSED TIME  -->
                                     <TextBlock HorizontalAlignment="Right">
                                         <TextBlock.Text>
-                                            <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                            <MultiBinding Converter="{StaticResource StringFormatConverter}" ConverterParameter="Culture">
                                                 <Binding Path="Translate.ElapsedTime" UpdateSourceTrigger="PropertyChanged" />
                                                 <Binding Path="ElapsedTime" />
+                                                <Binding Path="Translate.Culture" />
                                             </MultiBinding>
                                         </TextBlock.Text>
                                         <TextBlock.Style>
@@ -594,13 +591,14 @@
                                                             HorizontalAlignment="Stretch"
                                                             DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
                                                             <TextBlock.Text>
-                                                                <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                                <MultiBinding Converter="{StaticResource StringFormatConverter}" ConverterParameter="Culture">
                                                                     <MultiBinding.Bindings>
                                                                         <Binding
                                                                             Path="Translate.Clear"
                                                                             TargetNullValue=""
                                                                             UpdateSourceTrigger="PropertyChanged" />
                                                                         <Binding ElementName="ClearFilterBnt" Path="Content" />
+                                                                        <Binding Path="Translate.Culture" />
                                                                     </MultiBinding.Bindings>
                                                                 </MultiBinding>
                                                             </TextBlock.Text>
