@@ -177,6 +177,19 @@ namespace FilterDataGrid
                         { Local.Polish,  "Zajęło {0:mm}:{0:ss}.{0:ff}" },
                         { Local.Russian, "Пройденное время {0:mm}:{0:ss}.{0:ff}" }
                     }
+                },
+                {
+                    "Neutral", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "{0}" },
+                        { Local.Dutch,   "{0}" },
+                        { Local.English, "{0}" },
+                        { Local.French,  "{0}" },
+                        { Local.German,  "{0}" },
+                        { Local.Italian, "{0}" },
+                        { Local.Polish,  "{0}" },
+                        { Local.Russian, "{0}" }
+                    }
                 }
             };
 
@@ -228,6 +241,8 @@ namespace FilterDataGrid
         public string Status => Translate("Status");
 
         public string Toggle => Translate("Toggle");
+
+        public string Neutral => Translate("Neutral");
 
         #endregion Public Properties
 

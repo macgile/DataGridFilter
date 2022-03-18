@@ -637,22 +637,23 @@
                                     </Style>
                                 </ListBox.ItemContainerStyle>
                                 <ListBox.ItemTemplate>
-                                    <!--
-                                        ContentStringFormat="{}{0}"
-                                        Content="{Binding Label, ConverterCulture=en-US}"
-                                        ContentStringFormat="F2, en-US"
-                                        the value of the label is a string, so it cannot be formatted
-                                    -->
                                     <DataTemplate DataType="{x:Type control:FilterItem}">
                                         <CheckBox
                                             x:Name="CheckBox" Width="Auto"
                                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                                             Command="{x:Static control:FilterDataGrid.IsChecked}"
                                             CommandParameter="{Binding}"
-                                            Content="{Binding Label}"
                                             FontWeight="Normal"
                                             IsChecked="{Binding IsChecked}"
-                                            IsThreeState="False" />
+                                            IsThreeState="False">
+                                            <CheckBox.Content>
+                                                <MultiBinding Converter="{StaticResource StringFormatConverter}" ConverterParameter="Culture">
+                                                    <Binding Path="Translate.Neutral" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
+                                                    <Binding Path="Label" />
+                                                    <Binding Path="Translate.Culture" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
+                                                </MultiBinding>
+                                            </CheckBox.Content>
+                                        </CheckBox>
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding Level}" Value="1">
                                                 <Setter TargetName="CheckBox" Property="Margin" Value="4,0,0,0" />
