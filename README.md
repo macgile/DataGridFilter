@@ -55,7 +55,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
   - **ExcludeFields** : *list of fields to exclude separated by commas, only works in AutoGenerateColumns mode*  
   - **DateFormatString** : *date display format*, default : "d"  
 
-  > :warning: You must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
+  > :warning: Before version 1.2.5.2, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
 [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 
 - **Custom TextColumn**
