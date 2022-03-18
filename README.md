@@ -54,7 +54,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
   - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
   - **ShowRowsCount** : *display the number of rows*, default : false  
   - **FilterLanguage** : *translation into available language*, default : English  
-  - **ExcludeFields** : *list of fields to exclude separated by commas, only works in AutoGenerateColumns mode*  
+  - **ExcludeFields** : *comma separated list of fields to exclude from the filter, only works in AutoGenerateColumns mode*  
   - **DateFormatString** : *date display format*, default : "d"  
 
   > :warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
