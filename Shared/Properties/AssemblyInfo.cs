@@ -66,6 +66,6 @@ using System.Windows.Markup;
 // see https://marinovdh.wordpress.com/2018/10/22/68/
 // for the incremental version, modified in the project file, set true to false : <Deterministic>false</Deterministic>
 
-[assembly: AssemblyVersion("1.2.5.1")]
-[assembly: AssemblyFileVersion("1.2.5.1")]
+[assembly: AssemblyVersion("1.2.5.2")]
+[assembly: AssemblyFileVersion("1.2.5.2")]
 [assembly: NeutralResourcesLanguage("")]
