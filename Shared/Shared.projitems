@@ -12,7 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DataGridColumn.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FilterCommon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FilterDataGrid.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FilterDataGridDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FilterHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FilterItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Loc.cs" />

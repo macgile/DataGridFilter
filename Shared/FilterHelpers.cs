@@ -27,10 +27,20 @@ using System.Windows.Media;
 
 namespace FilterDataGrid
 {
+
+    /// <summary>
+    /// Attached Property "FilterState" to Filter Button
+    /// </summary>
     public class FilterState : DependencyObject
     {
+        #region Public Fields
+
         public static readonly DependencyProperty IsFilteredProperty = DependencyProperty.RegisterAttached("IsFiltered",
             typeof(bool), typeof(FilterState), new UIPropertyMetadata(false));
+
+        #endregion Public Fields
+
+        #region Public Methods
 
         public static bool GetIsFiltered(DependencyObject obj)
         {
@@ -41,6 +51,8 @@ namespace FilterDataGrid
         {
             obj.SetValue(IsFilteredProperty, value);
         }
+
+        #endregion Public Methods
     }
 
     public static class Extensions

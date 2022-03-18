@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 
 // ReSharper disable CheckNamespace
 
@@ -65,7 +66,7 @@ namespace DemoApplication.ModelView
                 // age
                 Rnd.Next(18, 75) * 1,
                 // start date
-                Rnd.Next(0, 10) != 1 ? new DateTime(2015 + Rnd.Next(4), Rnd.Next(12) + 1, Rnd.Next(28) + 1) : (DateTime?)null,
+                Rnd.Next(0, 10) != 1 ? new DateTime(2015 + Rnd.Next(4), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
                 // is manager
                 Rnd.Next() % 2 == 1);
             return emp;
@@ -96,7 +97,7 @@ namespace DemoApplication.ModelView
             var name = "";
 
             // Capitalize the first letter
-            name += Consonants[Rnd.Next(Consonants.Length)].ToUpper();
+            name += Consonants[Rnd.Next(Consonants.Length)].ToUpper(CultureInfo.CurrentCulture);
             name += Vowels[Rnd.Next(Vowels.Length)];
 
             var nameLength = name.Length;

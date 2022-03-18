@@ -15,6 +15,7 @@ namespace FilterDataGrid
         French,
         German,
         Italian,
+        Polish,
         Russian
     }
 
@@ -33,6 +34,7 @@ namespace FilterDataGrid
             { Local.French,  "fr-FR" },
             { Local.German,  "de-DE" },
             { Local.Italian, "it-IT" },
+            { Local.Polish,  "pl-PL" },
             { Local.Russian, "ru-RU" }
         };
 
@@ -51,6 +53,7 @@ namespace FilterDataGrid
                         { Local.French,  "(Sélectionner tout)" },
                         { Local.German,  "(Alle auswählen)" },
                         { Local.Italian, "(Seleziona tutto)" },
+                        { Local.Polish, "(Zaznacz wszystkie)" },
                         { Local.Russian, "(Выбрать все)" }
                     }
                 },
@@ -63,6 +66,7 @@ namespace FilterDataGrid
                         { Local.French,  "(Vides)" },
                         { Local.German,  "(Leer)" },
                         { Local.Italian, "(Vuoto)" },
+                        { Local.Polish, "(Pusty)" },
                         { Local.Russian, "(Заготовки)" }
                     }
                 },
@@ -75,6 +79,7 @@ namespace FilterDataGrid
                         { Local.French,  "Effacer le filtre \"{0}\"" },
                         { Local.German,  "Filter löschen \"{0}\"" },
                         { Local.Italian, "Cancella filtro \"{0}\"" },
+                        { Local.Polish, "Wyczyść filtr \"{0}\"" },
                         { Local.Russian, "Очистить фильтр \"{0}\"" }
                     }
                 },
@@ -88,6 +93,7 @@ namespace FilterDataGrid
                         { Local.French,  "Rechercher (contient)" },
                         { Local.German,  "Suche (enthält)" },
                         { Local.Italian, "Cerca (contiene)" },
+                        { Local.Polish, "Szukaj (zawiera)" },
                         { Local.Russian, "Искать (содержит)" }
                     }
                 },
@@ -101,6 +107,7 @@ namespace FilterDataGrid
                         { Local.French,  "Rechercher (commence par)" },
                         { Local.German,  "Suche (beginnen mit)" },
                         { Local.Italian, "Cerca (inizia con)" },
+                        { Local.Polish, "Szukaj (zaczyna się od)" },
                         { Local.Russian, "Искать (hачни с)" }
                     }
                 },
@@ -114,6 +121,7 @@ namespace FilterDataGrid
                         { Local.French,  "Basculer contient/commence par" },
                         { Local.German,  "Toggle enthält/beginnt mit" },
                         { Local.Italian, "Toggle contiene/inizia con" },
+                        { Local.Polish,  "Przełącz zawiera/zaczyna się od" },
                         { Local.Russian, "Переключить содержит/начинается с" }
                     }
                 },
@@ -127,6 +135,7 @@ namespace FilterDataGrid
                         { Local.French,  "Ok" },
                         { Local.German,  "Ok" },
                         { Local.Italian, "Ok" },
+                        { Local.Polish,  "Ok" },
                         { Local.Russian, "Ok" }
                     }
                 },
@@ -139,6 +148,7 @@ namespace FilterDataGrid
                         { Local.French,  "Annuler" },
                         { Local.German,  "Abbrechen" },
                         { Local.Italian, "Annulla" },
+                        { Local.Polish,  "Anuluj" },
                         { Local.Russian, "Отмена" }
                     }
                 },
@@ -151,6 +161,7 @@ namespace FilterDataGrid
                         { Local.French,  "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}" },
                         { Local.German,  "{0:n0} zeilen angezeigt von {1:n0}" },
                         { Local.Italian, "{0:n0} oggetti trovati su {1:n0}" },
+                        { Local.Polish,  "{0:n0} rekord(y) znaleziony(e) w {1:n0}" },
                         { Local.Russian, "{0:n0} записей найдено на {1:n0}" }
                     }
                 },
@@ -163,6 +174,7 @@ namespace FilterDataGrid
                         { Local.French,  "Temps écoulé {0:mm}:{0:ss}.{0:ff}" },
                         { Local.German,  "Verstrichene Zeit {0:mm}:{0:ss}.{0:ff}" },
                         { Local.Italian, "Tempo trascorso {0:mm}:{0:ss}.{0:ff}" },
+                        { Local.Polish,  "Zajęło {0:mm}:{0:ss}.{0:ff}" },
                         { Local.Russian, "Пройденное время {0:mm}:{0:ss}.{0:ff}" }
                     }
                 }

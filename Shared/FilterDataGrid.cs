@@ -2,10 +2,10 @@
 
 // Author     : Gilles Macabies
 // Solution   : FilterDataGrid
-// Projet     : FilterDataGrid
+// Projet     : FilterDataGrid.Net5.0
 // File       : FilterDataGrid.cs
-// Created    : 21/12/2021
-//
+// Created    : 06/03/2022
+// 
 
 #endregion
 
@@ -22,7 +22,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 // ReSharper disable InlineTemporaryVariable
@@ -48,7 +47,8 @@ namespace FilterDataGrid
 
         static FilterDataGrid()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(FilterDataGrid), new FrameworkPropertyMetadata(typeof(FilterDataGrid)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(FilterDataGrid),
+                new FrameworkPropertyMetadata(typeof(FilterDataGrid)));
         }
 
         /// <summary>
@@ -59,7 +59,13 @@ namespace FilterDataGrid
             Debug.WriteLineIf(DebugMode, "Constructor");
 
             // load resources
-            Resources = new FilterDataGridDictionary();
+            var resourcesDico = new ResourceDictionary
+            {
+                Source = new Uri("/FilterDataGrid;component/Themes/FilterDataGrid.xaml",
+                    UriKind.RelativeOrAbsolute)
+            };
+
+            Resources.MergedDictionaries.Add(resourcesDico);
 
             // initial popup size
             popUpSize = new Point
@@ -97,7 +103,7 @@ namespace FilterDataGrid
         #region Public DependencyProperty
 
         /// <summary>
-        /// Excluded Fields on AutoColumn
+        ///     Excluded Fields on AutoColumn
         /// </summary>
         public static readonly DependencyProperty ExcludeFieldsProperty =
             DependencyProperty.Register("ExcludeFields",
@@ -205,7 +211,7 @@ namespace FilterDataGrid
         #region Public Properties
 
         /// <summary>
-        /// Excluded Fileds
+        ///     Excluded Fileds
         /// </summary>
         public string ExcludeFields
         {
@@ -296,6 +302,11 @@ namespace FilterDataGrid
         ///     Instance of Loc
         /// </summary>
         public Loc Translate { get; private set; }
+
+        /// <summary>
+        ///     Row header size when ShowRowsCount is true
+        /// </summary>
+        public double RowHeaderSize { get; set; }
 
         #endregion Public Properties
 
@@ -391,7 +402,8 @@ namespace FilterDataGrid
                     column.Binding.StringFormat = DateFormatString;
 
                 // add DataGridHeaderTemplate template if not excluded
-                if (excludedFields?.FindIndex(c => string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
+                if (excludedFields?.FindIndex(c =>
+                        string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
                 {
                     column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
                     column.IsColumnFiltered = true;
@@ -420,7 +432,7 @@ namespace FilterDataGrid
             try
             {
                 if (newValue == null) return;
-
+                
                 // reset current filter, !important
                 CurrentFilter = null;
 
@@ -436,23 +448,35 @@ namespace FilterDataGrid
                 if (CollectionViewSource.CanFilter) CollectionViewSource.Filter = Filter;
 
                 ItemsSourceCount = Items.Count;
+                ElapsedTime = new TimeSpan(0, 0, 0);
                 OnPropertyChanged("ItemsSourceCount");
 
-                ElapsedTime = new TimeSpan(0, 0, 0);
+                // Calculate row header width
+                if (ShowRowsCount)
+                {
+                    var txt = new TextBlock
+                    {
+                        Text = ItemsSourceCount.ToString(),
+                        FontSize = FontSize,
+                        FontFamily = FontFamily,
+                        Margin = new Thickness(2.0)
+                    };
+                    txt.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    RowHeaderSize = Math.Ceiling(txt.DesiredSize.Width);
+                    OnPropertyChanged("RowHeaderSize");
+                }
 
                 // get collection type
                 if (ItemsSourceCount > 0)
-                {
                     // APFLKUACHA contribution
                     collectionType = ItemsSource is ICollectionView collectionView
                         ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
                         : ItemsSource?.GetType().GenericTypeArguments.FirstOrDefault();
-                }
 
                 // scroll to top on reload collection
-                if (oldValue != null && VisualTreeHelper.GetChild(this, 0) is Decorator border)
+                if (oldValue != null)
                 {
-                    var scrollViewer = VisualTreeHelpers.FindChild<ScrollViewer>(border, "DG_ScrollViewer");
+                    var scrollViewer = GetTemplateChild("DG_ScrollViewer") as ScrollViewer;
                     scrollViewer?.ScrollToTop();
                 }
 
@@ -484,7 +508,10 @@ namespace FilterDataGrid
         ///     Adding Rows count
         /// </summary>
         /// <param name="e"></param>
-        protected override void OnLoadingRow(DataGridRowEventArgs e) => e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+        protected override void OnLoadingRow(DataGridRowEventArgs e)
+        {
+            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+        }
 
         #endregion Protected Methods
 
@@ -519,11 +546,9 @@ namespace FilterDataGrid
                     if (col.HeaderTemplate != null)
                     {
                         // reset filter Button
-                        Button buttonFilter = VisualTreeHelpers.GetHeader(col, this)?.FindVisualChild<Button>("filterButton");
-                        if (buttonFilter != null)
-                        {
-                            FilterState.SetIsFiltered(buttonFilter, false);
-                        }
+                        var buttonFilter = VisualTreeHelpers.GetHeader(col, this)
+                            ?.FindVisualChild<Button>("FilterButton");
+                        if (buttonFilter != null) FilterState.SetIsFiltered(buttonFilter, false);
                     }
                     else
                     {
@@ -680,9 +705,8 @@ namespace FilterDataGrid
 
             // only when the item[0] (select all) is checked or unchecked
             if (item?.Id != 0 || ItemCollectionView == null) return;
-
-            foreach (var obj in PopupViewItems.ToList()
-                         .Where(f => f.IsChecked != item.IsChecked))
+            
+            foreach (var obj in PopupViewItems.ToList().Where(f => f.IsChecked != item.IsChecked))
                 obj.IsChecked = item.IsChecked;
         }
 
@@ -784,6 +808,7 @@ namespace FilterDataGrid
                 // clear resources
                 sourceObjectList = null;
                 ItemCollectionView = null;
+                CurrentFilter = null;
                 ReactivateSorting();
             }
 
@@ -808,6 +833,8 @@ namespace FilterDataGrid
         /// </summary>
         private void RemoveCurrentFilter()
         {
+            Debug.WriteLineIf(DebugMode, "RemoveCurrentFilter");
+
             if (CurrentFilter == null) return;
 
             popup.IsOpen = false;
@@ -820,13 +847,9 @@ namespace FilterDataGrid
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            if (CurrentFilter.IsFiltered && criteria.Remove(CurrentFilter.FieldName))
-                CollectionViewSource.Refresh();
-                
-            if (GlobalFilterList.Contains(CurrentFilter))
-                _ = GlobalFilterList.Remove(CurrentFilter);
+            if (CurrentFilter.IsFiltered && criteria.Remove(CurrentFilter.FieldName)) CollectionViewSource.Refresh();
 
-            CurrentFilter = null;
+            if (GlobalFilterList.Contains(CurrentFilter)) _ = GlobalFilterList.Remove(CurrentFilter);
 
             // set the last filter applied
             lastFilter = GlobalFilterList.LastOrDefault()?.FieldName;
@@ -855,13 +878,13 @@ namespace FilterDataGrid
         {
             var item = (FilterItem)obj;
             if (string.IsNullOrEmpty(searchText) || item == null || item.Id == 0) return true;
-
+            
             // Contains
             if (!StartsWith)
                 return item.FieldType == typeof(DateTime)
                     ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                     .IndexOf(searchText, ordinalIgnoreCase) >= 0
-                    : item.Content?.ToString().IndexOf(searchText, ordinalIgnoreCase) >= 0;
+                    : item.Content?.ToString()?.IndexOf(searchText, ordinalIgnoreCase) >= 0;
 
             // StartsWith preserve RangeOverflow
             if (searchLength > item.ContentLength) return false;
@@ -869,7 +892,7 @@ namespace FilterDataGrid
             return item.FieldType == typeof(DateTime)
                 ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                 .IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >= 0
-                : item.Content?.ToString().IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >=
+                : item.Content?.ToString()?.IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >=
                   0;
         }
 
@@ -1034,36 +1057,46 @@ namespace FilterDataGrid
                 // get the list of values distinct from the list of raw values of the current column
                 await Task.Run(() =>
                 {
+                    // empty item flag
+                    var emptyItem = false;
+
                     // STEFAN HEIMEL  contribution
                     Dispatcher.Invoke(() =>
                     {
-                        sourceObjectList = Items.Cast<object>()
-                            .Select(x => x.GetType().GetProperty(fieldName)?.GetValue(x, null))
-                            .Distinct() // clear duplicate values first
-                            .Select(item => item)
-                            .ToList();
+                        if (fieldType == typeof(DateTime))
+                            // possible distinct values because time part is removed
+                            sourceObjectList = Items.Cast<object>()
+                                .Select(x =>
+                                    (object)((DateTime?)x.GetType().GetProperty(fieldName)?.GetValue(x, null))?.Date)
+                                .Distinct() // clear duplicate values first
+                                .ToList();
+                        else
+                            sourceObjectList = Items.Cast<object>()
+                                .Select(x => x.GetType().GetProperty(fieldName)?.GetValue(x, null))
+                                .Distinct() // clear duplicate values first
+                                .ToList();
+
+                        // if it exists, remove them from the list
+                        if (sourceObjectList.Any(l => l == null || l.Equals(string.Empty) || l.Equals(null)))
+                        {
+                            // item = null && items = "" => the empty string is not filtered. the solution is to add an empty string to the element to
+                            // filter, see ApplyFilterCommand method
+                            emptyItem = true;
+                            sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty));
+                        }
                     });
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems) displays new (checked) and
                     // already filtered (unchecked) items PreviouslyFilteredItems is a HashSet of objects
                     if (lastFilter == CurrentFilter.FieldName)
-                        sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems);
+                    {
+                        var except = new[] { null, string.Empty };
+                        sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems.Except(except));
+                    }
 
                     // sorting is a slow operation, using ParallelQuery
                     // TODO : AggregateException when user can add row
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
-
-                    // empty item flag
-                    var emptyItem = false;
-
-                    // if it exists, remove them from the list
-                    if (sourceObjectList.Any(l => string.IsNullOrEmpty(l?.ToString())))
-                    {
-                        // item = null && items = "" => the empty string is not filtered. the solution is to add an empty string to the element to
-                        // filter, see ApplyFilterCommand method
-                        emptyItem = true;
-                        sourceObjectList.RemoveAll(v => v == null || string.IsNullOrEmpty(v.ToString()));
-                    }
 
                     // add the first element (select all) at the top of list
                     filterItemList = new List<FilterItem>(sourceObjectList.Count + 2)
@@ -1071,26 +1104,19 @@ namespace FilterDataGrid
                         new FilterItem { Label = Translate.All, IsChecked = true }
                     };
 
-                    // add all items to the filterItemList filterItemList is used only for search and string list, the dates list is computed by FilterCommon.BuildTree
-                    for (var i = 0; i < sourceObjectList.Count; i++)
+                    // add all items to the filterItemList filterItemList is used only for search and string list,
+                    // the dates list is computed by FilterCommon.BuildTree
+                    filterItemList.AddRange(sourceObjectList.Select((item, index) => new FilterItem
                     {
-                        var item = sourceObjectList[i];
-                        var filterItem = new FilterItem
-                        {
-                            Id = filterItemList.Count,
-                            FieldType = fieldType,
-                            Content = item, // raw value
-                            Label = item?.ToString(), // Content displayed
-                            ContentLength = item?.ToString().Length ?? 0,
-                            Level = 1,
-
-                            // check or uncheck if the content of current item exists in the list of previously filtered items SetState doesn't raise
-                            // OnpropertyChanged notification
-                            SetState = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
-                        };
-
-                        filterItemList.Add(filterItem);
-                    }
+                        Id = index + 1,
+                        Content = item,
+                        FieldType = fieldType,
+                        Label = item.ToString(),
+                        // ReSharper disable once PossibleNullReferenceException
+                        ContentLength = string.IsNullOrEmpty(item.ToString()) ? 0 : item.ToString().Length,
+                        Level = 1,
+                        SetState = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
+                    }));
 
                     // add a empty item(if exist) at the bottom of the list
                     if (emptyItem)
@@ -1301,6 +1327,7 @@ namespace FilterDataGrid
                 ReactivateSorting();
                 ResetCursor();
                 pending = false;
+                CurrentFilter = null;
                 ElapsedTime = elased.Add(DateTime.Now - start);
 
                 Debug.WriteLineIf(DebugMode, $"Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
@@ -1327,7 +1354,10 @@ namespace FilterDataGrid
                 if (hostingWindow != null)
                 {
                     // greater than or equal to 0.0
-                    double MaxSize(double size) => (size >= 0.0d) ? size : 0.0d;
+                    double MaxSize(double size)
+                    {
+                        return size >= 0.0d ? size : 0.0d;
+                    }
 
                     const double border = 1d;
 

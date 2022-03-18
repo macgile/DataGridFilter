@@ -59,14 +59,14 @@ namespace DemoAppNet5.ModelView
         {
             // distinct lastName or not
             var emp = new Employe
-                (distinct ? GenerateName() : LastNames[Rnd.Next(LastNames.Length)],
+            (distinct ? GenerateName() : LastNames[Rnd.Next(LastNames.Length)],
                 FirstNames[Rnd.Next(FirstNames.Length)],
                 // salary
                 Math.Round(Rnd.NextDouble() * (300 - 100) + 100, 1),
                 // age
-                Rnd.Next(18, 75),
+                Rnd.Next(18, 75) * 1,
                 // start date
-                Rnd.Next(0, 10) != 1 ? new DateTime(2015 + Rnd.Next(4), Rnd.Next(12) + 1, Rnd.Next(28) + 1) : null,
+                Rnd.Next(0, 10) != 1 ? new DateTime(2015 + Rnd.Next(4), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
                 // is manager
                 Rnd.Next() % 2 == 1);
             return emp;
