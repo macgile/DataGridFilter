@@ -112,6 +112,21 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 
 ## Contributors
 
+<!--
+![avatar](https://images.weserv.nl/?url=https://avatars.githubusercontent.com/u/31316050?v=4)
+url=avatars.githubusercontent.com/u/65769327?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d
+![Apflkuacha](https://github.com/Apflkuacha)
+![](https://avatars.githubusercontent.com/u/31316050?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d)
+![](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/65769327?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d)
+-->
+
+<a href="https://github.com/Apflkuacha" target="_blank">
+  <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/31316050?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d" />
+</a>
+<a href="https://github.com/wordiboi" target="_blank">
+  <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/15075279?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d" />
+</a>
+
 <a href="https://github.com/macgile/DataGridFilter/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=macgile/DataGridFilter" />
 </a>
