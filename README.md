@@ -11,7 +11,8 @@ https://shields.io/category/version
 -->
 
 ![Nuget package](https://img.shields.io/nuget/v/FilterDataGrid)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter?include_prereleases)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter?include_prereleases)  
+
 ![datagrid image demo](FilterDataGrid.png)  
 
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
