@@ -946,7 +946,6 @@ namespace FilterDataGrid
             Debug.WriteLineIf(DebugMode, "\r\nShowFilterCommand");
 
             // reset previous elapsed time
-            ElapsedTime = new TimeSpan(0, 0, 0);
             var start = DateTime.Now;
 
             // clear search text (!important)

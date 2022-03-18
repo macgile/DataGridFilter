@@ -151,7 +151,7 @@
             Grid.Row="4"
             AutoGenerateColumns="True"
             ExcludeFields="lastname, age, manager"
-            FilterLanguage="Italian"
+            FilterLanguage="Polish"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             ShowElapsedTime="True"
             ShowRowsCount="True"
