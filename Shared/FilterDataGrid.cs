@@ -45,17 +45,13 @@ namespace FilterDataGrid
     {
         #region Constructors
 
-        static FilterDataGrid()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(FilterDataGrid),
-                new FrameworkPropertyMetadata(typeof(FilterDataGrid)));
-        }
-
         /// <summary>
         ///     FilterDataGrid constructor
         /// </summary>
         public FilterDataGrid()
         {
+            DefaultStyleKey = typeof(FilterDataGrid);
+
             Debug.WriteLineIf(DebugMode, "Constructor");
 
             // load resources
@@ -444,7 +440,7 @@ namespace FilterDataGrid
 
                 CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(ItemsSource);
 
-                // set Filter, STEFAN HEIMEL contribution
+                // set Filter, contribution : STEFAN HEIMEL
                 if (CollectionViewSource.CanFilter) CollectionViewSource.Filter = Filter;
 
                 ItemsSourceCount = Items.Count;
@@ -454,13 +450,7 @@ namespace FilterDataGrid
                 // Calculate row header width
                 if (ShowRowsCount)
                 {
-                    var txt = new TextBlock
-                    {
-                        Text = ItemsSourceCount.ToString(),
-                        FontSize = FontSize,
-                        FontFamily = FontFamily,
-                        Margin = new Thickness(2.0)
-                    };
+                    TextBlock txt = new TextBlock { Text = ItemsSourceCount.ToString(), FontSize = FontSize, FontFamily = FontFamily, Margin = new Thickness(2.0) };
                     txt.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                     RowHeaderSize = Math.Ceiling(txt.DesiredSize.Width);
                     OnPropertyChanged("RowHeaderSize");
@@ -468,10 +458,12 @@ namespace FilterDataGrid
 
                 // get collection type
                 if (ItemsSourceCount > 0)
-                    // APFLKUACHA contribution
+                {
+                    // contribution : APFLKUACHA 
                     collectionType = ItemsSource is ICollectionView collectionView
                         ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
                         : ItemsSource?.GetType().GenericTypeArguments.FirstOrDefault();
+                }
 
                 // scroll to top on reload collection
                 if (oldValue != null)
@@ -508,17 +500,14 @@ namespace FilterDataGrid
         ///     Adding Rows count
         /// </summary>
         /// <param name="e"></param>
-        protected override void OnLoadingRow(DataGridRowEventArgs e)
-        {
-            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
-        }
+        protected override void OnLoadingRow(DataGridRowEventArgs e) => e.Row.Header = (e.Row.GetIndex() + 1).ToString();
 
         #endregion Protected Methods
 
         #region Private Methods
 
         /// <summary>
-        ///     Handle Mousedown, WORDIBOI : contribution
+        ///     Handle Mousedown, contribution : WORDIBOI
         /// </summary>
         private readonly MouseButtonEventHandler onMousedown = (o, eArgs) => { eArgs.Handled = true; };
 
@@ -705,8 +694,9 @@ namespace FilterDataGrid
 
             // only when the item[0] (select all) is checked or unchecked
             if (item?.Id != 0 || ItemCollectionView == null) return;
-            
-            foreach (var obj in PopupViewItems.ToList().Where(f => f.IsChecked != item.IsChecked))
+
+            foreach (var obj in PopupViewItems.ToList()
+                         .Where(f => f.IsChecked != item.IsChecked))
                 obj.IsChecked = item.IsChecked;
         }
 
@@ -847,14 +837,18 @@ namespace FilterDataGrid
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            if (CurrentFilter.IsFiltered && criteria.Remove(CurrentFilter.FieldName)) CollectionViewSource.Refresh();
+            if (CurrentFilter.IsFiltered && criteria.Remove(CurrentFilter.FieldName))
+                CollectionViewSource.Refresh();
 
-            if (GlobalFilterList.Contains(CurrentFilter)) _ = GlobalFilterList.Remove(CurrentFilter);
+            if (GlobalFilterList.Contains(CurrentFilter))
+                _ = GlobalFilterList.Remove(CurrentFilter);
 
             // set the last filter applied
             lastFilter = GlobalFilterList.LastOrDefault()?.FieldName;
 
             ElapsedTime = DateTime.Now - start;
+
+            CurrentFilter.IsFiltered = false;
 
             ResetCursor();
         }
@@ -884,7 +878,7 @@ namespace FilterDataGrid
                 return item.FieldType == typeof(DateTime)
                     ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                     .IndexOf(searchText, ordinalIgnoreCase) >= 0
-                    : item.Content?.ToString()?.IndexOf(searchText, ordinalIgnoreCase) >= 0;
+                    : item.Content?.ToString().IndexOf(searchText, ordinalIgnoreCase) >= 0;
 
             // StartsWith preserve RangeOverflow
             if (searchLength > item.ContentLength) return false;
@@ -892,7 +886,7 @@ namespace FilterDataGrid
             return item.FieldType == typeof(DateTime)
                 ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                 .IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >= 0
-                : item.Content?.ToString()?.IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >=
+                : item.Content?.ToString().IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >=
                   0;
         }
 
@@ -959,7 +953,7 @@ namespace FilterDataGrid
 
                 if (Items.Count == 0 || button == null) return;
 
-                // OTTOSSON : contribution
+                // contribution : OTTOSSON
                 // for the moment this functionality is not tested, I do not know if it can cause unexpected effects
                 _ = CommitEdit(DataGridEditingUnit.Row, true);
 
@@ -975,7 +969,7 @@ namespace FilterDataGrid
                 // popup handle event
                 popup.Closed += PopupClosed;
 
-                // disable popup background clickthrough, WORDIBOI : contribution
+                // disable popup background clickthrough, contribution : WORDIBOI
                 popup.MouseDown += onMousedown;
 
                 // disable datagrid while popup is open
@@ -1059,38 +1053,39 @@ namespace FilterDataGrid
                     // empty item flag
                     var emptyItem = false;
 
-                    // STEFAN HEIMEL  contribution
+                    // contribution : STEFAN HEIMEL
                     Dispatcher.Invoke(() =>
                     {
                         if (fieldType == typeof(DateTime))
+                        {
                             // possible distinct values because time part is removed
                             sourceObjectList = Items.Cast<object>()
-                                .Select(x =>
-                                    (object)((DateTime?)x.GetType().GetProperty(fieldName)?.GetValue(x, null))?.Date)
-                                .Distinct() // clear duplicate values first
+                                .Select(x => (object)((DateTime?)x.GetType().GetProperty(fieldName)?.GetValue(x, null))?.Date)
+                                .Distinct()
                                 .ToList();
+                        }
                         else
+                        {
                             sourceObjectList = Items.Cast<object>()
                                 .Select(x => x.GetType().GetProperty(fieldName)?.GetValue(x, null))
-                                .Distinct() // clear duplicate values first
+                                .Distinct()
                                 .ToList();
-
-                        // if it exists, remove them from the list
-                        if (sourceObjectList.Any(l => l == null || l.Equals(string.Empty) || l.Equals(null)))
-                        {
-                            // item = null && items = "" => the empty string is not filtered. the solution is to add an empty string to the element to
-                            // filter, see ApplyFilterCommand method
-                            emptyItem = true;
-                            sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty));
                         }
                     });
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems) displays new (checked) and
-                    // already filtered (unchecked) items PreviouslyFilteredItems is a HashSet of objects
                     if (lastFilter == CurrentFilter.FieldName)
                     {
-                        var except = new[] { null, string.Empty };
-                        sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems.Except(except));
+                        sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems);
+                    }
+
+                    // if they exist, remove from the list all null objects or empty strings
+                    if (sourceObjectList.Any(l => l == null || l.Equals(string.Empty) || l.Equals(null)))
+                    {
+                        // element = null && "" are two different things but labeled as (Blank)
+                        // in the list of items to be filtered
+                        emptyItem = true;
+                        sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty));
                     }
 
                     // sorting is a slow operation, using ParallelQuery
@@ -1111,8 +1106,7 @@ namespace FilterDataGrid
                         Content = item,
                         FieldType = fieldType,
                         Label = item.ToString(),
-                        // ReSharper disable once PossibleNullReferenceException
-                        ContentLength = string.IsNullOrEmpty(item.ToString()) ? 0 : item.ToString().Length,
+                        ContentLength = item.ToString().Length,
                         Level = 1,
                         SetState = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
                     }));
@@ -1347,16 +1341,13 @@ namespace FilterDataGrid
                 popup.VerticalOffset = -1d;
                 popup.Placement = PlacementMode.Bottom;
 
-                // get the host window of the datagrid, STEFAN HEIMEL contribution
+                // get the host window of the datagrid, contribution : STEFAN HEIMEL
                 var hostingWindow = Window.GetWindow(this);
 
                 if (hostingWindow != null)
                 {
                     // greater than or equal to 0.0
-                    double MaxSize(double size)
-                    {
-                        return size >= 0.0d ? size : 0.0d;
-                    }
+                    double MaxSize(double size) => (size >= 0.0d) ? size : 0.0d;
 
                     const double border = 1d;
 
