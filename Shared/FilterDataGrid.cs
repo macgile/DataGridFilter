@@ -431,10 +431,6 @@ namespace FilterDataGrid
                 // initialize FilterManager
                 filterManager = new FilterManager(Items.Count);
 
-                Debug.WriteLine($"FilterDataGrid : {((IList)newValue).Count}");
-
-                if (newValue == null || ((IList)newValue).Count == 0) return;
-
                 // clear ICollectionView
                 if (DatagridCollectionView != null)
                 {
