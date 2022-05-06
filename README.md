@@ -19,12 +19,6 @@ The new filtering method is completely different from the current version or the
 
 ## How to use
 
-- There are two ways to install :
-
-- NuGet command : **Install-Package FilterDataGrid**
-
-- Or manually add **FilterDataGrid.dll** as reference in your project
-
 - Add **Namespace** into your xaml :  
 
 ```xml
