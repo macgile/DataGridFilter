@@ -87,8 +87,8 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
  --- | --- | --- | ---
 10 000 | < 1 second | < 1 second | < 1 second
 100 000 | < 1 second | < 1 second | < 1 second
-500 000 | ± 2.5 second | < 1 second | ± 2.6 seconds
-1 000 000 | ± 4.5 seconds | < 1 second | ± 4.8 seconds
+500 000 | ± 2.5 second | < 1 second | ± 2.6 second
+1 000 000 | ± 4.5 second | < 1 second | ± 4.8 second
 
 ## Demonstration
 
