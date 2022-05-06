@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30709.64
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilterDataGrid", "FilterDataGrid\FilterDataGrid.csproj", "{1284F448-055D-49B6-9A1B-81E9BBF447C8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApplication", "DemoApplication\DemoApplication.csproj", "{53CE2E6A-AE10-49AA-A9E6-A58728F86776}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilterDataGrid.Net5.0", "FilterDataGrid.Net5.0\FilterDataGrid.Net5.0.csproj", "{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApp.Net5.0", "DemoApp.Net5.0\DemoApp.Net5.0.csproj", "{03366D93-4240-4880-A847-2326A7C324C9}"
@@ -16,7 +12,6 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shared\Shared.projitems*{0a802a01-9adc-423c-a2c3-f296c585e718}*SharedItemsImports = 13
-		Shared\Shared.projitems*{1284f448-055d-49b6-9a1b-81e9bbf447c8}*SharedItemsImports = 4
 		Shared\Shared.projitems*{b9d0f3b2-3921-4f75-a224-5dc84ee7d859}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,14 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1284F448-055D-49B6-9A1B-81E9BBF447C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1284F448-055D-49B6-9A1B-81E9BBF447C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1284F448-055D-49B6-9A1B-81E9BBF447C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1284F448-055D-49B6-9A1B-81E9BBF447C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53CE2E6A-AE10-49AA-A9E6-A58728F86776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53CE2E6A-AE10-49AA-A9E6-A58728F86776}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53CE2E6A-AE10-49AA-A9E6-A58728F86776}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53CE2E6A-AE10-49AA-A9E6-A58728F86776}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Release|Any CPU.ActiveCfg = Release|Any CPU

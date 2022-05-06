@@ -66,7 +66,7 @@ namespace DemoAppNet5.ModelView
                 // age
                 Rnd.Next(18, 75) * 1,
                 // start date
-                Rnd.Next(0, 10) != 1 ? new DateTime(2015 + Rnd.Next(4), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
+                Rnd.Next(0, 10) != 1 ? new DateTime(2010 + Rnd.Next(12), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
                 // is manager
                 Rnd.Next() % 2 == 1);
             return emp;

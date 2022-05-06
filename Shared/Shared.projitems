@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)FilterDataGrid.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FilterHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FilterItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FilterManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Loc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Properties\AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StringFormatConverter.cs" />
