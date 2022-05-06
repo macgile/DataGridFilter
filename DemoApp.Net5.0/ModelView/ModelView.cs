@@ -111,7 +111,6 @@ namespace DemoAppNet5.ModelView
             });
 
             Employes = new ObservableCollection<Employe>(employe/*.AsParallel().OrderBy(o => o.LastName)*/);
-
             FilteredList = new ObservableCollection<Employe>(Employes);
             collView = CollectionViewSource.GetDefaultView(FilteredList);
 
@@ -131,7 +130,7 @@ namespace DemoAppNet5.ModelView
         /// <param name="obj"></param>
         private void RefreshData(object obj)
         {
-            Employes?.Clear();
+           // Employes?.Clear();
             Task.Run(FillData);
         }
 
