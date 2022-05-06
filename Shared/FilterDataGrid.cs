@@ -33,8 +33,6 @@ namespace FilterDataGrid
     /// </summary>
     public sealed class FilterDataGrid : DataGrid, INotifyPropertyChanged
     {
-        #region Public Fields
-
         public static readonly ICommand ApplyFilter = new RoutedCommand();
 
         public static readonly ICommand CancelFilter = new RoutedCommand();
@@ -101,10 +99,6 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata(false));
 
-        #endregion Public Fields
-
-        #region Private Fields
-
         private const bool IsDebugModeOn = false;
 
         /// <summary>
@@ -164,10 +158,6 @@ namespace FilterDataGrid
 
         private Thumb thumb;
 
-        #endregion Private Fields
-
-        #region Public Constructors
-
         /// <summary>
         ///     FilterDataGrid constructor
         /// </summary>
@@ -201,17 +191,9 @@ namespace FilterDataGrid
             CommandBindings.Add(new CommandBinding(ClearSearchBox, ClearSearchBoxClick));
         }
 
-        #endregion Public Constructors
-
-        #region Public Events
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public event EventHandler Sorted;
-
-        #endregion Public Events
-
-        #region Public Properties
 
         /// <summary>
         ///     Date format displayed
@@ -315,10 +297,6 @@ namespace FilterDataGrid
 
         public List<FilterItemDate> TreeviewItems { get; set; } = new List<FilterItemDate>();
 
-        #endregion Public Properties
-
-        #region Private Properties
-
         private ICollectionView DatagridCollectionView { get; set; }
 
         private ICollectionView ItemCollectionView { get; set; }
@@ -328,10 +306,6 @@ namespace FilterDataGrid
 
         private IEnumerable<FilterItem> SourcePopupViewItems =>
             ItemCollectionView?.SourceCollection.Cast<FilterItem>().Skip(1) ?? new List<FilterItem>();
-
-        #endregion Private Properties
-
-        #region Protected Methods
 
         /// <summary>
         ///     Auto generated column, set templateHeader
@@ -508,10 +482,6 @@ namespace FilterDataGrid
             Sorted?.Invoke(this, EventArgs.Empty);
         }
 
-        #endregion Protected Methods
-
-        #region Private Methods
-
         /// <summary>
         ///     Click OK Button when Popup is Open, apply filter
         /// </summary>
@@ -622,7 +592,8 @@ namespace FilterDataGrid
                                         .Select(c => new FilterItem
                                         {
                                             GroupIndex = c.GroupIndex,
-                                            IsChecked = c.IsChecked ?? false
+                                            IsChecked = c.IsChecked ?? false,
+                                            Index = c.Index
                                         }))).ToList();
 
                             // check if the empty item state has been changed
@@ -632,7 +603,8 @@ namespace FilterDataGrid
                                     new FilterItem
                                     {
                                         GroupIndex = empty.GroupIndex,
-                                        IsChecked = empty.IsChecked ?? false
+                                        IsChecked = empty.IsChecked ?? false,
+                                        Index = empty.Index
                                     });
                         }
                     }
@@ -1426,32 +1398,20 @@ namespace FilterDataGrid
 
             if (string.IsNullOrEmpty(searchText) || item == null || item.Level == 0) return true;
 
-            bool result;
-
             // Contains
             if (!StartsWith)
-            {
-                result = item.FieldType == typeof(DateTime)
+                return item.FieldType == typeof(DateTime)
                     ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                     .IndexOf(searchText, ordinalIgnoreCase) >= 0
-                    : item.Content?.ToString().IndexOf(searchText, ordinalIgnoreCase) >= 0;
-
-                //Debug.WriteLine($"item : {item?.Content,-10} {item?.Level,-4} {result,-8} StartsWith :{StartsWith}");
-                return result;
-            }
+                    : item.Content?.ToString()?.IndexOf(searchText, ordinalIgnoreCase) >= 0;
 
             // StartsWith preserve RangeOverflow
             if (searchLength > item.ContentLength) return false;
 
-            result = item.FieldType == typeof(DateTime)
+            return item.FieldType == typeof(DateTime)
                 ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                 .IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >= 0
-                : item.Content?.ToString().IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >=
-                  0;
-
-            //Debug.WriteLine($"item : {item?.Content, -10} {item?.Level, -4} {result, -8} StartsWith :{StartsWith}");
-
-            return result;
+                : item.Content?.ToString()?.IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >= 0;
         }
 
         /// <summary>
@@ -1508,7 +1468,7 @@ namespace FilterDataGrid
                             .ToList()
                             .ForEach(y =>
                             {
-                                var change = changed.FirstOrDefault(x => x.Content.Equals(y.Content));
+                                var change = changed.FirstOrDefault(x => x.Index == y.Index);
                                 if (change != null) y.IsChecked = change.IsChecked;
                             });
 
@@ -1732,7 +1692,5 @@ namespace FilterDataGrid
                 ElapsedTime = stopWatchFilter.Elapsed;
             }
         }
-
-        #endregion Private Methods
     }
 }

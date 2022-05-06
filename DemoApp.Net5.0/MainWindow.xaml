@@ -115,14 +115,15 @@
                     IsColumnFiltered="True" />
 
                 <control:DataGridTextColumn
+                    Binding="{Binding StartDate}"
+                    Header="Start Date"
+                    IsColumnFiltered="True" />
+
+                <control:DataGridTextColumn
                     Binding="{Binding Manager}"
                     Header="Manager"
                     IsColumnFiltered="True" />
 
-                <control:DataGridTextColumn
-                    Binding="{Binding StartDate}"
-                    Header="Start Date"
-                    IsColumnFiltered="True" />
             </control:FilterDataGrid.Columns>
         </control:FilterDataGrid>
 

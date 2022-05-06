@@ -10,22 +10,12 @@ https://shields.io/category/version
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
 -->
 
-![Nuget package](https://img.shields.io/nuget/v/FilterDataGrid)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter?include_prereleases)  
+## Warning, this branch is an experimental version of FilterDataGrid
+
+> Do not use it outside any context of experimentation or testing.  
+The new filtering method is completely different from the current version or the one commonly used to filter data (as far as I know).
 
 ![datagrid image demo](FilterDataGrid.png)  
-
-A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
-for each column like Excel, in automatic or custom generation.  
-
-Translation of labels and formatting of dates in the following languages: **Chinese, Dutch, English, French, German, Italian, Polish, Russian.**
-
- > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
-
-
-The **Nuget package** is available [here](https://www.nuget.org/packages/FilterDataGrid/).
-
-To understand how the filter works, you can consult the article posted on [CodeProject](https://www.codeproject.com/Articles/5292782/WPF-DataGrid-Filterable-multi-language).
 
 ## How to use
 
@@ -103,8 +93,8 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
  --- | --- | --- | ---
 10 000 | < 1 second | < 1 second | < 1 second
 100 000 | < 1 second | < 1 second | < 1 second
-500 000 | ± 1.5 second | ± 1 second | ± 2.5 seconds
-1 000 000 | ± 3 seconds | ± 1.5 seconds | ± 4.5 seconds
+500 000 | ± 2.5 second | < 1 second | ± 2.6 seconds
+1 000 000 | ± 4.5 seconds | < 1 seconds | ± 4.8 seconds
 
 ## Demonstration
 
@@ -126,4 +116,3 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 <a href="https://github.com/macgile/DataGridFilter/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=macgile/DataGridFilter" />
 </a>
-

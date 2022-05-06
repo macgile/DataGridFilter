@@ -1,16 +1,23 @@
-﻿//   Author     : Gilles Macabies
-//   Solution   : DataGridFilter
-//   Projet     : DataGridFilter
-//   File       : ModelView.cs
-//   Created    : 31/10/2019
+﻿#region (c) 2022 Gilles Macabies All right reserved
+
+// Author     : Gilles Macabies
+// Solution   : FilterDataGrid
+// Projet     : DemoApp.Net5.0
+// File       : ModelView.cs
+// Created    : 01/05/2022
+// 
+
+#endregion
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -19,14 +26,6 @@ namespace DemoAppNet5.ModelView
 {
     public class ModelView : INotifyPropertyChanged
     {
-        #region Private Fields
-
-        private ICollectionView collView;
-        private int count;
-        private string search;
-
-        #endregion Private Fields
-
         #region Public Constructors
 
         public ModelView(int num)
@@ -42,6 +41,14 @@ namespace DemoAppNet5.ModelView
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion Public Events
+
+        #region Private Fields
+
+        private ICollectionView collView;
+        private int count;
+        private string search;
+
+        #endregion Private Fields
 
         #region Public Properties
 
@@ -65,7 +72,7 @@ namespace DemoAppNet5.ModelView
         public ICommand RefreshCommand => new DelegateCommand(RefreshData);
 
         /// <summary>
-        /// Global filter
+        ///     Global filter
         /// </summary>
         public string Search
         {
@@ -77,8 +84,9 @@ namespace DemoAppNet5.ModelView
                 collView.Filter = e =>
                 {
                     var item = (Employe)e;
-                    return item != null && ((item.LastName?.StartsWith(search, StringComparison.OrdinalIgnoreCase) ?? false)
-                                            || (item.FirstName?.StartsWith(search, StringComparison.OrdinalIgnoreCase) ?? false));
+                    return item != null &&
+                           ((item.LastName?.StartsWith(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                            || (item.FirstName?.StartsWith(search, StringComparison.OrdinalIgnoreCase) ?? false));
                 };
 
                 collView.Refresh();
@@ -95,7 +103,7 @@ namespace DemoAppNet5.ModelView
         #region Private Methods
 
         /// <summary>
-        /// Fill data
+        ///     Fill data
         /// </summary>
         private async void FillData()
         {
@@ -110,8 +118,8 @@ namespace DemoAppNet5.ModelView
                     employe.Add(RandomGenerator.CreateRandomEmployee(true));
             });
 
-            Employes = new ObservableCollection<Employe>(employe/*.AsParallel().OrderBy(o => o.LastName)*/);
-            FilteredList = new ObservableCollection<Employe>(Employes);
+            Employes = new ObservableCollection<Employe>(employe);
+            FilteredList = new ObservableCollection<Employe>(employe);
             collView = CollectionViewSource.GetDefaultView(FilteredList);
 
             OnPropertyChanged("Search");
@@ -125,12 +133,12 @@ namespace DemoAppNet5.ModelView
         }
 
         /// <summary>
-        /// refresh data
+        ///     refresh data
         /// </summary>
         /// <param name="obj"></param>
         private void RefreshData(object obj)
         {
-           // Employes?.Clear();
+            collView = CollectionViewSource.GetDefaultView(new List());
             Task.Run(FillData);
         }
 

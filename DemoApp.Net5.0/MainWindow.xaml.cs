@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
 
 namespace DemoAppNet5
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    public partial class MainWindow : Window
     {
         #region Public Constructors
 
@@ -22,8 +23,6 @@ namespace DemoAppNet5
             };
 #endif
             var viewModel = new ModelView.ModelView(100_000);
-
-           // Loaded += (s, e) => DataContext = viewModel;
 
             DataContext = viewModel;
         }
