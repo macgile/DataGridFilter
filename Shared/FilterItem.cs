@@ -18,7 +18,6 @@ namespace FilterDataGrid
         #region Public Properties
 
         object Content { get; set; }
-        FilterDataGrid DataFilter { get; set; }
         Type FieldType { get; set; }
         int[] GroupIndex { get; set; }
         int Index { get; set; }
@@ -39,6 +38,7 @@ namespace FilterDataGrid
         public bool IsChecked { get; set; }
         public bool IsPrevious { get; set; }
         public List<int> PreviousIndex { get; set; }
+        public bool IsNull { get; set; }
 
         #endregion Public Properties
     }
@@ -68,7 +68,7 @@ namespace FilterDataGrid
 
         #region Public Events
 
-        public event EventHandler<bool?> EventHappened
+        public event EventHandler<bool?> EventSelectAll
         {
             add => SelectAll += value;
             remove => SelectAll -= value;
@@ -83,8 +83,6 @@ namespace FilterDataGrid
         public object Content { get; set; }
 
         public int ContentLength => Content?.ToString().Length ?? 0;
-
-        public FilterDataGrid DataFilter { get; set; }
 
         public Type FieldType { get; set; }
 
@@ -169,8 +167,6 @@ namespace FilterDataGrid
 
         public object Content { get; set; }
 
-        public FilterDataGrid DataFilter { get; set; }
-
         public Type FieldType { get; set; }
 
         public int[] GroupIndex { get; set; }
@@ -202,6 +198,8 @@ namespace FilterDataGrid
 
         public FilterItemDate Parent { get; set; }
 
+        public FilterItem Item { get; set; }
+        
         public bool State
         {
             get => isChecked == true;
@@ -220,52 +218,27 @@ namespace FilterDataGrid
 
             isChecked = value;
 
-            // warning : appel recursif dans le cas de select all
-
             // triggers nothing!
             IsChanged = initialState != isChecked;
 
-            switch (Level)
+            if (Item != null)
             {
-                // Level == -1 : empty item
-                //case -1:
-                //    DataFilter?.CanApplyFilterCommand();
-                //    break;
-
-                // Level == 0 : Select all / Deselect all
-                case 0:
-                    Tree?.Skip(1).ToList().ForEach(c => { c.SetIsChecked(value, true, true); });
-                    //DataFilter?.CanApplyFilterCommand();
-                    break;
-
-                // Level == 3 : Day level
-                case 3:
-
-                    // when the state of a day changes, it is propagated to the year concerned.
-                    // avoids traversing the entire tree structure to find out if a state has changed
-                    // update day => month => year : Ischanged property
-                    // Month.Year.IsChanged = intialState != state;
-
-                    // triggers nothing!
-                    // month
-                    Parent.IsChanged = IsChanged; // intialState != state;
-                    // year
-                    Parent.Parent.IsChanged = IsChanged; // intialState != state;
-                    break;
+                Item.IsChanged = IsChanged;
+                Item.Initialize = IsChecked == true;
             }
+            
+            if(Level == 0)
+                Tree?.Skip(1).ToList().ForEach(c => { c.SetIsChecked(value, true, true); });
 
-            // state.HasValue => !null
+            // state.HasValue : !null
             if (updateChildren && isChecked.HasValue && Level != -1)
                 Children?.ForEach(c => { c.SetIsChecked(value, true, false); });
-
-            // DataFilter?.CanApplyFilterCommand();
 
             if (updateParent) Parent?.VerifyCheckedState();
 
             OnPropertyChanged(nameof(IsChecked));
         }
 
-        // called by parent: Parent?.VerifyCheckedState()
         private void VerifyCheckedState()
         {
             bool? b = null;

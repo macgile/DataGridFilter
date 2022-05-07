@@ -65,8 +65,8 @@ namespace DemoAppNet5.ModelView
                 Math.Round(Rnd.NextDouble() * (300 - 100) + 100, 1),
                 // age
                 Rnd.Next(18, 75) * 1,
-                // start date
-                Rnd.Next(0, 10) != 1 ? new DateTime(2010 + Rnd.Next(12), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
+                // start date + time
+              Rnd.Next(0, 10) != 1 ? new DateTime(2012 + Rnd.Next(10), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
                 // is manager
                 Rnd.Next() % 2 == 1);
             return emp;

@@ -33,6 +33,8 @@ namespace FilterDataGrid
     /// </summary>
     public sealed class FilterDataGrid : DataGrid, INotifyPropertyChanged
     {
+        #region Public Fields
+
         public static readonly ICommand ApplyFilter = new RoutedCommand();
 
         public static readonly ICommand CancelFilter = new RoutedCommand();
@@ -99,6 +101,10 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata(false));
 
+        #endregion Public Fields
+
+        #region Private Fields
+
         private const bool IsDebugModeOn = false;
 
         /// <summary>
@@ -158,6 +164,10 @@ namespace FilterDataGrid
 
         private Thumb thumb;
 
+        #endregion Private Fields
+
+        #region Public Constructors
+
         /// <summary>
         ///     FilterDataGrid constructor
         /// </summary>
@@ -191,9 +201,17 @@ namespace FilterDataGrid
             CommandBindings.Add(new CommandBinding(ClearSearchBox, ClearSearchBoxClick));
         }
 
+        #endregion Public Constructors
+
+        #region Public Events
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public event EventHandler Sorted;
+
+        #endregion Public Events
+
+        #region Public Properties
 
         /// <summary>
         ///     Date format displayed
@@ -297,15 +315,23 @@ namespace FilterDataGrid
 
         public List<FilterItemDate> TreeviewItems { get; set; } = new List<FilterItemDate>();
 
+        #endregion Public Properties
+
+        #region Private Properties
+
+        private IEnumerable<FilterItem> CommonItemsView =>
+            ItemCollectionView?.OfType<FilterItem>().Skip(1) ?? new List<FilterItem>();
+
+        private IEnumerable<FilterItem> CommonSourceItemsView =>
+            ItemCollectionView?.SourceCollection.OfType<FilterItem>().Skip(1) ?? new List<FilterItem>();
+
         private ICollectionView DatagridCollectionView { get; set; }
 
         private ICollectionView ItemCollectionView { get; set; }
 
-        private IEnumerable<FilterItem> PopupViewItems =>
-            ItemCollectionView?.Cast<FilterItem>().Skip(1) ?? new List<FilterItem>();
+        #endregion Private Properties
 
-        private IEnumerable<FilterItem> SourcePopupViewItems =>
-            ItemCollectionView?.SourceCollection.Cast<FilterItem>().Skip(1) ?? new List<FilterItem>();
+        #region Protected Methods
 
         /// <summary>
         ///     Auto generated column, set templateHeader
@@ -401,9 +427,12 @@ namespace FilterDataGrid
             try
             {
                 ElapsedTime = new TimeSpan(0, 0, 0);
-
                 // initialize FilterManager
                 filterManager = new FilterManager(Items.Count);
+
+                //Debug.WriteLine($"FilterDataGrid : {((IList)newValue).Count}");
+
+                //if (newValue == null || ((IList)newValue).Count == 0) return;
 
                 // clear ICollectionView
                 if (DatagridCollectionView != null)
@@ -482,6 +511,10 @@ namespace FilterDataGrid
             Sorted?.Invoke(this, EventArgs.Empty);
         }
 
+        #endregion Protected Methods
+
+        #region Private Methods
+
         /// <summary>
         ///     Click OK Button when Popup is Open, apply filter
         /// </summary>
@@ -512,60 +545,8 @@ namespace FilterDataGrid
                 {
                     if (search)
                     {
-                        List<FilterItem> searchResult;
-
-                        // SourceCollection items in Filter Search CollectionView
-                        // Type : FilterItem
-                        var itemsSourceView = SourcePopupViewItems.ToList();
-
-                        // A - B(IsChanged == false) = CHANGE (CHANGE.IsChecked = false)
-
-                        // A: itemsSourceView  => All Items
-                        // B: searchResult     => found items that are IsChecked == true AND that IsChanged == false
-                        // C: changed          => All items except found items
-
-                        if (fieldType == typeof(DateTime))
-                        {
-                            // Type : ItemDate
-                            // searchResult (all states) in treeview
-                            var treeviewResult = TreeviewItems.Skip(1)
-                                .SelectMany(y => y.Children
-                                    .SelectMany(m => m.Children
-                                        .Select(d => new FilterItem
-                                        {
-                                            Content = new DateTime((int)y.Content, (int)m.Content, (int)d.Content),
-                                            GroupIndex = d.GroupIndex,
-                                            State = d.State,
-                                            IsChanged = d.IsChanged,
-                                            Index = d.Index
-                                        }))).ToList();
-
-                            // retrieve found items search in original source items
-                            var originalResult = itemsSourceView
-                                .Where(x => treeviewResult.Select(c => c.Index).Contains(x.Index))
-                                .ToList();
-
-                            // update state
-                            foreach (var item in originalResult)
-                            {
-                                var itemChanged =
-                                    treeviewResult.FirstOrDefault(c => c.Index == item.Index);
-
-                                if (itemChanged == null) continue;
-
-                                item.IsChanged = itemChanged.IsChanged;
-                                item.Initialize = itemChanged.State;
-                            }
-
-                            searchResult = originalResult.Where(c => c.IsChecked && !c.IsChanged).ToList();
-                            changed = itemsSourceView.Except(searchResult).ToList();
-                        }
-                        else
-                        {
-                            // search result items that are Checked and NOT Changed
-                            searchResult = PopupViewItems.Where(c => c.IsChecked && !c.IsChanged).ToList();
-                            changed = itemsSourceView.Except(searchResult).ToList();
-                        }
+                        var searchResult = CommonItemsView.Where(c => c.IsChecked && !c.IsChanged).ToList();
+                        changed = CommonSourceItemsView.Except(searchResult).ToList();
 
                         // change the state( IsChecked = false) in items that have not changed (state)
                         foreach (var item in changed.Where(c => !c.IsChanged && c.IsChecked))
@@ -573,40 +554,7 @@ namespace FilterDataGrid
                     }
                     else
                     {
-                        // listbox result
-                        if (currentFilter.FieldType != typeof(DateTime))
-                        {
-                            // the empty item is inclued in listbox items
-                            changed = ListBoxItems.Skip(1).Where(x => x.IsChanged).ToList();
-                        }
-
-                        // treeview result
-                        else
-                        {
-                            // when the state of the day changes, this state is propagated to the year concerned
-                            // the empty element has no parent(year) or children(month), it is not included in the tree elements
-                            changed = TreeviewItems.Skip(1).Where(c => c.Level == 1 && c.IsChanged)
-                                .SelectMany(y => y.Children
-                                    .SelectMany(m => m.Children
-                                        .Where(d => d.IsChanged)
-                                        .Select(c => new FilterItem
-                                        {
-                                            GroupIndex = c.GroupIndex,
-                                            IsChecked = c.IsChecked ?? false,
-                                            Index = c.Index
-                                        }))).ToList();
-
-                            // check if the empty item state has been changed
-                            FilterItemDate empty;
-                            if ((empty = TreeviewItems.FirstOrDefault(c => c.Level == -1 && c.IsChanged)) != null)
-                                changed.Add(
-                                    new FilterItem
-                                    {
-                                        GroupIndex = empty.GroupIndex,
-                                        IsChecked = empty.IsChecked ?? false,
-                                        Index = empty.Index
-                                    });
-                        }
+                        changed = CommonItemsView.Where(c => c.IsChanged).ToList();
                     }
                 });
 
@@ -636,10 +584,8 @@ namespace FilterDataGrid
                     // enqueue => dequeue, then requeue, currentFilter.IsFiltered is set to true
                     filterManager.Enqueue();
 
-                    // check if all list/tree items are checked
-                    var isAllChecked = fieldType == typeof(DateTime)
-                        ? TreeviewItems.Skip(1).Any(c => c.IsChecked == false) != true
-                        : ListBoxItems.Skip(1).Any(c => !c.IsChecked) != true;
+                    // check if all items are checked
+                    var isAllChecked = CommonItemsView.Any(c => !c.IsChecked) != true;
 
                     // if current filter don't have any previous, remove from Queue
                     if (isAllChecked && !search)
@@ -705,7 +651,7 @@ namespace FilterDataGrid
             {
                 new FilterItemDate
                 {
-                    Label = "(Select all)", Content = null, Level = 0, Initialize = true, DataFilter = this
+                    Label = "(Select all)", Content = null, Level = 0, Initialize = true
                 }
             };
 
@@ -723,7 +669,8 @@ namespace FilterDataGrid
                                  d.IsChecked,
                                  d.IsPrevious,
                                  d.GroupIndex,
-                                 d.Index
+                                 d.Index,
+                                 Item = d
                              })
                              .OrderBy(o => o.Date.Year)
                              .GroupBy(g => g.Date.Year)
@@ -757,25 +704,21 @@ namespace FilterDataGrid
                                                  Initialize = true,
                                                  IsPrevious = !day.FirstOrDefault()?.IsChecked ?? true,
                                                  Children = new List<FilterItemDate>(),
-                                                 Index = day.FirstOrDefault()?.Index ?? 0
+                                                 Index = day.FirstOrDefault()?.Index ?? 0,
+                                                 Item = day.FirstOrDefault()?.Item
                                              }).ToList()
                                      }).ToList()
                              }))
                 {
-                    // for test
-                    y.DataFilter = this;
-
                     y.Children.ForEach(m =>
                     {
                         // month
                         m.Parent = y;
-                        m.DataFilter = this;
 
                         m.Children.ForEach(d =>
                         {
                             // day
                             d.Parent = m;
-                            d.DataFilter = this;
 
                             // if previous is true, ischecked is false
                             // to avoid (ischanged == true), initialize to false
@@ -807,11 +750,9 @@ namespace FilterDataGrid
                                 Content = null,
                                 Initialize = empty.IsChecked,
                                 IsPrevious = empty.IsPrevious,
-                                //IsPrevious =
-                                //    filterManager.CurrentFilter.PreviousItems.Get(empty.GroupIndex?.FirstOrDefault() ??
-                                //        -1),
                                 Children = new List<FilterItemDate>(),
-                                DataFilter = this
+                                Index = empty.Index,
+                                Item = empty
                             }
                         );
                 }
@@ -844,14 +785,7 @@ namespace FilterDataGrid
             }
             else
             {
-                if (search)
-                    e.CanExecute = fieldType == typeof(DateTime)
-                        ? TreeviewItems.Skip(1).Any()
-                        : PopupViewItems.Any();
-                else
-                    e.CanExecute = fieldType == typeof(DateTime)
-                        ? TreeviewItems.Skip(1).Any(c => c.IsChanged) && TreeviewItems.Skip(1).Count() > 1
-                        : ListBoxItems.Skip(1).Any(c => c.IsChanged) && ListBoxItems.Skip(1).Count() > 1;
+                e.CanExecute = search ? CommonItemsView.Any() : CommonItemsView.Any(c => c.IsChanged);
             }
         }
 
@@ -899,7 +833,7 @@ namespace FilterDataGrid
             var item = (FilterItem)e.Parameter;
 
             if (item.Level == 0)
-                foreach (var element in PopupViewItems.Where(f => f.IsChecked != item.IsChecked))
+                foreach (var element in CommonItemsView.Where(f => f.IsChecked != item.IsChecked))
                 {
                     // exclude event
                     element.FromSelectAll = true;
@@ -1024,7 +958,10 @@ namespace FilterDataGrid
 
                 if (filterManager.StackItems[index] || (isLastFilter && isprevious))
                 {
-                    var entry = fieldProperty.GetValue(enumerator.Current, null);
+                   var entry = fieldType == typeof(DateTime) 
+                        ? ((DateTime?)fieldProperty.GetValue(enumerator.Current, null))?.Date 
+                        : fieldProperty.GetValue(enumerator.Current, null);
+
                     var isChecked = filterManager.StackItems[index];
 
                     var key = entry ?? string.Empty;
@@ -1054,7 +991,8 @@ namespace FilterDataGrid
                             IsPrevious = isprevious,
                             CheckedIndex = new List<int>(),
                             PreviousIndex = new List<int>(),
-                            Content = fieldType == typeof(DateTime) ? ((DateTime?)entry)?.Date : entry
+                            IsNull = key.Equals(string.Empty),
+                            Content = entry
                         };
 
                         if (isChecked)
@@ -1081,8 +1019,7 @@ namespace FilterDataGrid
                         : c.Value[0].PreviousIndex.ToArray(),
                     Initialize = c.Value[0].IsChecked,
                     IsPrevious = c.Value[0].IsPrevious,
-                    Content = string.IsNullOrEmpty(c.Key?.ToString()) ? null : c.Value[0].Content,
-                    DataFilter = this,
+                    Content = c.Value[0].IsNull ? null : c.Value[0].Content,
                     FieldType = fieldType,
                     Level = 1
                 })
@@ -1398,20 +1335,32 @@ namespace FilterDataGrid
 
             if (string.IsNullOrEmpty(searchText) || item == null || item.Level == 0) return true;
 
+            bool result;
+
             // Contains
             if (!StartsWith)
-                return item.FieldType == typeof(DateTime)
+            {
+                result = item.FieldType == typeof(DateTime)
                     ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                     .IndexOf(searchText, ordinalIgnoreCase) >= 0
-                    : item.Content?.ToString()?.IndexOf(searchText, ordinalIgnoreCase) >= 0;
+                    : item.Content?.ToString().IndexOf(searchText, ordinalIgnoreCase) >= 0;
+
+                //Debug.WriteLine($"item : {item?.Content,-10} {item?.Level,-4} {result,-8} StartsWith :{StartsWith}");
+                return result;
+            }
 
             // StartsWith preserve RangeOverflow
             if (searchLength > item.ContentLength) return false;
 
-            return item.FieldType == typeof(DateTime)
+            result = item.FieldType == typeof(DateTime)
                 ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                 .IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >= 0
-                : item.Content?.ToString()?.IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >= 0;
+                : item.Content?.ToString().IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >=
+                  0;
+
+            //Debug.WriteLine($"item : {item?.Content, -10} {item?.Level, -4} {result, -8} StartsWith :{StartsWith}");
+
+            return result;
         }
 
         /// <summary>
@@ -1436,54 +1385,23 @@ namespace FilterDataGrid
             ItemCollectionView.Refresh();
 
             // only for treeview
-            if (filterManager.CurrentFilter.FieldType == typeof(DateTime) && TreeviewItems != null)
+            if (filterManager.CurrentFilter.FieldType != typeof(DateTime) || TreeviewItems == null) return;
+
+            // searchText is empty => rebuild treeview
+            if (string.IsNullOrEmpty(searchText))
             {
-                // searchText is empty => rebuild treeview
-                if (string.IsNullOrEmpty(searchText.Trim()))
-                {
-                    // populate the tree with the original source items
-                    // invert selection when IsChanged is true
-                    // changer les item qui
-                    //var changed = TreeviewItems.Skip(1).Where(c => c.IsChanged);
-
-                    var source = SourcePopupViewItems.ToList();
-
-                    var changed = TreeviewItems.Skip(1)
-                        .Where(y => y.IsChanged)
-                        .SelectMany(y => y.Children
-                            .Where(m => m.IsChanged)
-                            .SelectMany(m => m.Children
-                                .Where(d => d.IsChanged)
-                                .Select(d => d))).ToList();
-
-                    var newTreeview = BuildTreeView(source);
-
-                    if (changed.Count > 0)
-                        newTreeview.Skip(1)
-                            .SelectMany(y => y.Children
-                                .SelectMany(m => m.Children
-                                    .Where(d => d.Level > 0)
-                                    .Select(d => d)))
-                            .Where(c => changed.Select(x => x.Index).Contains(c.Index))
-                            .ToList()
-                            .ForEach(y =>
-                            {
-                                var change = changed.FirstOrDefault(x => x.Index == y.Index);
-                                if (change != null) y.IsChecked = change.IsChecked;
-                            });
-
-                    // update treeview with item changed
-                    TreeviewItems = newTreeview;
-                }
-                else
-                {
-                    // populate the tree only with items found by the search
-                    var items = PopupViewItems.Where(c => c.ContentLength > 0).ToList();
-                    TreeviewItems = BuildTreeView(items.Any() ? items : null);
-                }
-
-                OnPropertyChanged(nameof(TreeviewItems));
+                // populate the tree with the original source items
+                TreeviewItems = BuildTreeView(CommonSourceItemsView);
             }
+            else
+            {
+                // populate the tree only with items found by the search when content is not null
+                // .Where(c => c.ContentLength > 0)
+                var items = CommonItemsView.ToList();
+                TreeviewItems = BuildTreeView(items.Any() ? items : null);
+            }
+
+            OnPropertyChanged(nameof(TreeviewItems));
         }
 
         private void SelectAll(object o, bool? e)
@@ -1492,7 +1410,7 @@ namespace FilterDataGrid
             var item = (FilterItem)o;
 
             if (item.Level == 0)
-                foreach (var element in PopupViewItems.Where(f => f.IsChecked != item.IsChecked))
+                foreach (var element in CommonItemsView.Where(f => f.IsChecked != item.IsChecked))
                 {
                     // exclude event
                     element.FromSelectAll = true;
@@ -1620,7 +1538,7 @@ namespace FilterDataGrid
                     new FilterItem { Content = "(Select All)", Initialize = true, Level = 0 }
                 };
 
-                commonItemList[0].EventHappened += SelectAll;
+                commonItemList[0].EventSelectAll += SelectAll;
 
                 if (fieldType == typeof(DateTime))
                 {
@@ -1649,7 +1567,6 @@ namespace FilterDataGrid
                                 Initialize = empty.IsChecked,
                                 FieldType = fieldType,
                                 IsPrevious = empty.IsPrevious,
-                                DataFilter = this
                             });
 
                         ListBoxItems = commonItemList;
@@ -1692,5 +1609,7 @@ namespace FilterDataGrid
                 ElapsedTime = stopWatchFilter.Elapsed;
             }
         }
+
+        #endregion Private Methods
     }
 }
