@@ -11,6 +11,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable UnusedMemberInSuper.Global
+
 namespace FilterDataGrid
 {
     public interface IFilter
@@ -20,11 +22,9 @@ namespace FilterDataGrid
         object Content { get; set; }
         Type FieldType { get; set; }
         int[] GroupIndex { get; set; }
-        int Index { get; set; }
         bool IsChanged { get; set; }
         bool IsPrevious { get; set; }
         int Level { get; set; }
-        bool State { get; set; }
 
         #endregion Public Properties
     }
@@ -36,9 +36,9 @@ namespace FilterDataGrid
         public List<int> CheckedIndex { get; set; }
         public object Content { get; set; }
         public bool IsChecked { get; set; }
+        public bool IsNull { get; set; }
         public bool IsPrevious { get; set; }
         public List<int> PreviousIndex { get; set; }
-        public bool IsNull { get; set; }
 
         #endregion Public Properties
     }
@@ -46,7 +46,7 @@ namespace FilterDataGrid
     /// <summary>
     ///     ListBox Item
     /// </summary>
-    public class FilterItem : Notify, IFilter, IDisposable
+    public class FilterItem : Notify, IFilter
     {
         #region Private Fields
 
@@ -56,28 +56,6 @@ namespace FilterDataGrid
 
         #endregion Private Fields
 
-        #region Public Constructors
-
-        public FilterItem(EventHandler<bool?> selectAll = null)
-        {
-            if (selectAll != null)
-                SelectAll += selectAll;
-        }
-
-        #endregion Public Constructors
-
-        #region Public Events
-
-        public event EventHandler<bool?> EventSelectAll
-        {
-            add => SelectAll += value;
-            remove => SelectAll -= value;
-        }
-
-        public event EventHandler<bool?> SelectAll;
-
-        #endregion Public Events
-
         #region Public Properties
 
         public object Content { get; set; }
@@ -86,16 +64,10 @@ namespace FilterDataGrid
 
         public Type FieldType { get; set; }
 
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public bool FromSelectAll { get; set; }
-
         public int[] GroupIndex { get; set; }
-
-        public int Index { get; set; }
 
         public bool Initialize
         {
-            get => initialState;
             set
             {
                 initialState = value;
@@ -103,7 +75,6 @@ namespace FilterDataGrid
             }
         }
 
-        // isChecked != initialState;
         public bool IsChanged { get; set; }
 
         public bool IsChecked
@@ -114,11 +85,6 @@ namespace FilterDataGrid
                 isChecked = value;
                 IsChanged = value != initialState;
                 OnPropertyChanged(nameof(IsChecked));
-
-                // Debug.WriteLine($"Level : {Level, -4}Content :{Content}");
-
-                // select all
-                if (Level == 0) OnSelectAll();
             }
         }
 
@@ -126,27 +92,7 @@ namespace FilterDataGrid
 
         public int Level { get; set; }
 
-        public bool State { get; set; }
-
         #endregion Public Properties
-
-        #region Public Methods
-
-        public void Dispose()
-        {
-            SelectAll = null;
-        }
-
-        #endregion Public Methods
-
-        #region Private Methods
-
-        private void OnSelectAll()
-        {
-            SelectAll?.Invoke(this, isChecked);
-        }
-
-        #endregion Private Methods
     }
 
     /// <summary>
@@ -171,8 +117,6 @@ namespace FilterDataGrid
 
         public int[] GroupIndex { get; set; }
 
-        public int Index { get; set; }
-
         public bool? Initialize
         {
             set
@@ -192,19 +136,13 @@ namespace FilterDataGrid
 
         public bool IsPrevious { get; set; }
 
+        public FilterItem Item { get; set; }
+
         public string Label { get; set; }
 
         public int Level { get; set; }
 
         public FilterItemDate Parent { get; set; }
-
-        public FilterItem Item { get; set; }
-        
-        public bool State
-        {
-            get => isChecked == true;
-            set => isChecked = value;
-        }
 
         public List<FilterItemDate> Tree { get; set; }
 
@@ -218,7 +156,6 @@ namespace FilterDataGrid
 
             isChecked = value;
 
-            // triggers nothing!
             IsChanged = initialState != isChecked;
 
             if (Item != null)
@@ -226,8 +163,8 @@ namespace FilterDataGrid
                 Item.IsChanged = IsChanged;
                 Item.Initialize = IsChecked == true;
             }
-            
-            if(Level == 0)
+
+            if (Level == 0)
                 Tree?.Skip(1).ToList().ForEach(c => { c.SetIsChecked(value, true, true); });
 
             // state.HasValue : !null
@@ -275,7 +212,7 @@ namespace FilterDataGrid
 
         #region Protected Methods
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
 
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

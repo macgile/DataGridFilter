@@ -22,6 +22,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 
+// ReSharper disable UnusedMember.Global
 // ReSharper disable RedundantArgumentDefaultValue
 
 // https://michaelscodingspot.com/find-fix-and-avoid-memory-leaks-in-c-net-8-best-practices/
@@ -33,8 +34,6 @@ namespace FilterDataGrid
     /// </summary>
     public sealed class FilterDataGrid : DataGrid, INotifyPropertyChanged
     {
-        #region Public Fields
-
         public static readonly ICommand ApplyFilter = new RoutedCommand();
 
         public static readonly ICommand CancelFilter = new RoutedCommand();
@@ -101,10 +100,6 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata(false));
 
-        #endregion Public Fields
-
-        #region Private Fields
-
         private const bool IsDebugModeOn = false;
 
         /// <summary>
@@ -116,11 +111,7 @@ namespace FilterDataGrid
 
         private Button button;
 
-        //private TreeView treeview;
         private Type collectionType;
-
-        //private ListBox listBox;
-        private object currentColumn;
 
         private Cursor cursor;
 
@@ -134,6 +125,7 @@ namespace FilterDataGrid
 
         private FilterManager filterManager;
 
+        private List<FilterItem> listBoxItems;
         private double minHeight;
 
         private double minWidth;
@@ -164,9 +156,7 @@ namespace FilterDataGrid
 
         private Thumb thumb;
 
-        #endregion Private Fields
-
-        #region Public Constructors
+        private List<FilterItemDate> treeview;
 
         /// <summary>
         ///     FilterDataGrid constructor
@@ -201,17 +191,9 @@ namespace FilterDataGrid
             CommandBindings.Add(new CommandBinding(ClearSearchBox, ClearSearchBoxClick));
         }
 
-        #endregion Public Constructors
-
-        #region Public Events
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public event EventHandler Sorted;
-
-        #endregion Public Events
-
-        #region Public Properties
 
         /// <summary>
         ///     Date format displayed
@@ -258,7 +240,15 @@ namespace FilterDataGrid
         /// </summary>
         public int ItemsSourceCount { get; set; }
 
-        public List<FilterItem> ListBoxItems { get; set; } = new List<FilterItem>();
+        public List<FilterItem> ListBoxItems
+        {
+            get => listBoxItems ?? new List<FilterItem>();
+            set
+            {
+                listBoxItems = value;
+                OnPropertyChanged(nameof(ListBoxItems));
+            }
+        }
 
         /// <summary>
         ///     Row header size when ShowRowsCount is true
@@ -313,11 +303,15 @@ namespace FilterDataGrid
         /// </summary>
         public Loc Translate { get; private set; }
 
-        public List<FilterItemDate> TreeviewItems { get; set; } = new List<FilterItemDate>();
-
-        #endregion Public Properties
-
-        #region Private Properties
+        public List<FilterItemDate> TreeviewItems
+        {
+            get => treeview ?? new List<FilterItemDate>();
+            set
+            {
+                treeview = value;
+                OnPropertyChanged(nameof(TreeviewItems));
+            }
+        }
 
         private IEnumerable<FilterItem> CommonItemsView =>
             ItemCollectionView?.OfType<FilterItem>().Skip(1) ?? new List<FilterItem>();
@@ -328,10 +322,6 @@ namespace FilterDataGrid
         private ICollectionView DatagridCollectionView { get; set; }
 
         private ICollectionView ItemCollectionView { get; set; }
-
-        #endregion Private Properties
-
-        #region Protected Methods
 
         /// <summary>
         ///     Auto generated column, set templateHeader
@@ -511,10 +501,6 @@ namespace FilterDataGrid
             Sorted?.Invoke(this, EventArgs.Empty);
         }
 
-        #endregion Protected Methods
-
-        #region Private Methods
-
         /// <summary>
         ///     Click OK Button when Popup is Open, apply filter
         /// </summary>
@@ -629,9 +615,6 @@ namespace FilterDataGrid
                 TreeviewItems = new List<FilterItemDate>();
                 ListBoxItems = new List<FilterItem>();
 
-                OnPropertyChanged(nameof(ListBoxItems));
-                OnPropertyChanged(nameof(TreeviewItems));
-
                 ResetCursor();
                 ReactivateSorting();
 
@@ -669,7 +652,6 @@ namespace FilterDataGrid
                                  d.IsChecked,
                                  d.IsPrevious,
                                  d.GroupIndex,
-                                 d.Index,
                                  Item = d
                              })
                              .OrderBy(o => o.Date.Year)
@@ -704,7 +686,6 @@ namespace FilterDataGrid
                                                  Initialize = true,
                                                  IsPrevious = !day.FirstOrDefault()?.IsChecked ?? true,
                                                  Children = new List<FilterItemDate>(),
-                                                 Index = day.FirstOrDefault()?.Index ?? 0,
                                                  Item = day.FirstOrDefault()?.Item
                                              }).ToList()
                                      }).ToList()
@@ -751,7 +732,6 @@ namespace FilterDataGrid
                                 Initialize = empty.IsChecked,
                                 IsPrevious = empty.IsPrevious,
                                 Children = new List<FilterItemDate>(),
-                                Index = empty.Index,
                                 Item = empty
                             }
                         );
@@ -785,7 +765,10 @@ namespace FilterDataGrid
             }
             else
             {
-                e.CanExecute = search ? CommonItemsView.Any() : CommonItemsView.Any(c => c.IsChanged);
+                e.CanExecute = search
+                    ? CommonItemsView.Any()
+                    : CommonItemsView.Any(c => c.IsChecked)
+                      && CommonItemsView.Any(c => c.IsChecked && c.IsChanged || !c.IsChecked && c.IsChanged);
             }
         }
 
@@ -836,7 +819,6 @@ namespace FilterDataGrid
                 foreach (var element in CommonItemsView.Where(f => f.IsChecked != item.IsChecked))
                 {
                     // exclude event
-                    element.FromSelectAll = true;
                     element.IsChecked = item.IsChecked;
                 }
         }
@@ -934,35 +916,37 @@ namespace FilterDataGrid
             }
         }
 
-        private List<FilterItem> GetColumnValues(PropertyInfo fieldProperty)
+        // ReSharper disable once UnusedMember.Local
+        /// <summary>
+        ///  Generate list of current field values using while loop
+        /// </summary>
+        /// <param name="fieldProperty"></param>
+        /// <returns></returns>
+        private List<FilterItem> GetColumnValuesWhileLoop(PropertyInfo fieldProperty)
         {
-            var currentFilter = filterManager.CurrentFilter;
-
-            if (currentFilter == null)
-            {
-                Debug.WriteLine("CurrentFilter is null");
-                return new List<FilterItem>();
-            }
-
             var watch = new Stopwatch();
             watch.Start();
 
+            var currentFilter = filterManager.CurrentFilter;
+
+            // filterManager.LastFilter : last Filter entered in queue
             var isLastFilter = filterManager.LastFilter?.FieldName == fieldProperty.Name;
-            var enumerator = Items.SourceCollection.GetEnumerator();
+
+            var enumerator = ItemsSource.GetEnumerator();
             var dico = new Dictionary<object, List<GroupIndexState>>();
             var index = 0;
+            var isDate = fieldType == typeof(DateTime);
 
             while (enumerator.MoveNext())
             {
-                var isprevious = currentFilter.PreviousItems[index];
-
-                if (filterManager.StackItems[index] || (isLastFilter && isprevious))
+                if (filterManager.StackItems[index] || (isLastFilter && currentFilter.PreviousItems[index]))
                 {
-                   var entry = fieldType == typeof(DateTime) 
-                        ? ((DateTime?)fieldProperty.GetValue(enumerator.Current, null))?.Date 
-                        : fieldProperty.GetValue(enumerator.Current, null);
+                    var entry = isDate
+                         ? ((DateTime?)fieldProperty.GetValue(enumerator.Current, null))?.Date
+                         : fieldProperty.GetValue(enumerator.Current, null);
 
                     var isChecked = filterManager.StackItems[index];
+                    var isprevious = currentFilter.PreviousItems[index];
 
                     var key = entry ?? string.Empty;
 
@@ -1007,13 +991,9 @@ namespace FilterDataGrid
                 index++;
             }
 
-            watch.Display($"\r\nGetColumnValues :{fieldProperty.Name}\r\nDictionary Generation", IsDebugModeOn);
-            watch.Restart();
-
             var list = dico.AsParallel().OrderBy(x => x.Key.ToString())
                 .Select((c, i) => new FilterItem
                 {
-                    Index = i + 1, // c.Key.GetHashCode(),
                     GroupIndex = c.Value[0].IsChecked
                         ? c.Value[0].CheckedIndex.ToArray()
                         : c.Value[0].PreviousIndex.ToArray(),
@@ -1025,7 +1005,97 @@ namespace FilterDataGrid
                 })
                 .ToList();
 
-            watch.Display("GetColumnValues Final List", IsDebugModeOn);
+            watch.Display("While Loop GetColumnValues Final List", IsDebugModeOn);
+
+            return list;
+        }
+
+        /// <summary>
+        /// Generate list of current field values using for loop
+        /// </summary>
+        /// <param name="fieldProperty"></param>
+        /// <returns></returns>
+        private List<FilterItem> GetColumnValuesForLoop(PropertyInfo fieldProperty)
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+
+            var currentFilter = filterManager.CurrentFilter;
+            var isLastFilter = filterManager.LastFilter?.FieldName == fieldProperty.Name;
+            var dico = new Dictionary<object, List<GroupIndexState>>();
+
+            var isDate = fieldType == typeof(DateTime);
+
+            if (!(ItemsSource is IList items)) return null;
+
+            for (var index = 0; index < items.Count; index++)
+            {
+                if (!filterManager.StackItems[index] &&
+                    (!isLastFilter || !currentFilter.PreviousItems[index])) continue;
+
+                var entry = isDate
+                    ? ((DateTime?)fieldProperty.GetValue(items[index], null))?.Date
+                    : fieldProperty.GetValue(items[index], null);
+
+                var isChecked = filterManager.StackItems[index];
+                var isprevious = currentFilter.PreviousItems[index];
+
+                var key = entry ?? string.Empty;
+
+                if (dico.ContainsKey(key))
+                {
+                    var current = dico[key][0];
+
+                    // if both are true, checked has priority
+                    current.IsChecked = isChecked || current.IsChecked;
+                    current.IsPrevious = !current.IsChecked && current.IsPrevious;
+
+                    if (isChecked)
+                        current.CheckedIndex.Add(index);
+                    else
+                        current.PreviousIndex.Add(index);
+
+                    dico[key][0] = current;
+                }
+                else
+                {
+                    // initialize
+                    var groupIndexState = new GroupIndexState
+                    {
+                        // cannot have the same state at the same time
+                        IsChecked = isChecked,
+                        IsPrevious = isprevious,
+                        CheckedIndex = new List<int>(),
+                        PreviousIndex = new List<int>(),
+                        IsNull = key.Equals(string.Empty),
+                        Content = entry
+                    };
+
+                    if (isChecked)
+                        groupIndexState.CheckedIndex.Add(index);
+                    else
+                        groupIndexState.PreviousIndex.Add(index);
+
+                    dico.Add(key, new List<GroupIndexState> { groupIndexState });
+                }
+            }
+
+            var list = dico//.AsParallel().OrderBy(x => x.Key.ToString())
+                .Select((c, i) => new FilterItem
+                {
+                    GroupIndex = c.Value[0].IsChecked
+                        ? c.Value[0].CheckedIndex.ToArray()
+                        : c.Value[0].PreviousIndex.ToArray(),
+                    Initialize = c.Value[0].IsChecked,
+                    IsPrevious = c.Value[0].IsPrevious,
+                    Content = c.Value[0].IsNull ? null : c.Value[0].Content,
+                    FieldType = fieldType,
+                    Level = 1
+                })
+               .AsParallel().OrderBy(x => x.Content)
+               .ToList();
+
+            watch.Display($"While Loop GetColumnValues Final List", IsDebugModeOn);
 
             return list;
         }
@@ -1138,9 +1208,6 @@ namespace FilterDataGrid
             sizableContentGrid.Height = sizableContentHeight;
             Cursor = cursor;
 
-            OnPropertyChanged(nameof(ListBoxItems));
-            OnPropertyChanged(nameof(TreeviewItems));
-
             //GC.Collect();
             //GC.WaitForPendingFinalizers();
             //GC.Collect();
@@ -1231,19 +1298,7 @@ namespace FilterDataGrid
         /// </summary>
         private void ReactivateSorting()
         {
-            switch (currentColumn)
-            {
-                case null:
-                    return;
-
-                case DataGridTextColumn column:
-                    column.CanUserSort = true;
-                    break;
-
-                case DataGridTemplateColumn templateColumn:
-                    templateColumn.CanUserSort = true;
-                    break;
-            }
+            Sorted += OnSorted;
         }
 
         /// <summary>
@@ -1400,25 +1455,6 @@ namespace FilterDataGrid
                 var items = CommonItemsView.ToList();
                 TreeviewItems = BuildTreeView(items.Any() ? items : null);
             }
-
-            OnPropertyChanged(nameof(TreeviewItems));
-        }
-
-        private void SelectAll(object o, bool? e)
-        {
-            if (o == null) return;
-            var item = (FilterItem)o;
-
-            if (item.Level == 0)
-                foreach (var element in CommonItemsView.Where(f => f.IsChecked != item.IsChecked))
-                {
-                    // exclude event
-                    element.FromSelectAll = true;
-                    element.IsChecked = item.IsChecked;
-                }
-
-            // CanApplyFilterCommand();
-            // OnPropertyChanged(nameof(ListBoxItems));
         }
 
         /// <summary>
@@ -1494,16 +1530,12 @@ namespace FilterDataGrid
                 {
                     var column = (DataGridTextColumn)header.Column;
                     fieldName = column.FieldName;
-                    column.CanUserSort = false;
-                    currentColumn = column;
                 }
 
                 if (columnType == typeof(DataGridTemplateColumn))
                 {
                     var column = (DataGridTemplateColumn)header.Column;
                     fieldName = column.FieldName;
-                    column.CanUserSort = false;
-                    currentColumn = column;
                 }
 
                 // invalid fieldName
@@ -1524,13 +1556,20 @@ namespace FilterDataGrid
 
                 if (filterManager.CurrentFilter == null) return;
 
+                // disable sorting
+                Sorted -= OnSorted;
+
                 var filterItemList = new List<FilterItem>();
 
                 Mouse.OverrideCursor = Cursors.Wait;
 
                 await Task.Run(() =>
                 {
-                    Dispatcher.Invoke(() => { filterItemList = GetColumnValues(fieldProperty); });
+                    Dispatcher.Invoke(() =>
+                    {
+                        //filterItemList = GetColumnValues(fieldProperty);
+                        filterItemList = GetColumnValuesForLoop(fieldProperty);
+                    });
                 });
 
                 var commonItemList = new List<FilterItem>
@@ -1538,40 +1577,33 @@ namespace FilterDataGrid
                     new FilterItem { Content = "(Select All)", Initialize = true, Level = 0 }
                 };
 
-                commonItemList[0].EventSelectAll += SelectAll;
-
+                // TreeView
                 if (fieldType == typeof(DateTime))
                 {
                     commonItemList.AddRange(filterItemList);
 
-                    // fill the treeview with CurrentFilter.BuildTree method and if it's the last filter, uncheck the items already filtered
+                    // fill the treeview with BuildTreeView
                     TreeviewItems = BuildTreeView(filterItemList);
-                    OnPropertyChanged(nameof(TreeviewItems));
                 }
                 else
                 {
-                    var listBox = VisualTreeHelpers.FindChild<ListBox>(popup.Child, "PopupListBox");
+                    // ListBox
+                    commonItemList.AddRange(filterItemList.Where(c => c.Content != null));
 
-                    if (listBox != null)
-                    {
-                        commonItemList.AddRange(filterItemList.Where(c => c.Content != null));
+                    // add empty item
+                    var empty = filterItemList.FirstOrDefault(c => c.Content == null);
+                    if (empty != null)
+                        commonItemList.Add(new FilterItem
+                        {
+                            Content = Translate.Empty,
+                            FieldType = fieldType,
+                            GroupIndex = empty.GroupIndex,
+                            Initialize = empty.IsChecked,
+                            IsPrevious = empty.IsPrevious,
+                            Level = -1
+                        });
 
-                        // add empty item
-                        var empty = filterItemList.FirstOrDefault(c => c.Content == null);
-                        if (empty != null)
-                            commonItemList.Add(new FilterItem
-                            {
-                                Level = -1,
-                                Content = Translate.Empty,
-                                GroupIndex = empty.GroupIndex,
-                                Initialize = empty.IsChecked,
-                                FieldType = fieldType,
-                                IsPrevious = empty.IsPrevious,
-                            });
-
-                        ListBoxItems = commonItemList;
-                        OnPropertyChanged(nameof(ListBoxItems));
-                    }
+                    ListBoxItems = commonItemList;
                 }
 
                 // Set ICollectionView for filtering in the pop-up window
@@ -1609,7 +1641,5 @@ namespace FilterDataGrid
                 ElapsedTime = stopWatchFilter.Elapsed;
             }
         }
-
-        #endregion Private Methods
     }
 }

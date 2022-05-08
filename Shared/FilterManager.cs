@@ -38,11 +38,13 @@ namespace FilterDataGrid
 
         // ReSharper disable once MemberCanBePrivate.Global
         public FilterCommon CurrentFilter { get; set; }
+
         public bool HasPrecedent { get; set; }
         public bool IsLast => Queue.Count == 1 && HasPrecedent;
         public FilterCommon LastFilter => Queue.LastOrDefault();
         public List<FilterCommon> Queue { get; } = new List<FilterCommon>();
         public BitArray StackItems { get; }
+
         // ReSharper disable once MemberCanBePrivate.Global
         public BitArray Stock { get; }
 
@@ -55,7 +57,7 @@ namespace FilterDataGrid
         #endregion Private Properties
 
         #region Public Methods
- 
+
         // get item state
         // loop filter
         public bool Current()
@@ -70,36 +72,18 @@ namespace FilterDataGrid
             if (c == null) throw new ArgumentException(@"The FilterCommon cannot be null", nameof(c));
             Queue.Remove(c);
 
-            // warning : est ce necessaire ?
+            // warning: is it necessary?
             CurrentFilter = null;
         }
 
         public void Enqueue()
         {
             HasPrecedent = Queue.Count > 0;
-           if (CurrentFilter == null) return;
-            
+            if (CurrentFilter == null) return;
+
             Queue.Remove(CurrentFilter);
             Queue.Add(CurrentFilter);
             CurrentFilter.IsFiltered = true;
-
-        }
-
-        public bool Exist(string fieldName)
-        {
-            if (string.IsNullOrEmpty(fieldName)) throw new ArgumentNullException(nameof(fieldName));
-
-            return Queue.LastOrDefault(x => x.FieldName == fieldName) != null;
-        }
-
-        public FilterCommon GetFilter(string fieldName)
-        {
-            if (string.IsNullOrEmpty(fieldName)) throw new ArgumentNullException(nameof(fieldName));
-
-            var current = Queue.FirstOrDefault(f => f.FieldName == fieldName);
-            if (current != null)
-                CurrentFilter = current;
-            return current;
         }
 
         public void PrintState(string message, bool hidden = false)
@@ -152,10 +136,11 @@ namespace FilterDataGrid
         public void SetCurrent(string fieldName, Type type)
         {
             if (string.IsNullOrEmpty(fieldName)) throw new ArgumentNullException(nameof(fieldName));
+            if (type == null) throw new ArgumentNullException(nameof(type));
 
             FilterCommon current;
 
-            if( (current =  Queue.FirstOrDefault(c=>c.FieldName == fieldName)) == null)
+            if ((current = Queue.FirstOrDefault(c => c.FieldName == fieldName)) == null)
             {
                 current = new FilterCommon(itemCount)
                 {

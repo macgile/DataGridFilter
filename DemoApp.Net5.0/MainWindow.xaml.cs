@@ -18,7 +18,7 @@ namespace DemoAppNet5
 #if DEBUG
             AppDomain.CurrentDomain.FirstChanceException += (source, e) =>
             {
-                Debug.WriteLine("FirstChanceException event raised in {0}: {1} {2}",
+                Debug.WriteLine("FirstChanceException event raised in {0}: {1}\r\n{2}",
                  AppDomain.CurrentDomain.FriendlyName, e.Exception.Message, source);
             };
 #endif

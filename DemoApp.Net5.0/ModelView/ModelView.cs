@@ -1,24 +1,21 @@
-﻿#region (c) 2022 Gilles Macabies All right reserved
-
-// Author     : Gilles Macabies
+﻿// Author     : Gilles Macabies
 // Solution   : FilterDataGrid
 // Projet     : DemoApp.Net5.0
 // File       : ModelView.cs
 // Created    : 01/05/2022
-// 
-
-#endregion
+//
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -26,12 +23,20 @@ namespace DemoAppNet5.ModelView
 {
     public class ModelView : INotifyPropertyChanged
     {
+        #region Private Fields
+
+        private ICollectionView collView;
+        private int count;
+        private string search;
+
+        #endregion Private Fields
+
         #region Public Constructors
 
-        public ModelView(int num)
+        public ModelView(int i = 10_000)
         {
-            count = num;
-            Task.Run(FillData);
+            count = i;
+            SelectedItem = count;
         }
 
         #endregion Public Constructors
@@ -42,29 +47,13 @@ namespace DemoAppNet5.ModelView
 
         #endregion Public Events
 
-        #region Private Fields
-
-        private ICollectionView collView;
-        private int count;
-        private string search;
-
-        #endregion Private Fields
-
         #region Public Properties
 
         public ObservableCollection<Employe> Employes { get; set; }
 
         public ObservableCollection<Employe> FilteredList { get; set; }
 
-        public int NumberItems
-        {
-            get => count;
-            set
-            {
-                count = value;
-                Task.Run(FillData);
-            }
-        }
+        public int[] NumberItems { get; } = { /*10, 100, 1000,*/ 10_000, 100_000, 500_000, 1_000_000 };
 
         /// <summary>
         ///     Refresh all
@@ -91,10 +80,21 @@ namespace DemoAppNet5.ModelView
 
                 collView.Refresh();
 
-                FilteredList = new ObservableCollection<Employe>(collView.OfType<Employe>().ToList());
+                FilteredList = new ObservableCollection<Employe>(collView.OfType<Employe>());
 
                 OnPropertyChanged("Search");
                 OnPropertyChanged("FilteredList");
+            }
+        }
+
+        public int SelectedItem
+        {
+            get => count;
+            set
+            {
+                count = value;
+                OnPropertyChanged(nameof(SelectedItem));
+                Task.Run(FillData);
             }
         }
 
@@ -109,7 +109,7 @@ namespace DemoAppNet5.ModelView
         {
             search = "";
 
-            var employe = new List<Employe>();
+            var employe = new List<Employe>(count);
 
             // for distinct lastname set "true" at CreateRandomEmployee(true)
             await Task.Run(() =>

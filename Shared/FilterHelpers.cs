@@ -104,24 +104,23 @@ namespace FilterDataGrid
 
         #region Private Methods
 
-        private static void ItemsSourceChanged(object sender, EventArgs e)
+        private static void ItemsSourceChanged(object o, EventArgs eArgs)
         {
-            ItemsControl itemsControl = sender as ItemsControl;
+            ItemsControl itemsControl = o as ItemsControl;
 
             if (itemsControl == null) return;
 
-            EventHandler eventHandler = null;
-            eventHandler = new EventHandler(delegate
+            void EventHandler(object sender, EventArgs e)
             {
                 if (itemsControl.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
                 {
                     ScrollViewer scrollViewer = itemsControl.FindVisualChild<ScrollViewer>();
                     scrollViewer.ScrollToTop();
-                    itemsControl.ItemContainerGenerator.StatusChanged -= eventHandler;
+                    itemsControl.ItemContainerGenerator.StatusChanged -= EventHandler;
                 }
-            });
+            }
 
-            itemsControl.ItemContainerGenerator.StatusChanged += eventHandler;
+            itemsControl.ItemContainerGenerator.StatusChanged += EventHandler;
         }
 
         private static void OnScrollToTopPropertyChanged(DependencyObject dpo, DependencyPropertyChangedEventArgs e)
