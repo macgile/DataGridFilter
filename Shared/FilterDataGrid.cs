@@ -21,6 +21,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
+// ReSharper disable MemberCanBePrivate.Global
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable RedundantArgumentDefaultValue
@@ -767,8 +768,7 @@ namespace FilterDataGrid
             {
                 e.CanExecute = search
                     ? CommonItemsView.Any()
-                    : CommonItemsView.Any(c => c.IsChecked)
-                      && CommonItemsView.Any(c => c.IsChecked && c.IsChanged || !c.IsChecked && c.IsChanged);
+                    : CommonItemsView.Any(c => c.IsChecked) && CommonItemsView.Any(c => c.IsChanged);
             }
         }
 
@@ -932,18 +932,122 @@ namespace FilterDataGrid
             // filterManager.LastFilter : last Filter entered in queue
             var isLastFilter = filterManager.LastFilter?.FieldName == fieldProperty.Name;
 
-            var enumerator = ItemsSource.GetEnumerator();
+            List<FilterItem> resultList;
             var dico = new Dictionary<object, List<GroupIndexState>>();
+            var enumerator = ItemsSource.GetEnumerator();
             var index = 0;
             var isDate = fieldType == typeof(DateTime);
 
-            while (enumerator.MoveNext())
+            try
             {
-                if (filterManager.StackItems[index] || (isLastFilter && currentFilter.PreviousItems[index]))
+                while (enumerator.MoveNext())
                 {
+
+                    if (filterManager.StackItems[index] || (isLastFilter && currentFilter.PreviousItems[index]))
+                    {
+                        var entry = isDate
+                             ? ((DateTime?)fieldProperty.GetValue(enumerator.Current, null))?.Date
+                             : fieldProperty.GetValue(enumerator.Current, null);
+
+                        var isChecked = filterManager.StackItems[index];
+                        var isprevious = currentFilter.PreviousItems[index];
+
+                        var key = entry ?? string.Empty;
+
+                        if (dico.ContainsKey(key))
+                        {
+                            var current = dico[key][0];
+
+                            // if both are true, checked has priority
+                            current.IsChecked = isChecked || current.IsChecked;
+                            current.IsPrevious = !current.IsChecked && current.IsPrevious;
+
+                            if (isChecked)
+                                current.CheckedIndex.Add(index);
+                            else
+                                current.PreviousIndex.Add(index);
+
+                            dico[key][0] = current;
+                        }
+                        else
+                        {
+                            // initialize
+                            var groupIndexState = new GroupIndexState
+                            {
+                                // cannot have the same state at the same time
+                                IsChecked = isChecked,
+                                IsPrevious = isprevious,
+                                CheckedIndex = new List<int>(),
+                                PreviousIndex = new List<int>(),
+                                IsNull = key.Equals(string.Empty),
+                                Content = entry
+                            };
+
+                            if (isChecked)
+                                groupIndexState.CheckedIndex.Add(index);
+                            else
+                                groupIndexState.PreviousIndex.Add(index);
+
+                            dico.Add(key, new List<GroupIndexState> { groupIndexState });
+                        }
+                    }
+
+                    index++;
+                }
+
+                resultList = dico.AsParallel().OrderBy(x => x.Key.ToString())
+                            .Select((c, i) => new FilterItem
+                            {
+                                GroupIndex = c.Value[0].IsChecked
+                                    ? c.Value[0].CheckedIndex.ToArray()
+                                    : c.Value[0].PreviousIndex.ToArray(),
+                                Initialize = c.Value[0].IsChecked,
+                                IsPrevious = c.Value[0].IsPrevious,
+                                Content = c.Value[0].IsNull ? null : c.Value[0].Content,
+                                FieldType = fieldType,
+                                Level = 1
+                            })
+                            .ToList();
+
+                watch.Display("GetColumnValues While Loop Final List", IsDebugModeOn);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"FilterDataGrid.GetColumnValuesWhileLoop : {ex.Message}");
+                throw;
+            }
+
+            return resultList;
+        }
+
+        /// <summary>
+        /// Generate list of current field values using for loop
+        /// </summary>
+        /// <param name="fieldProperty"></param>
+        /// <returns></returns>
+        private List<FilterItem> GetColumnValuesForLoop(PropertyInfo fieldProperty)
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+
+            if (!(ItemsSource is IList items)) return null;
+
+            var currentFilter = filterManager.CurrentFilter;
+            var isLastFilter = filterManager.LastFilter?.FieldName == fieldProperty.Name;
+            var dico = new Dictionary<object, List<GroupIndexState>>();
+            var isDate = fieldType == typeof(DateTime);
+            List<FilterItem> resultList;
+
+            try
+            {
+                for (var index = 0; index < items.Count; index++)
+                {
+                    if (!filterManager.StackItems[index] &&
+                        (!isLastFilter || !currentFilter.PreviousItems[index])) continue;
+
                     var entry = isDate
-                         ? ((DateTime?)fieldProperty.GetValue(enumerator.Current, null))?.Date
-                         : fieldProperty.GetValue(enumerator.Current, null);
+                        ? ((DateTime?)fieldProperty.GetValue(items[index], null))?.Date
+                        : fieldProperty.GetValue(items[index], null);
 
                     var isChecked = filterManager.StackItems[index];
                     var isprevious = currentFilter.PreviousItems[index];
@@ -988,116 +1092,30 @@ namespace FilterDataGrid
                     }
                 }
 
-                index++;
-            }
-
-            var list = dico.AsParallel().OrderBy(x => x.Key.ToString())
-                .Select((c, i) => new FilterItem
-                {
-                    GroupIndex = c.Value[0].IsChecked
-                        ? c.Value[0].CheckedIndex.ToArray()
-                        : c.Value[0].PreviousIndex.ToArray(),
-                    Initialize = c.Value[0].IsChecked,
-                    IsPrevious = c.Value[0].IsPrevious,
-                    Content = c.Value[0].IsNull ? null : c.Value[0].Content,
-                    FieldType = fieldType,
-                    Level = 1
-                })
-                .ToList();
-
-            watch.Display("While Loop GetColumnValues Final List", IsDebugModeOn);
-
-            return list;
-        }
-
-        /// <summary>
-        /// Generate list of current field values using for loop
-        /// </summary>
-        /// <param name="fieldProperty"></param>
-        /// <returns></returns>
-        private List<FilterItem> GetColumnValuesForLoop(PropertyInfo fieldProperty)
-        {
-            var watch = new Stopwatch();
-            watch.Start();
-
-            var currentFilter = filterManager.CurrentFilter;
-            var isLastFilter = filterManager.LastFilter?.FieldName == fieldProperty.Name;
-            var dico = new Dictionary<object, List<GroupIndexState>>();
-
-            var isDate = fieldType == typeof(DateTime);
-
-            if (!(ItemsSource is IList items)) return null;
-
-            for (var index = 0; index < items.Count; index++)
-            {
-                if (!filterManager.StackItems[index] &&
-                    (!isLastFilter || !currentFilter.PreviousItems[index])) continue;
-
-                var entry = isDate
-                    ? ((DateTime?)fieldProperty.GetValue(items[index], null))?.Date
-                    : fieldProperty.GetValue(items[index], null);
-
-                var isChecked = filterManager.StackItems[index];
-                var isprevious = currentFilter.PreviousItems[index];
-
-                var key = entry ?? string.Empty;
-
-                if (dico.ContainsKey(key))
-                {
-                    var current = dico[key][0];
-
-                    // if both are true, checked has priority
-                    current.IsChecked = isChecked || current.IsChecked;
-                    current.IsPrevious = !current.IsChecked && current.IsPrevious;
-
-                    if (isChecked)
-                        current.CheckedIndex.Add(index);
-                    else
-                        current.PreviousIndex.Add(index);
-
-                    dico[key][0] = current;
-                }
-                else
-                {
-                    // initialize
-                    var groupIndexState = new GroupIndexState
+                resultList = dico //.AsParallel().OrderBy(x => x.Key.ToString())
+                    .Select((c, i) => new FilterItem
                     {
-                        // cannot have the same state at the same time
-                        IsChecked = isChecked,
-                        IsPrevious = isprevious,
-                        CheckedIndex = new List<int>(),
-                        PreviousIndex = new List<int>(),
-                        IsNull = key.Equals(string.Empty),
-                        Content = entry
-                    };
+                        GroupIndex = c.Value[0].IsChecked
+                            ? c.Value[0].CheckedIndex.ToArray()
+                            : c.Value[0].PreviousIndex.ToArray(),
+                        Initialize = c.Value[0].IsChecked,
+                        IsPrevious = c.Value[0].IsPrevious,
+                        Content = c.Value[0].IsNull ? null : c.Value[0].Content,
+                        FieldType = fieldType,
+                        Level = 1
+                    })
+                    .AsParallel().OrderBy(x => x.Content)
+                    .ToList();
 
-                    if (isChecked)
-                        groupIndexState.CheckedIndex.Add(index);
-                    else
-                        groupIndexState.PreviousIndex.Add(index);
-
-                    dico.Add(key, new List<GroupIndexState> { groupIndexState });
-                }
+                watch.Display("GetColumnValues For Loop Final List", IsDebugModeOn);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"FilterDataGrid.GetColumnValuesForLoop : {ex.Message}");
+                throw;
             }
 
-            var list = dico//.AsParallel().OrderBy(x => x.Key.ToString())
-                .Select((c, i) => new FilterItem
-                {
-                    GroupIndex = c.Value[0].IsChecked
-                        ? c.Value[0].CheckedIndex.ToArray()
-                        : c.Value[0].PreviousIndex.ToArray(),
-                    Initialize = c.Value[0].IsChecked,
-                    IsPrevious = c.Value[0].IsPrevious,
-                    Content = c.Value[0].IsNull ? null : c.Value[0].Content,
-                    FieldType = fieldType,
-                    Level = 1
-                })
-               .AsParallel().OrderBy(x => x.Content)
-               .ToList();
-
-            watch.Display($"While Loop GetColumnValues Final List", IsDebugModeOn);
-
-            return list;
+            return resultList;
         }
 
         /// <summary>
@@ -1398,7 +1416,7 @@ namespace FilterDataGrid
                 result = item.FieldType == typeof(DateTime)
                     ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                     .IndexOf(searchText, ordinalIgnoreCase) >= 0
-                    : item.Content?.ToString().IndexOf(searchText, ordinalIgnoreCase) >= 0;
+                    : item.Content?.ToString()?.IndexOf(searchText, ordinalIgnoreCase) >= 0;
 
                 //Debug.WriteLine($"item : {item?.Content,-10} {item?.Level,-4} {result,-8} StartsWith :{StartsWith}");
                 return result;
@@ -1410,7 +1428,7 @@ namespace FilterDataGrid
             result = item.FieldType == typeof(DateTime)
                 ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
                 .IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >= 0
-                : item.Content?.ToString().IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >=
+                : item.Content?.ToString()?.IndexOf(searchText, 0, searchLength, ordinalIgnoreCase) >=
                   0;
 
             //Debug.WriteLine($"item : {item?.Content, -10} {item?.Level, -4} {result, -8} StartsWith :{StartsWith}");
@@ -1567,7 +1585,7 @@ namespace FilterDataGrid
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        //filterItemList = GetColumnValues(fieldProperty);
+                        //filterItemList = GetColumnValuesWhileLoop(fieldProperty);
                         filterItemList = GetColumnValuesForLoop(fieldProperty);
                     });
                 });
