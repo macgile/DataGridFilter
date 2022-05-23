@@ -114,14 +114,15 @@
                             Focusable="False"
                             FontSize="{TemplateBinding FontSize}"
                             FontWeight="{TemplateBinding FontWeight}"
+                            Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}"
                             MaxLength="{TemplateBinding MaxLength}"
                             Text="{TemplateBinding Tag}">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}">
-                                    <Setter Property="Foreground" Value="Transparent" />
+                                    <Setter Property="Opacity" Value="0" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Text, ElementName=TextSource}" Value="">
-                                            <Setter Property="Foreground" Value="LightGray" />
+                                            <Setter Property="Opacity" Value="0.5" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -147,7 +148,8 @@
                                                             x:Name="PathButton" Height="18"
                                                             Margin="0"
                                                             Data="{StaticResource Delete}"
-                                                            Fill="DarkSlateGray" Stretch="Uniform" />
+                                                            Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}"
+                                                            Stretch="Uniform" />
                                                     </Viewbox>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
@@ -194,7 +196,8 @@
                                                         <Path
                                                             x:Name="PathToggle" VerticalAlignment="Center"
                                                             Data="{StaticResource Contains}"
-                                                            Fill="DarkSlateGray" Stretch="Uniform" />
+                                                            Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}"
+                                                            Stretch="Uniform" />
                                                     </Viewbox>
                                                 </Grid>
                                                 <ControlTemplate.Triggers>
@@ -202,7 +205,7 @@
                                                         <Setter TargetName="PathToggle" Property="Data" Value="{StaticResource StartsWith}" />
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="PathToggle" Property="Fill" Value="Black" />
+                                                        <Setter TargetName="PathToggle" Property="Opacity" Value="0.6" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -476,8 +479,9 @@
 
                 <Border
                     x:Name="PopUpBorder" Padding="0"
-                    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                    BorderBrush="LightGray" BorderThickness="1">
+                    Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Background}"
+                    BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}" 
+                    BorderThickness="1">
 
                     <Grid
                         x:Name="SizableContentGrid"
@@ -506,8 +510,9 @@
                             HorizontalAlignment="Stretch"
                             Command="{x:Static control:FilterDataGrid.RemoveFilter}"
                             Content="{Binding Path=Content, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridColumnHeader}}, UpdateSourceTrigger=PropertyChanged}"
-                            FontSize="13" OverridesDefaultStyle="True"
-                            TabIndex="0">
+                            FontSize="13" 
+                            TabIndex="0"
+                            Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
                                     <Setter Property="Foreground" Value="DarkSlateGray" />
@@ -577,14 +582,17 @@
                         <!--  Row 1: SEPARATOR  -->
                         <Separator
                             Grid.Row="1" Grid.Column="1"
-                            Margin="0,2" Background="LightGray" />
+                            Margin="0,2" 
+                            Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}" />
 
                         <!--  Row 2: SEARCH BOX  -->
                         <Border
                             Grid.Row="2" Grid.Column="1"
                             Margin="0,4,4,2" Padding="0,2"
-                            VerticalAlignment="Top" Background="Transparent"
-                            BorderBrush="LightGray" BorderThickness="1">
+                            VerticalAlignment="Top" 
+                            Background="Transparent"
+                            BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}"
+                            BorderThickness="1">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -616,8 +624,10 @@
                             Height="20" Margin="0,5,0,0"
                             VerticalAlignment="Top" Panel.ZIndex="0"
                             Data="{StaticResource FilterChecked}"
-                            Fill="DarkSlateGray" Stretch="Fill"
-                            Stroke="DarkSlateGray" StrokeThickness="0.2">
+                            Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}" 
+                            Stretch="Fill"
+                            Stroke="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}" 
+                            StrokeThickness="0.2">
                             <Path.Style>
                                 <Style TargetType="Path">
                                     <Setter Property="Visibility" Value="Hidden" />
@@ -638,8 +648,10 @@
                             <ListBox
                                 x:Name="PopupListBox" Grid.Row="0"
                                 Padding="2" HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch" BorderBrush="LightGray"
-                                BorderThickness="1" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                VerticalAlignment="Stretch" 
+                                BorderBrush="LightGray"
+                                BorderThickness="1" 
+                                ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto" TabIndex="2"
                                 Visibility="Collapsed">
                                 <ListBox.ItemContainerStyle>
@@ -754,7 +766,8 @@
                                                             Width="12" Height="12"
                                                             Margin="0"
                                                             Data="{StaticResource GripSizeIcon}"
-                                                            Stretch="None" Stroke="LightSlateGray"
+                                                            Stretch="None" Stroke="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}"
+                                                            Opacity="0.5"
                                                             StrokeThickness="1" />
                                                         <Grid.Style>
                                                             <Style TargetType="{x:Type Grid}">
