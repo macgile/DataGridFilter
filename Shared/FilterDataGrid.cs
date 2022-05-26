@@ -1196,7 +1196,6 @@ namespace FilterDataGrid
                 await Task.Run(() =>
                 {
                     // empty item flag
-                    var emptyItem = false;
 
                     // contribution : STEFAN HEIMEL
                     Dispatcher.Invoke(() =>
@@ -1220,7 +1219,7 @@ namespace FilterDataGrid
 
                     // if they exist, remove from the list all null objects or empty strings.
                     // content = null and "" are two different things but both labeled as (blank)
-                    emptyItem = sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty)) > 0;
+                    var emptyItem = sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty)) > 0;
 
                     // sorting is a slow operation, using ParallelQuery
                     // TODO : AggregateException when user can add row
