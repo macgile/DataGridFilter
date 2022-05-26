@@ -13,8 +13,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -22,39 +24,45 @@ namespace DemoApplication.ModelView
 {
     public class ModelView : INotifyPropertyChanged
     {
+        #region Private Fields
+
+        private ICollectionView collView;
+        private int count;
+        private string search;
+
+        #endregion Private Fields
+
         #region Public Constructors
 
-        public ModelView()
+        public ModelView(int i = 10_000)
         {
-            FillData();
+            count = i;
+            SelectedItem = count;
         }
 
         #endregion Public Constructors
 
-        #region Command
+        #region Public Events
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion Public Events
+
+        #region Public Properties
+
+        public ObservableCollection<Employe> Employes { get; set; }
+
+        public ObservableCollection<Employe> FilteredList { get; set; }
+
+        public int[] NumberItems { get; } = { /*10, 100, 1000,*/ 10_000, 100_000, 500_000, 1_000_000 };
 
         /// <summary>
         ///     Refresh all
         /// </summary>
         public ICommand RefreshCommand => new DelegateCommand(RefreshData);
 
-        #endregion Command
-
-        #region Private Fields
-
-        private ICollectionView collView;
-
-        private string search;
-
-        #endregion Private Fields
-
-        #region Public Properties
-
-        public ObservableCollection<Employe> Employes { get; set; }
-        public ObservableCollection<Employe> FilteredList { get; set; }
-
         /// <summary>
-        /// Global filter
+        ///     Global filter
         /// </summary>
         public string Search
         {
@@ -66,48 +74,53 @@ namespace DemoApplication.ModelView
                 collView.Filter = e =>
                 {
                     var item = (Employe)e;
-                    return item != null && ((item.LastName?.StartsWith(search, StringComparison.OrdinalIgnoreCase) ?? false)
-                                            || (item.FirstName?.StartsWith(search, StringComparison.OrdinalIgnoreCase) ?? false));
+                    return item != null &&
+                           ((item.LastName?.StartsWith(search, StringComparison.OrdinalIgnoreCase) ?? false)
+                            || (item.FirstName?.StartsWith(search, StringComparison.OrdinalIgnoreCase) ?? false));
                 };
 
                 collView.Refresh();
 
-                FilteredList = new ObservableCollection<Employe>(collView.OfType<Employe>().ToList());
+                FilteredList = new ObservableCollection<Employe>(collView.OfType<Employe>());
 
                 OnPropertyChanged("Search");
                 OnPropertyChanged("FilteredList");
             }
         }
 
+        public int SelectedItem
+        {
+            get => count;
+            set
+            {
+                count = value;
+                OnPropertyChanged(nameof(SelectedItem));
+                Task.Run(FillData);
+            }
+        }
+
         #endregion Public Properties
-
-        #region Public Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion Public Events
 
         #region Private Methods
 
         /// <summary>
-        /// Fill data
+        ///     Fill data
         /// </summary>
-        private void FillData()
+        private async void FillData()
         {
             search = "";
 
-            var employe = new List<Employe>();
-
-            // number of elements to be generated
-            const int @int = 100_000;
+            var employe = new List<Employe>(count);
 
             // for distinct lastname set "true" at CreateRandomEmployee(true)
-            for (var i = 0; i < @int; i++)
-                employe.Add(RandomGenerator.CreateRandomEmployee(true));
+            await Task.Run(() =>
+            {
+                for (var i = 0; i < count; i++)
+                    employe.Add(RandomGenerator.CreateRandomEmployee(true));
+            });
 
-            Employes = new ObservableCollection<Employe>(employe.AsParallel().OrderBy(o => o.LastName));
-
-            FilteredList = new ObservableCollection<Employe>(Employes);
+            Employes = new ObservableCollection<Employe>(employe);
+            FilteredList = new ObservableCollection<Employe>(employe);
             collView = CollectionViewSource.GetDefaultView(FilteredList);
 
             OnPropertyChanged("Search");
@@ -121,12 +134,13 @@ namespace DemoApplication.ModelView
         }
 
         /// <summary>
-        /// refresh data
+        ///     refresh data
         /// </summary>
         /// <param name="obj"></param>
         private void RefreshData(object obj)
         {
-            FillData();
+            collView = CollectionViewSource.GetDefaultView(new object());
+            Task.Run(FillData);
         }
 
         #endregion Private Methods

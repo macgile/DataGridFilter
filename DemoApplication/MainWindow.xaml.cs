@@ -10,16 +10,13 @@
 
 using System;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-// ReSharper disable RedundantExtendsListEntry
 
 namespace DemoApplication
 {
     /// <summary>
     ///     Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         #region Public Constructors
 
@@ -30,28 +27,15 @@ namespace DemoApplication
 #if DEBUG
             AppDomain.CurrentDomain.FirstChanceException += (source, e) =>
             {
-                Debug.WriteLine("FirstChanceException event raised in {0}: {1}",
-                    AppDomain.CurrentDomain.FriendlyName, e.Exception.Message);
+                
+                Debug.WriteLine($"FirstChanceException event raised in " +
+                                $"{AppDomain.CurrentDomain.FriendlyName}: {e.Exception.Message} {source}");
             };
 #endif
+
             DataContext = new ModelView.ModelView();
         }
 
         #endregion Public Constructors
-
-        #region Private Methods
-
-        /// <summary>
-        /// Add line numbers
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            var index = e.Row.GetIndex() + 1;
-            e.Row.Header = $"{index}";
-        }
-
-        #endregion Private Methods
     }
 }

@@ -54,19 +54,24 @@ namespace DemoAppNet5.ModelView
         /// Create random employee
         /// </summary>
         /// <returns></returns>
-        /// Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate, bool? manager = false)
         public static Employe CreateRandomEmployee(bool distinct = false)
         {
             // distinct lastName or not
-            var emp = new Employe
-            (distinct ? GenerateName() : LastNames[Rnd.Next(LastNames.Length)],
+            var emp = new Employe(
+
+                // last name
+                distinct ? GenerateName() : LastNames[Rnd.Next(LastNames.Length)],
+
+                // first name
                 FirstNames[Rnd.Next(FirstNames.Length)],
                 // salary
                 Math.Round(Rnd.NextDouble() * (300 - 100) + 100, 1),
                 // age
                 Rnd.Next(18, 75) * 1,
-                // start date
-                Rnd.Next(0, 10) != 1 ? new DateTime(2015 + Rnd.Next(4), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
+
+                // start date + time
+                Rnd.Next(0, 10) != 1 ? new DateTime(2012 + Rnd.Next(10), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
+
                 // is manager
                 Rnd.Next() % 2 == 1);
             return emp;
