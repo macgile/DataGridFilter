@@ -1,4 +1,10 @@
-﻿// Author : Gilles Macabies Solution : DataGridFilter Projet : DataGridFilter File : Loc.cs Created : 18/12/2019
+﻿#region (c) 2022 Gilles Macabies All right reserved
+// Solution   : FilterDataGrid
+// Projet     : FilterDataGrid
+// File       : Loc.cs
+// Created    : 23/05/2022
+
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -189,20 +195,6 @@ namespace FilterDataGrid
                         { Local.Russian, "Пройденное время {0:mm}:{0:ss}.{0:ff}" },
                         { Local.Spanish, "Tiempo transurrido {0:mm}:{0:ss}.{0:ff}"}
                     }
-                },
-                {
-                    "Neutral", new Dictionary<Local, string>
-                    {
-                        { Local.Chinese, "{0}" },
-                        { Local.Dutch,   "{0}" },
-                        { Local.English, "{0}" },
-                        { Local.French,  "{0}" },
-                        { Local.German,  "{0}" },
-                        { Local.Italian, "{0}" },
-                        { Local.Polish,  "{0}" },
-                        { Local.Russian, "{0}" },
-                        { Local.Spanish, "{0}" }
-                    }
                 }
             };
 
@@ -255,7 +247,7 @@ namespace FilterDataGrid
 
         public string Toggle => Translate("Toggle");
 
-        public string Neutral => Translate("Neutral");
+        public string Neutral => "{0}"; 
 
         #endregion Public Properties
 
