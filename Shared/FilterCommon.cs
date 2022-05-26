@@ -13,15 +13,6 @@ using System;
 using System.Collections.Generic;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable InvalidXmlDocComment
-// ReSharper disable TooManyChainedReferences
-// ReSharper disable ExcessiveIndentation
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable CheckNamespace
-
-// https://stackoverflow.com/questions/2251260/how-to-develop-treeview-with-checkboxes-in-wpf
-// https://stackoverflow.com/questions/14876032/group-dates-by-year-month-and-date-in-wpf-treeview
-// https://www.codeproject.com/Articles/28306/Working-with-Checkboxes-in-the-WPF-TreeView
 
 namespace FilterDataGrid
 {

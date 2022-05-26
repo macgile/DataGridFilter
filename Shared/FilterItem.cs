@@ -156,17 +156,19 @@ namespace FilterDataGrid
 
             IsChanged = initialState != isChecked;
 
+            // filter Item linked to the day, it propagates the status changes
             if (Item != null)
             {
                 Item.IsChanged = IsChanged;
                 Item.Initialize = IsChecked == true;
             }
 
+            // (Select All) item
             if (Level == 0)
                 Tree?.Skip(1).ToList().ForEach(c => { c.SetIsChecked(value, true, true); });
 
             // state.HasValue : !null
-            if (updateChildren && isChecked.HasValue && Level != -1)
+            if (updateChildren && isChecked.HasValue && Level > 0)
                 Children?.ForEach(c => { c.SetIsChecked(value, true, false); });
 
             if (updateParent) Parent?.VerifyCheckedState();
