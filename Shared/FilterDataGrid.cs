@@ -1086,7 +1086,6 @@ namespace FilterDataGrid
 
             // reset previous elapsed time
             stopWatchFilter = Stopwatch.StartNew();
-            //var start = DateTime.Now;
 
             // clear search text (!important)
             searchText = string.Empty;
@@ -1215,14 +1214,15 @@ namespace FilterDataGrid
                                 .ToList();
                     });
 
-                    // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems) displays new (checked) and
+                    // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
+                    // displays new (checked) and
                     if (lastFilter == CurrentFilter.FieldName)
                         sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems ?? new HashSet<object>());
 
                     // if they exist, remove from the list all null objects or empty strings
                     if (sourceObjectList.Any(l => l == null || l.Equals(string.Empty) || l.Equals(null)))
                     {
-                        // element = null && "" are two different things but labeled as (Blank)
+                        // content = null || "" are two different things but labeled as (Blank)
                         // in the list of items to be filtered
                         emptyItem = true;
                         sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty));
@@ -1232,13 +1232,14 @@ namespace FilterDataGrid
                     // TODO : AggregateException when user can add row
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
 
-                    // add the first element (select all) at the top of list
+                    // add the first item (select all) at the top of list
                     filterItemList = new List<FilterItem>(sourceObjectList.Count + 2)
                     {
                         new FilterItem { Label = Translate.All, IsChecked = true, Level = 0 }
                     };
 
-                    // add all items (not null) to the filterItemList, the dates list is computed by BuildTree
+                    // add all items (not null) to the filterItemList,
+                    // the list of dates is calculated by BuildTree from this list
                     filterItemList.AddRange(sourceObjectList.Select(item => new FilterItem
                     {
                         Content = item,
@@ -1249,15 +1250,13 @@ namespace FilterDataGrid
                         Initialize = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
                     }));
 
-                    // add a empty item(if exist) at the bottom of the list
+                    // if exist, add a empty item (Blank) at the bottom of the list
                     if (emptyItem)
                     {
-                        sourceObjectList.Insert(sourceObjectList.Count, null);
-
                         filterItemList.Add(new FilterItem
                         {
-                            FieldType = fieldType,
                             Content = null,
+                            FieldType = fieldType,
                             Label = Translate.Empty,
                             Level = -1,
                             Initialize = CurrentFilter?.PreviouslyFilteredItems?.Contains(null) == false
@@ -1265,6 +1264,7 @@ namespace FilterDataGrid
                     }
                 });
 
+                // ItemsSource (ListBow/TreeView)
                 if (fieldType == typeof(DateTime))
                     TreeviewItems = BuildTree(filterItemList);
                 else
