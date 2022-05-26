@@ -1215,7 +1215,6 @@ namespace FilterDataGrid
                     });
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
-                    // displays new (checked) and
                     if (lastFilter == CurrentFilter.FieldName)
                         sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems ?? new HashSet<object>());
 
