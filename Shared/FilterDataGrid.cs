@@ -1391,6 +1391,7 @@ namespace FilterDataGrid
                 if (!CurrentFilter.PreviouslyFilteredItems.Any())
                     RemoveCurrentFilter();
 
+                // set button icon (filtered or not)
                 FilterState.SetIsFiltered(button, CurrentFilter?.IsFiltered ?? false);
             }
             catch (Exception ex)
