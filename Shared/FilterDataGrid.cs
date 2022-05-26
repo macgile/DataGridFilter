@@ -1219,14 +1219,9 @@ namespace FilterDataGrid
                     if (lastFilter == CurrentFilter.FieldName)
                         sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems ?? new HashSet<object>());
 
-                    // if they exist, remove from the list all null objects or empty strings
-                    if (sourceObjectList.Any(l => l == null || l.Equals(string.Empty) || l.Equals(null)))
-                    {
-                        // content = null || "" are two different things but labeled as (Blank)
-                        // in the list of items to be filtered
-                        emptyItem = true;
-                        sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty));
-                    }
+                    // if they exist, remove from the list all null objects or empty strings.
+                    // content = null and "" are two different things but both labeled as (blank)
+                    emptyItem = sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty)) > 0;
 
                     // sorting is a slow operation, using ParallelQuery
                     // TODO : AggregateException when user can add row
