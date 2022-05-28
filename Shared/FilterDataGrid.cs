@@ -286,11 +286,6 @@ namespace FilterDataGrid
         public Loc Translate { get; private set; }
 
         /// <summary>
-        ///     Row header size when ShowRowsCount is true
-        /// </summary>
-        public double RowHeaderSize { get; set; }
-
-        /// <summary>
         /// Treeview ItemsSource
         /// </summary>
         public List<FilterItemDate> TreeviewItems
@@ -327,13 +322,13 @@ namespace FilterDataGrid
 
 
         /// <summary>
-        ///     DatagridFilterStyleKey ComponentResourceKey
+        /// Popup filtered items (ListBox/TreeView)
         /// </summary>
         private IEnumerable<FilterItem> PopupViewItems =>
             ItemCollectionView?.OfType<FilterItem>().Skip(1) ?? new List<FilterItem>();
 
         /// <summary>
-        ///     DataGridStyle, only internal usage
+        /// Popup source collection (ListBox/TreeView)
         /// </summary>
         private IEnumerable<FilterItem> SourcePopupViewItems =>
             ItemCollectionView?.SourceCollection.OfType<FilterItem>().Skip(1) ?? new List<FilterItem>();
@@ -361,9 +356,6 @@ namespace FilterDataGrid
             {
                 // FilterLanguage : default : 0 (english)
                 Translate = new Loc { Language = FilterLanguage };
-
-                // Show row count
-                RowHeaderWidth = ShowRowsCount ? RowHeaderWidth > 0 ? RowHeaderWidth : double.NaN : 0;
 
                 // fill excluded Fields list with values
                 if (AutoGenerateColumns)
@@ -476,11 +468,11 @@ namespace FilterDataGrid
                         Text = ItemsSourceCount.ToString(),
                         FontSize = FontSize,
                         FontFamily = FontFamily,
+                        Padding = new Thickness(0,0,4,0),
                         Margin = new Thickness(2.0)
                     };
                     txt.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    RowHeaderSize = Math.Ceiling(txt.DesiredSize.Width);
-                    OnPropertyChanged(nameof(RowHeaderSize));
+                    RowHeaderWidth = Math.Ceiling(txt.DesiredSize.Width);
                 }
 
                 // get collection type
@@ -555,13 +547,11 @@ namespace FilterDataGrid
                 var dateTimes = dates.ToList();
 
                 foreach (var y in dateTimes.Where(c => c.Level == 1)
-                             .Select(d => new
+                             .Select(filterItem => new
                              {
-                                 ((DateTime)d.Content).Date,
-                                 d.IsChecked,
-                                 Item = d
+                                 ((DateTime)filterItem.Content).Date,
+                                 Item = filterItem
                              })
-                             .OrderBy(o => o.Date.Year)
                              .GroupBy(g => g.Date.Year)
                              .Select(year => new FilterItemDate
                              {
@@ -589,8 +579,7 @@ namespace FilterDataGrid
                                                  Initialize = true, // default state
                                                  FieldType = fieldType,
 
-                                                 // filter Item linked to the day,
-                                                 // it propagates the status changes
+                                                 // filter Item linked to the day, it propagates the status changes
                                                  Item = day.FirstOrDefault()?.Item,
 
                                                  Children = new List<FilterItemDate>()
@@ -607,7 +596,7 @@ namespace FilterDataGrid
                         {
                             d.Parent = m;
 
-                            // set the state of the ischecked property based on the items already filtered (unchecked)
+                            // set the state of the "IsChecked" property based on the items already filtered (unchecked)
                             if (d.Item.IsChecked) return;
 
                             // call the SetIsChecked method of the FilterItemDate class
@@ -971,15 +960,15 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "RemoveCurrentFilter");
 
-            if (CurrentFilter == null) return;
+           // if (CurrentFilter == null) return;
 
-            popup.IsOpen = false;
+            popup.IsOpen = false; // raise PopupClosed event
 
             // button icon reset
             FilterState.SetIsFiltered(button, false);
-
-            var start = DateTime.Now;
+            
             ElapsedTime = new TimeSpan(0, 0, 0);
+            stopWatchFilter = Stopwatch.StartNew();
 
             Mouse.OverrideCursor = Cursors.Wait;
 
@@ -992,11 +981,13 @@ namespace FilterDataGrid
             // set the last filter applied
             lastFilter = GlobalFilterList.LastOrDefault()?.FieldName;
 
-            ElapsedTime = DateTime.Now - start;
-
             CurrentFilter.IsFiltered = false;
-
+            CurrentFilter = null;
             ResetCursor();
+
+            stopWatchFilter.Stop();
+            ElapsedTime = stopWatchFilter.Elapsed;
+
         }
 
         /// <summary>
@@ -1195,8 +1186,6 @@ namespace FilterDataGrid
                 // get the list of values distinct from the list of raw values of the current column
                 await Task.Run(() =>
                 {
-                    // empty item flag
-
                     // contribution : STEFAN HEIMEL
                     Dispatcher.Invoke(() =>
                     {
@@ -1217,12 +1206,14 @@ namespace FilterDataGrid
                     if (lastFilter == CurrentFilter.FieldName)
                         sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems ?? new HashSet<object>());
 
-                    // if they exist, remove from the list all null objects or empty strings.
-                    // content = null and "" are two different things but both labeled as (blank)
-                    var emptyItem = sourceObjectList.RemoveAll(v => v == null || v.Equals(null) || v.Equals(string.Empty)) > 0;
+                    // empty item flag
+                    // if they exist, remove all null or empty string values from the list.
+                    // content == null and content == "" are two different things but both labeled as (blank)
+                    var emptyItem = sourceObjectList.RemoveAll(v => v == null || v.Equals(string.Empty)) > 0;
 
-                    // sorting is a slow operation, using ParallelQuery
                     // TODO : AggregateException when user can add row
+
+                    // sorting is a very slow operation, using ParallelQuery
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
 
                     // add the first item (select all) at the top of list
@@ -1236,9 +1227,9 @@ namespace FilterDataGrid
                     filterItemList.AddRange(sourceObjectList.Select(item => new FilterItem
                     {
                         Content = item,
+                        ContentLength = item.ToString().Length,
                         FieldType = fieldType,
                         Label = item.ToString(),
-                        ContentLength = item.ToString().Length,
                         Level = 1,
                         Initialize = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
                     }));
@@ -1289,13 +1280,15 @@ namespace FilterDataGrid
             }
             finally
             {
+                // reset cursor
+                ResetCursor();
+
                 stopWatchFilter.Stop();
 
                 // show open popup elapsed time in UI
                 ElapsedTime = stopWatchFilter.Elapsed;
 
-                // reset cursor
-                ResetCursor();
+                Debug.WriteLineIf(DebugMode, $"FilterDataGrid.ShowFilterCommand Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
             }
         }
 
@@ -1320,8 +1313,6 @@ namespace FilterDataGrid
             {
                 await Task.Run(() =>
                 {
-                    // popup items and search results
-                    var changedItems = PopupViewItems.Where(c => c.IsChanged).ToList();
                     var previousFiltered = CurrentFilter.PreviouslyFilteredItems;
                     bool blankIsUnchecked;
 
@@ -1342,6 +1333,9 @@ namespace FilterDataGrid
                     }
                     else
                     {
+                        // changed popup items
+                        var changedItems = PopupViewItems.Where(c => c.IsChanged).ToList();
+
                         var checkedItems = changedItems.Where(c => c.IsChecked);
                         var uncheckedItems = changedItems.Where(c => !c.IsChecked).ToList();
 
@@ -1403,7 +1397,7 @@ namespace FilterDataGrid
                 stopWatchFilter.Stop();
                 ElapsedTime = stopWatchFilter.Elapsed;
 
-                Debug.WriteLineIf(DebugMode, $"Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
+                Debug.WriteLineIf(DebugMode, $"FilterDataGrid.ApplyFilterCommand Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
             }
         }
 
