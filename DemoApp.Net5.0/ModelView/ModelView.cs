@@ -32,7 +32,7 @@ namespace DemoAppNet5.ModelView
 
         #region Public Constructors
 
-        public ModelView(int i = 10_000)
+        public ModelView(int i = 10)
         {
             count = i;
             SelectedItem = count;
@@ -52,7 +52,7 @@ namespace DemoAppNet5.ModelView
 
         public ObservableCollection<Employe> FilteredList { get; set; }
 
-        public int[] NumberItems { get; } = { /*10, 100, 1000,*/ 10_000, 100_000, 500_000, 1_000_000 };
+        public int[] NumberItems { get; } = { 10, 100, 1000, 10_000, 100_000, 500_000, 1_000_000 };
 
         /// <summary>
         ///     Refresh all

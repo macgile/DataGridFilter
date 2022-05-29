@@ -23,7 +23,7 @@ namespace FilterDataGrid
         int ContentLength { get; set; }
         Type FieldType { get; set; }
         bool IsChanged { get; set; }
-        string Label { get; set; }
+        object Label { get; set; }
         int Level { get; set; }
         #endregion Public Properties
     }
@@ -86,7 +86,7 @@ namespace FilterDataGrid
         /// <summary>
         /// Content displayed
         /// </summary>
-        public string Label { get; set; }
+        public object Label { get; set; }
 
         /// <summary>
         /// Hierarchical level for the date
@@ -134,7 +134,7 @@ namespace FilterDataGrid
 
         public FilterItem Item { get; set; }
 
-        public string Label { get; set; }
+        public object Label { get; set; }
 
         public int Level { get; set; }
 

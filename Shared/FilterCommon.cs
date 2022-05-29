@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -37,6 +38,8 @@ namespace FilterDataGrid
 
         public string FieldName { get; set; }
         public Type FieldType { get; set; }
+
+        public PropertyInfo FieldProperty { get; set; }
 
         public bool IsFiltered
         {
@@ -67,8 +70,8 @@ namespace FilterDataGrid
             bool Predicate(object o)
             {
                 var value = FieldType == typeof(DateTime)
-                    ? ((DateTime?)o.GetType().GetProperty(FieldName)?.GetValue(o, null))?.Date
-                    : o.GetType().GetProperty(FieldName)?.GetValue(o, null);
+                    ? ((DateTime?)FieldProperty?.GetValue(o, null))?.Date
+                    : FieldProperty?.GetValue(o, null);
 
                 return !PreviouslyFilteredItems.Contains(value);
             }

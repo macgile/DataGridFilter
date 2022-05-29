@@ -5,7 +5,7 @@
 // Projet     : FilterDataGrid.Net5.0
 // File       : FilterDataGrid.cs
 // Created    : 06/03/2022
-// 
+//
 
 #endregion
 
@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace FilterDataGrid
             // load resources
             var resourcesDico = new ResourceDictionary
             {
-               Source = new Uri("/FilterDataGrid;component/Themes/FilterDataGrid.xaml", UriKind.RelativeOrAbsolute)
+                Source = new Uri("/FilterDataGrid;component/Themes/FilterDataGrid.xaml", UriKind.RelativeOrAbsolute)
             };
 
             Resources.MergedDictionaries.Add(resourcesDico);
@@ -186,7 +187,6 @@ namespace FilterDataGrid
         private object currentColumn;
 
         private readonly Dictionary<string, Predicate<object>> criteria = new Dictionary<string, Predicate<object>>();
-        private const StringComparison IgnoreCase = StringComparison.OrdinalIgnoreCase;
 
         #endregion Private Fields
 
@@ -319,7 +319,6 @@ namespace FilterDataGrid
         private ICollectionView CollectionViewSource { get; set; }
         private ICollectionView ItemCollectionView { get; set; }
         private List<FilterCommon> GlobalFilterList { get; } = new List<FilterCommon>();
-
 
         /// <summary>
         /// Popup filtered items (ListBox/TreeView)
@@ -468,7 +467,7 @@ namespace FilterDataGrid
                         Text = ItemsSourceCount.ToString(),
                         FontSize = FontSize,
                         FontFamily = FontFamily,
-                        Padding = new Thickness(0,0,4,0),
+                        Padding = new Thickness(0, 0, 4, 0),
                         Margin = new Thickness(2.0)
                     };
                     txt.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -532,7 +531,7 @@ namespace FilterDataGrid
                 {
                     new FilterItemDate
                     {
-                        Label = Translate.All, Content = 0, Level = 0, Initialize = true, FieldType = fieldType
+                       Label = Translate.All, Level = 0, Initialize = true, FieldType = fieldType
                     }
                 };
 
@@ -960,13 +959,13 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "RemoveCurrentFilter");
 
-           // if (CurrentFilter == null) return;
+            // if (CurrentFilter == null) return;
 
             popup.IsOpen = false; // raise PopupClosed event
 
             // button icon reset
             FilterState.SetIsFiltered(button, false);
-            
+
             ElapsedTime = new TimeSpan(0, 0, 0);
             stopWatchFilter = Stopwatch.StartNew();
 
@@ -987,7 +986,6 @@ namespace FilterDataGrid
 
             stopWatchFilter.Stop();
             ElapsedTime = stopWatchFilter.Elapsed;
-
         }
 
         /// <summary>
@@ -1009,22 +1007,17 @@ namespace FilterDataGrid
         {
             var item = (FilterItem)obj;
             if (string.IsNullOrEmpty(searchText) || item == null || item.Level == 0) return true;
-            
+
+            var content = Convert.ToString(item.Content, Translate.Culture);
+
             // Contains
             if (!StartsWith)
-                return item.FieldType == typeof(DateTime)
-                    ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
-                    .IndexOf(searchText, IgnoreCase) >= 0
-                    : item.Content?.ToString().IndexOf(searchText, IgnoreCase) >= 0;
+                return Translate.Culture.CompareInfo.IndexOf(content ?? string.Empty, searchText, CompareOptions.OrdinalIgnoreCase) >= 0;
 
             // StartsWith preserve RangeOverflow
             if (searchLength > item.ContentLength) return false;
 
-            return item.FieldType == typeof(DateTime)
-                ? ((DateTime?)item.Content)?.ToString(DateFormatString, Translate.Culture)
-                .IndexOf(searchText, 0, searchLength, IgnoreCase) >= 0
-                : item.Content?.ToString().IndexOf(searchText, 0, searchLength, IgnoreCase) >=
-                  0;
+            return Translate.Culture.CompareInfo.IndexOf(content ?? string.Empty, searchText, 0, searchLength, CompareOptions.OrdinalIgnoreCase) >= 0;
         }
 
         /// <summary>
@@ -1172,7 +1165,8 @@ namespace FilterDataGrid
                                 {
                                     FieldName = fieldName,
                                     FieldType = fieldType,
-                                    Translate = Translate
+                                    Translate = Translate,
+                                    FieldProperty = fieldProperty
                                 };
 
                 // list of all item values, filtered and unfiltered (previous filtered items)
@@ -1219,7 +1213,7 @@ namespace FilterDataGrid
                     // add the first item (select all) at the top of list
                     filterItemList = new List<FilterItem>(sourceObjectList.Count + 2)
                     {
-                        new FilterItem { Label = Translate.All, IsChecked = true, Level = 0 }
+                        new FilterItem {Label = Translate.All, IsChecked = true, Level = 0 }
                     };
 
                     // add all items (not null) to the filterItemList,
@@ -1227,9 +1221,9 @@ namespace FilterDataGrid
                     filterItemList.AddRange(sourceObjectList.Select(item => new FilterItem
                     {
                         Content = item,
-                        ContentLength = item.ToString().Length,
+                        ContentLength = item?.ToString()?.Length ?? 0,
                         FieldType = fieldType,
-                        Label = item.ToString(),
+                        Label = item,
                         Level = 1,
                         Initialize = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
                     }));
