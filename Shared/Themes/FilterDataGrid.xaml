@@ -48,7 +48,7 @@
                             Focusable="True"
                             FontSize="{TemplateBinding FontSize}"
                             FontWeight="{TemplateBinding FontWeight}"
-                            Foreground="{TemplateBinding Foreground}"
+                            Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Foreground}"
                             MaxLength="{TemplateBinding MaxLength}"
                             Text="{Binding Path=Text, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBox
@@ -134,7 +134,7 @@
                             Grid.Column="2"
                             Width="1"
                             Margin="2,0,2,0"
-                            Background="LightGray" />
+                            Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}" />
 
                         <!--  Col:3  TOGGLE BUTTON  -->
                         <ToggleButton
@@ -198,7 +198,7 @@
         </Setter>
     </Style>
 
-    <!--  EXTERNAL ACCESS DEFAULT STYLE AND CONTROLTEMPLATE FOR DATAGRID  -->
+    <!--  DEFAULT STYLE EXTERNAL ACCESS AND CONTROL MODEL FOR DATAGRID  -->
     <Style
         x:Key="{ComponentResourceKey {x:Type control:FilterDataGrid},
                                      FilterDataGridStyle}"
@@ -354,51 +354,43 @@
         </Setter>
     </Style>
 
-    <!--  DATAGRIDCOLUMNHEADER STYLE  -->
+    <!--  DATAGRID COLUMN HEADER STYLE  -->
     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="DataGridColumnHeader">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
     <!--  FILTER BUTTON CONTROLTEMPLATE  -->
-    <ControlTemplate x:Key="ButtonControlTemplate" TargetType="{x:Type Button}">
+    <ControlTemplate x:Key="FilterButtonControlTemplate" TargetType="{x:Type Button}">
 
         <Border
             x:Name="BorderButton"
-            Padding="2"
-            Background="{TemplateBinding Background}"
-            BorderBrush="{TemplateBinding BorderBrush}"
-            BorderThickness="{TemplateBinding BorderThickness}"
-            SnapsToDevicePixels="True"
-            UseLayoutRounding="True">
+            Padding="2.5"
+            Background="Transparent"
+            BorderThickness="0">
             <Path
                 x:Name="PathFilterIcon"
-                Margin="0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Data="{DynamicResource Filter}"
-                Fill="DarkSlateGray"
+                Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=Foreground}"
                 Stretch="Uniform" />
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="control:FilterState.IsFiltered" Value="True">
                 <Setter TargetName="PathFilterIcon" Property="Data" Value="{DynamicResource FilterSet}" />
-                <Setter Property="Background" Value="White" />
-                <Setter Property="Opacity" Value="1" />
+                <Setter Property="Opacity" Value="0.8" />
             </Trigger>
             <Trigger Property="control:FilterState.IsFiltered" Value="False">
                 <Setter TargetName="PathFilterIcon" Property="Data" Value="{DynamicResource Filter}" />
                 <Setter Property="Opacity" Value="0.5" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="PathFilterIcon" Property="Fill" Value="Black" />
-                <Setter Property="BorderBrush" Value="DarkSlateGray" />
-                <Setter Property="Background" Value="White" />
                 <Setter Property="Opacity" Value="1" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <!--  DATATEMPLATE OF DATAGRIDCOLUMNHEADER  -->
+    <!--  DATATEMPLATE OF DATAGRID COLUMN HEADER  -->
     <DataTemplate x:Key="DataGridHeaderTemplate">
 
         <!--  HEADER STRECH TO CONTENTPRESENTER OF DATAGRIDCOLUMNHEADER  -->
@@ -428,17 +420,13 @@
                     Width="19"
                     Height="19"
                     control:FilterState.IsFiltered="False"
-                    BorderThickness="1"
                     Command="{x:Static control:FilterDataGrid.ShowFilter}"
-                    Cursor="Hand"
-                    SnapsToDevicePixels="True"
-                    UseLayoutRounding="True">
+                    Cursor="Hand">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
-                            <Setter Property="Opacity" Value="0.5" />
-                            <Setter Property="BorderBrush" Value="DarkGray" />
+                            <Setter Property="Opacity" Value="0.4" />
                             <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="Template" Value="{StaticResource ButtonControlTemplate}" />
+                            <Setter Property="Template" Value="{StaticResource FilterButtonControlTemplate}" />
                         </Style>
                     </Button.Style>
                 </Button>
@@ -495,7 +483,7 @@
                             TabIndex="0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
-                                    <Setter Property="Foreground" Value="DarkSlateGray" />
+                                    <!--<Setter Property="Foreground" Value="DarkSlateGray" />-->
                                     <Setter Property="SnapsToDevicePixels" Value="True" />
                                     <Setter Property="Template">
                                         <Setter.Value>
@@ -504,7 +492,7 @@
                                                     x:Name="BorderContent"
                                                     Padding="{TemplateBinding Padding}"
                                                     BorderBrush="Transparent"
-                                                    BorderThickness="0"
+                                                    BorderThickness="0.5"
                                                     SnapsToDevicePixels="True"
                                                     UseLayoutRounding="True">
                                                     <Grid
@@ -545,22 +533,14 @@
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="BorderContent" Property="Background" Value="#F0F0F0" />
+                                                        <Setter TargetName="BorderContent" Property="Opacity" Value="0.7" />
                                                         <Setter Property="Cursor" Value="Hand" />
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="BorderContent" Property="Background">
-                                                            <Setter.Value>
-                                                                <SolidColorBrush Opacity="0.8" Color="LightGray" />
-                                                            </Setter.Value>
-                                                        </Setter>
+                                                        <Setter Property="Opacity" Value="0.5" />
                                                     </Trigger>
                                                     <Trigger Property="IsEnabled" Value="False">
-                                                        <Setter Property="Foreground">
-                                                            <Setter.Value>
-                                                                <SolidColorBrush Opacity="0.5" Color="DarkSlateGray" />
-                                                            </Setter.Value>
-                                                        </Setter>
+                                                        <Setter Property="Opacity" Value="0.5" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -657,7 +637,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 control:ScrollToTopBehavior.ScrollToTop="True"
-                                BorderBrush="LightGray"
+                                BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}"
                                 BorderThickness="1"
                                 ItemsSource="{Binding ListBoxItems, UpdateSourceTrigger=PropertyChanged}"
                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -712,7 +692,7 @@
                                 x:Name="PopupTreeview"
                                 Grid.Row="0"
                                 control:ScrollToTopBehavior.ScrollToTop="True"
-                                BorderBrush="LightGray"
+                                BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}"
                                 BorderThickness="1"
                                 ItemsSource="{Binding TreeviewItems, UpdateSourceTrigger=PropertyChanged}"
                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
