@@ -10,6 +10,7 @@
 
 using System;
 using System.Windows.Input;
+// ReSharper disable UnusedMember.Global
 
 namespace DemoAppNet5.ModelView
 {
@@ -19,14 +20,14 @@ namespace DemoAppNet5.ModelView
     /// </summary>
     public class DelegateCommand : ICommand
     {
-        private readonly Predicate<object> _canExecute;
-        private readonly Action<object> _execute;
+        private readonly Predicate<object> canExecute;
+        private readonly Action<object> execute;
 
         public DelegateCommand(Action<object> execute,
             Predicate<object> canExecute = null)
         {
-            _execute = execute;
-            _canExecute = canExecute;
+            this.execute = execute;
+            this.canExecute = canExecute;
         }
 
         public void RaiseCanExecuteChanged()
@@ -40,12 +41,12 @@ namespace DemoAppNet5.ModelView
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null || _canExecute(parameter);
+            return canExecute == null || canExecute(parameter);
         }
 
         public void Execute(object parameter)
         {
-            _execute(parameter);
+            execute(parameter);
         }
 
         #endregion

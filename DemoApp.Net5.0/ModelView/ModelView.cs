@@ -1,9 +1,13 @@
-﻿// Author     : Gilles Macabies
+﻿#region (c) 2022 Gilles Macabies All right reserved
+
+// Author     : Gilles Macabies
 // Solution   : FilterDataGrid
 // Projet     : DemoApp.Net5.0
 // File       : ModelView.cs
-// Created    : 01/05/2022
-//
+// Created    : 26/05/2022
+// 
+
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -13,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+// ReSharper disable UnusedMember.Global
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -22,14 +27,6 @@ namespace DemoAppNet5.ModelView
 {
     public class ModelView : INotifyPropertyChanged
     {
-        #region Private Fields
-
-        private ICollectionView collView;
-        private int count;
-        private string search;
-
-        #endregion Private Fields
-
         #region Public Constructors
 
         public ModelView(int i = 10_000)
@@ -46,13 +43,24 @@ namespace DemoAppNet5.ModelView
 
         #endregion Public Events
 
+        #region Private Fields
+
+        private ICollectionView collView;
+        private int count;
+        private string search;
+
+        #endregion Private Fields
+
         #region Public Properties
 
         public ObservableCollection<Employe> Employes { get; set; }
 
         public ObservableCollection<Employe> FilteredList { get; set; }
 
-        public int[] NumberItems { get; } = { /*10, 100, 1000,*/ 10_000, 100_000, 500_000, 1_000_000 };
+        public int[] NumberItems { get; } =
+        {
+            /*10, 100, 1000,*/ 10_000, 100_000, 500_000, 1_000_000
+        };
 
         /// <summary>
         ///     Refresh all

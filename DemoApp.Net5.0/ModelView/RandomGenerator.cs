@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+// ReSharper disable UnusedMember.Global
 
 // ReSharper disable CheckNamespace
 
@@ -70,7 +71,7 @@ namespace DemoAppNet5.ModelView
                 Rnd.Next(18, 75) * 1,
 
                 // start date + time
-                Rnd.Next(0, 10) != 1 ? new DateTime(2012 + Rnd.Next(10), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : (DateTime?)null,
+                Rnd.Next(0, 10) != 1 ? new DateTime(2012 + Rnd.Next(10), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59), Rnd.Next(59)) : null,
 
                 // is manager
                 Rnd.Next() % 2 == 1);

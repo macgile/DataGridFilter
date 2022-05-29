@@ -10,6 +10,7 @@
 
 using System;
 // ReSharper disable CheckNamespace
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable TooManyDependencies
@@ -23,10 +24,6 @@ namespace DemoAppNet5
    public class Employe
    {
       #region Public Constructors
-
-      public Employe()
-      {
-      }
 
       public Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate, bool? manager = false)
       {

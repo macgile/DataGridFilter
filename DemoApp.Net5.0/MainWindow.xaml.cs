@@ -18,7 +18,7 @@ namespace DemoAppNet5
          AppDomain.CurrentDomain.FirstChanceException += (source, e) =>
          {
                 
-             Debug.WriteLine($"FirstChanceException event raised in " +
+             Debug.WriteLine("FirstChanceException event raised in " +
                              $"{AppDomain.CurrentDomain.FriendlyName}: {e.Exception.Message} {source}");
          };
 #endif

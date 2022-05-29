@@ -1221,7 +1221,7 @@ namespace FilterDataGrid
                     filterItemList.AddRange(sourceObjectList.Select(item => new FilterItem
                     {
                         Content = item,
-                        ContentLength = item?.ToString()?.Length ?? 0,
+                        ContentLength = item?.ToString().Length ?? 0,
                         FieldType = fieldType,
                         Label = item,
                         Level = 1,

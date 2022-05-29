@@ -364,7 +364,7 @@
 
         <Border
             x:Name="BorderButton"
-            Padding="2.5"
+            Padding="1.4"
             Background="Transparent"
             BorderThickness="0">
             <Path
@@ -483,8 +483,7 @@
                             TabIndex="0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
-                                    <!--<Setter Property="Foreground" Value="DarkSlateGray" />-->
-                                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                                    <!--<Setter Property="SnapsToDevicePixels" Value="True" />-->
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type Button}">
@@ -493,12 +492,9 @@
                                                     Padding="{TemplateBinding Padding}"
                                                     BorderBrush="Transparent"
                                                     BorderThickness="0.5"
-                                                    SnapsToDevicePixels="True"
+                                                    SnapsToDevicePixels="False"
                                                     UseLayoutRounding="True">
-                                                    <Grid
-                                                        x:Name="ContentGrid"
-                                                        Background="Transparent"
-                                                        ShowGridLines="False">
+                                                    <Grid x:Name="ContentGrid" Background="Transparent">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto" />
                                                             <ColumnDefinition Width="*" />

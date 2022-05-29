@@ -4,21 +4,28 @@
 
     <!--  FILTER SET ICON  -->
     <Geometry x:Key="FilterSet">
-        <!--  M 0 17 H 12 L 6 25 Z M 6 0 H 29 L 29 3 L 20 10 L 20 21 H 15 L 15 10 L 6 3 Z  -->
-        M 0 9 H 5 L 2.5 12 Z M 0.5 0 H 14 L 14 2 L 8.5 6 L 8.5 12 H 6 L 6 6 L 0.5 2 Z
+        M 0 0 Z
+        M 16 0 Z
+        M 0 14 Z
+        M 16 14 Z
+        M 1 1 L 15 1 L 9 8 L 9 12 L 7 12 L 7 8 Z
+        M 1 10 H 6 L 3.5 13 Z
     </Geometry>
 
     <!--  FILTER BUTTON ICON  -->
     <Geometry x:Key="Filter">
-        <!--  M 7 10 L 12 15 L 17 10 H 7 Z  -->
-        M -0.5 -0.5 Z M 14.5 -1 Z
-        M -0.5 12.5 Z M 14.5 12.5 Z
-        M 0 0 L 14 0 L 7 8 Z M 1 12 L 13 12 L 13 11 L 1 11 Z
+        M 0 0 Z
+        M 16 0 Z
+        M 0 14 Z
+        M 16 14 Z
+        M 1 1 L 15 1 L 8 9 Z
+        M 2 13 L 14 13 L 14 12 L 2 12 Z
     </Geometry>
 
     <!--  DELETE FILTER ICON  -->
     <Geometry x:Key="FilterDelete">
-        M11.1 11.4L8.5 8.9L9.8 7.6L12.3 10.1L14.8 7.6L16.1 8.9L13.6 11.4L16.1 13.9L14.8 15.2L12.3 12.6L9.8 15.2L8.5 13.9ZM0 0H13L13 2L8 6V14L5 11V6L0 2Z
+        M 1 1 L 15 1 L 9 8 L 9 12 L 7 12 L 7 8 Z
+        M 10 12 L 12 10 L 10 8 L 11 7 L 13 9 L 15 7 L 16 8 L 14 10 L 16 12 L 15 13 L 13 11 L 11 13 Z
     </Geometry>
 
     <!--  BOX CHECKED ICON  -->
