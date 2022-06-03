@@ -195,6 +195,20 @@ namespace FilterDataGrid
                         { Local.Russian, "Пройденное время {0:mm}:{0:ss}.{0:ff}" },
                         { Local.Spanish, "Tiempo transurrido {0:mm}:{0:ss}.{0:ff}"}
                     }
+                },
+                {
+                    "RemoveAll", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "删除所有过滤器" },
+                        { Local.Dutch,   "Alle filters verwijderen" },
+                        { Local.English, "Remove all filters" },
+                        { Local.French,  "Supprimer tous les filtres" },
+                        { Local.German,  "Alle Filter entfernen" },
+                        { Local.Italian, "Rimuovi tutti i filtri" },
+                        { Local.Polish,  "Usuń wszystkie filtry" },
+                        { Local.Russian, "Удалить все фильтры" },
+                        { Local.Spanish, "Eliminar todos los filtros" }
+                    }
                 }
             };
 
@@ -244,6 +258,8 @@ namespace FilterDataGrid
         public string StartsWith => Translate("StartsWith");
 
         public string Status => Translate("Status");
+
+        public string RemoveAll => Translate("RemoveAll");
 
         public string Toggle => Translate("Toggle");
 

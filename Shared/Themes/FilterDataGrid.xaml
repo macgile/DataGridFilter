@@ -10,6 +10,7 @@
 
     <!--  STRING FORMAT CONVERTER  -->
     <control:StringFormatConverter x:Key="StringFormatConverter" />
+    <control:SolidBrushToColorConverter x:Key="SolidBrushToColorConverter" />
 
     <!--  INITIAL POPUP SIZE  -->
     <sys:Double x:Key="PopupHeight">420</sys:Double>
@@ -245,24 +246,53 @@
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
 
+                                            <!--  REMOVE ALL FILTERS BUTTON  -->
                                             <Button
+                                                x:Name="ButtonRemoveAll"
+                                                Grid.Row="0"
+                                                Grid.Column="2"
+                                                Background="Transparent"
+                                                BorderBrush="Transparent"
+                                                BorderThickness="0"
+                                                Command="{x:Static control:FilterDataGrid.RemoveAllFilter}"
+                                                Cursor="Hand"
+                                                ToolTip="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Translate.RemoveAll}"
+                                                ToolTipService.Placement="Left"
+                                                ToolTipService.VerticalOffset="24">
+                                                <Button.Content>
+                                                    <Path
+                                                        Width="14"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Data="{DynamicResource FilterDelete}"
+                                                        Fill="{Binding ElementName=ButtonRemoveAll, Path=Foreground}"
+                                                        Stretch="Uniform" />
+                                                </Button.Content>
+                                            </Button>
+
+                                            <Button
+                                                Grid.Row="0"
+                                                Grid.Column="0"
                                                 Width="{Binding CellsPanelHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                                 Command="{x:Static DataGrid.SelectAllCommand}"
                                                 Focusable="false"
                                                 Style="{DynamicResource {ComponentResourceKey ResourceId=DataGridSelectAllButtonStyle,
                                                                                               TypeInTargetAssembly={x:Type DataGrid}}}"
                                                 Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.All}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+
                                             <DataGridColumnHeadersPresenter
                                                 x:Name="PART_ColumnHeadersPresenter"
                                                 Grid.Row="0"
                                                 Grid.Column="1"
                                                 Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Column}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+
                                             <ScrollContentPresenter
                                                 x:Name="PART_ScrollContentPresenter"
                                                 Grid.Row="1"
                                                 Grid.Column="0"
                                                 Grid.ColumnSpan="2"
                                                 CanContentScroll="{TemplateBinding CanContentScroll}" />
+
                                             <ScrollBar
                                                 x:Name="PART_VerticalScrollBar"
                                                 Grid.Row="1"
@@ -272,6 +302,7 @@
                                                 ViewportSize="{TemplateBinding ViewportHeight}"
                                                 Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
                                                 Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+
                                             <Grid Grid.Row="2" Grid.Column="1">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="{Binding NonFrozenColumnsViewportHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
@@ -286,6 +317,7 @@
                                                     Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                                     Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
                                             </Grid>
+
                                         </Grid>
                                     </ControlTemplate>
                                 </ScrollViewer.Template>
@@ -633,6 +665,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 control:ScrollToTopBehavior.ScrollToTop="True"
+                                Background="Transparent"
                                 BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}"
                                 BorderThickness="1"
                                 ItemsSource="{Binding ListBoxItems, UpdateSourceTrigger=PropertyChanged}"
@@ -688,6 +721,7 @@
                                 x:Name="PopupTreeview"
                                 Grid.Row="0"
                                 control:ScrollToTopBehavior.ScrollToTop="True"
+                                Background="Transparent"
                                 BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}"
                                 BorderThickness="1"
                                 ItemsSource="{Binding TreeviewItems, UpdateSourceTrigger=PropertyChanged}"

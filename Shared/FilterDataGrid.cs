@@ -64,6 +64,7 @@ namespace FilterDataGrid
             CommandBindings.Add(new CommandBinding(RemoveFilter, RemoveFilterCommand, CanRemoveFilter));
             CommandBindings.Add(new CommandBinding(IsChecked, CheckedAllCommand));
             CommandBindings.Add(new CommandBinding(ClearSearchBox, ClearSearchBoxClick));
+            CommandBindings.Add(new CommandBinding(RemoveAllFilter, RemoveAllFilterCommand, CanRemoveAllFilter));
         }
 
         #endregion Constructors
@@ -71,15 +72,11 @@ namespace FilterDataGrid
         #region Command
 
         public static readonly ICommand ApplyFilter = new RoutedCommand();
-
         public static readonly ICommand CancelFilter = new RoutedCommand();
-
         public static readonly ICommand ClearSearchBox = new RoutedCommand();
-
         public static readonly ICommand IsChecked = new RoutedCommand();
-
+        public static readonly ICommand RemoveAllFilter = new RoutedCommand();
         public static readonly ICommand RemoveFilter = new RoutedCommand();
-
         public static readonly ICommand ShowFilter = new RoutedCommand();
 
         #endregion Command
@@ -792,6 +789,16 @@ namespace FilterDataGrid
         }
 
         /// <summary>
+        /// Can remove all filter when GlobalFilterList.Count > 0
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CanRemoveAllFilter(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = GlobalFilterList.Count > 0;
+        }
+
+        /// <summary>
         ///     Can remove filter when current column (CurrentFilter) filtered
         /// </summary>
         /// <param name="sender"></param>
@@ -950,6 +957,44 @@ namespace FilterDataGrid
 
             // re-enable datagrid
             IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Remove All Filter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RemoveAllFilterCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                foreach (var col in Columns)
+                {
+                    // ReSharper disable once ConvertIfStatementToSwitchExpression
+                    // ReSharper disable once ConvertIfStatementToSwitchStatement
+                    if (col is DataGridTextColumn ctxt && ctxt.IsColumnFiltered)
+                        fieldName = ctxt.FieldName;
+
+                    if (col is DataGridTemplateColumn ctpl && ctpl.IsColumnFiltered)
+                        fieldName = ctpl.FieldName;
+
+                    if (string.IsNullOrEmpty(fieldName)) continue;
+
+                    button = VisualTreeHelpers.GetHeader(col, this)
+                        ?.FindVisualChild<Button>("FilterButton");
+
+                    if (button == null) continue;
+
+                    CurrentFilter = GlobalFilterList.FirstOrDefault(c => c.FieldName == fieldName);
+                    if (CurrentFilter != null)
+                        RemoveCurrentFilter();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLineIf(DebugMode, $"FilterDataGrid.RemoveAllFilterCommand error : {ex.Message}");
+                throw;
+            }
         }
 
         /// <summary>
