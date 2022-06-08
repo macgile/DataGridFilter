@@ -12,16 +12,6 @@
     <control:StringFormatConverter x:Key="StringFormatConverter" />
     <control:SolidBrushToColorConverter x:Key="SolidBrushToColorConverter" />
 
-    <!--  I changed all references from the "foreground" property inherited from the window to the "foreground" property from the datagrid.  -->
-    <!--  https://github.com/macgile/DataGridFilter/issues/38  -->
-
-
-    <SolidColorBrush
-        x:Key="ColorBrush"
-        Opacity="0.4"
-        Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Foreground, Converter={StaticResource SolidBrushToColorConverter}}" />
-
-
     <!--  INITIAL POPUP SIZE  -->
     <sys:Double x:Key="PopupHeight">420</sys:Double>
     <sys:Double x:Key="PopupWidth">262</sys:Double>
