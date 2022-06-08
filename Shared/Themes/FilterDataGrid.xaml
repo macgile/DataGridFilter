@@ -8,7 +8,7 @@
         <ResourceDictionary Source="/FilterDataGrid;component/Themes/Icons.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <!--  STRING FORMAT CONVERTER  -->
+    <!--  CONVERTERS  -->
     <control:StringFormatConverter x:Key="StringFormatConverter" />
     <control:SolidBrushToColorConverter x:Key="SolidBrushToColorConverter" />
 
