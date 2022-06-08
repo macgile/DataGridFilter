@@ -30,7 +30,7 @@ namespace FilterDataGrid
     /// <summary>
     ///     Implementation of Datagrid
     /// </summary>
-    public sealed class FilterDataGrid : DataGrid, INotifyPropertyChanged
+    public class FilterDataGrid : DataGrid, INotifyPropertyChanged
     {
         #region Constructors
 
@@ -978,12 +978,12 @@ namespace FilterDataGrid
                     if (col is DataGridTemplateColumn ctpl && ctpl.IsColumnFiltered)
                         fieldName = ctpl.FieldName;
 
-                    if (string.IsNullOrEmpty(fieldName)) continue;
+                    //if (string.IsNullOrEmpty(fieldName)) continue;
 
                     button = VisualTreeHelpers.GetHeader(col, this)
                         ?.FindVisualChild<Button>("FilterButton");
 
-                    if (button == null) continue;
+                    if (button == null || string.IsNullOrEmpty(fieldName)) continue;
 
                     CurrentFilter = GlobalFilterList.FirstOrDefault(c => c.FieldName == fieldName);
                     if (CurrentFilter != null)
