@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title=".NET Framework Demo Application"
     Width="1024"
-    Height="900" 
+    Height="900"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid Margin="50,40" ShowGridLines="False">
@@ -20,49 +20,64 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
-        <Grid 
-        Grid.Row="0" 
-        Margin="10,10,0,20">
+        <Grid Grid.Row="0" Margin="10,10,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Width="700" Orientation="Horizontal">
+            <StackPanel
+                Grid.Column="0"
+                Width="700"
+                Orientation="Horizontal">
                 <Label
-                    Margin="0,0,10,0" VerticalAlignment="Center"
-                    Content="Global search (first and last names)" FontWeight="Bold" />
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    Content="Global search (first and last names)"
+                    FontWeight="Bold" />
 
                 <TextBox
-                    Height="26" MinWidth="150"
-                    VerticalAlignment="Center" VerticalContentAlignment="Center"
+                    Height="26"
+                    MinWidth="150"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
                     Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Button
-                    Width="100" Margin="20,0,0,0"
+                    Width="100"
+                    Margin="20,0,0,0"
                     Padding="4"
                     Command="{Binding RefreshCommand}"
-                    Content="Reset list" Cursor="Hand" />
+                    Content="Reset list"
+                    Cursor="Hand" />
 
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <Label Content="Number of items" FontWeight="Bold" />
                 <ComboBox
-                    Width="100" Cursor="Hand"
+                    Width="100"
+                    Cursor="Hand"
                     ItemStringFormat="### ### ###"
                     ItemsSource="{Binding NumberItems}"
                     SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </Grid>
 
-        <UniformGrid Grid.Row="1" Margin="10,0,0,0" Columns="2">
+        <UniformGrid
+            Grid.Row="1"
+            Margin="10,0,0,0"
+            Columns="2">
             <Label
                 HorizontalAlignment="Left"
                 Content="{Binding ElementName=FilterDataGrid, Path=Items.Count, UpdateSourceTrigger=PropertyChanged}"
                 ContentStringFormat="Custom colums : {0:### ### ###} items"
-                FontSize="13" FontWeight="DemiBold" />
-            <Label HorizontalAlignment="Right" Content="{Binding ElementName=FilterDataGrid, Path=Translate.LanguageName}" ContentStringFormat="Filter Language : {0}" />
+                FontSize="13"
+                FontWeight="DemiBold" />
+            <Label
+                HorizontalAlignment="Right"
+                Content="{Binding ElementName=FilterDataGrid, Path=Translate.LanguageName}"
+                ContentStringFormat="Filter Language : {0}" />
         </UniformGrid>
 
         <!--
@@ -70,17 +85,22 @@
             See the global style "FilterDatagridStyle" in App.xaml
         -->
         <control:FilterDataGrid
-            x:Name="FilterDataGrid" Grid.Row="2"
-            AutoGenerateColumns="False" DateFormatString="d"
+            x:Name="FilterDataGrid"
+            Grid.Row="2"
+            AutoGenerateColumns="False"
+            DateFormatString="d"
             FilterLanguage="English"
             ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
-            ShowElapsedTime="True" ShowRowsCount="True"
+            ShowElapsedTime="True"
+            ShowRowsCount="True"
             ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}">
             <control:FilterDataGrid.Columns>
                 <control:DataGridTemplateColumn
-                    FieldName="FirstName" Header="First name"
-                    IsColumnFiltered="True" SortMemberPath="FirstName">
+                    FieldName="FirstName"
+                    Header="First name"
+                    IsColumnFiltered="True"
+                    SortMemberPath="FirstName">
                     <control:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="local:Employe">
                             <TextBlock Padding="2,0" Text="{Binding FirstName}" />
@@ -88,15 +108,30 @@
                     </control:DataGridTemplateColumn.CellTemplate>
                 </control:DataGridTemplateColumn>
 
-                <control:DataGridTextColumn Binding="{Binding LastName}" Header="Last name" IsColumnFiltered="True" />
+                <control:DataGridTextColumn
+                    Binding="{Binding LastName}"
+                    Header="Last name"
+                    IsColumnFiltered="True" />
 
-                <control:DataGridTextColumn Binding="{Binding Age}" Header="Age" IsColumnFiltered="True" />
+                <control:DataGridTextColumn
+                    Binding="{Binding Age}"
+                    Header="Age"
+                    IsColumnFiltered="True" />
 
-                <control:DataGridTextColumn Binding="{Binding Salary}" Header="Salary" IsColumnFiltered="True" />
+                <control:DataGridTextColumn
+                    Binding="{Binding Salary}"
+                    Header="Salary"
+                    IsColumnFiltered="True" />
 
-                <control:DataGridTextColumn Binding="{Binding StartDate}" Header="Start Date" IsColumnFiltered="True" />
+                <control:DataGridCheckBoxColumn
+                    Binding="{Binding Manager}"
+                    Header="Manager"
+                    IsColumnFiltered="True" />
 
-                <control:DataGridTextColumn Binding="{Binding Manager}" Header="Manager" IsColumnFiltered="True" />
+                <control:DataGridTextColumn
+                    Binding="{Binding StartDate}"
+                    Header="Start Date"
+                    IsColumnFiltered="True" />
 
             </control:FilterDataGrid.Columns>
         </control:FilterDataGrid>
@@ -105,21 +140,31 @@
             AUTO GENERATE COLUMNS
             See the global style "FilterDatagridStyle" in App.xaml
         -->
-        <UniformGrid Grid.Row="3" Margin="10,10,0,2" Columns="2">
+        <UniformGrid
+            Grid.Row="3"
+            Margin="10,10,0,2"
+            Columns="2">
             <Label
                 HorizontalAlignment="Left"
                 Content="{Binding ElementName=FilterDataGridAuto, Path=Items.Count}"
                 ContentStringFormat="Auto generate columns : {0:### ### ###} items"
-                FontSize="13" FontWeight="DemiBold" />
-            <Label HorizontalAlignment="Right" Content="{Binding ElementName=FilterDataGridAuto, Path=Translate.LanguageName}" ContentStringFormat="Filter Language : {0}" />
+                FontSize="13"
+                FontWeight="DemiBold" />
+            <Label
+                HorizontalAlignment="Right"
+                Content="{Binding ElementName=FilterDataGridAuto, Path=Translate.LanguageName}"
+                ContentStringFormat="Filter Language : {0}" />
         </UniformGrid>
 
         <control:FilterDataGrid
-            x:Name="FilterDataGridAuto" Grid.Row="4"
-            AutoGenerateColumns="True" ExcludeFields="lastname, age, manager"
+            x:Name="FilterDataGridAuto"
+            Grid.Row="4"
+            AutoGenerateColumns="True"
+            ExcludeFields="lastname, age"
             FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
-            ShowElapsedTime="True" ShowRowsCount="True"
+            ShowElapsedTime="True"
+            ShowRowsCount="True"
             ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}" />
     </Grid>

@@ -122,15 +122,16 @@
                     Header="Salary"
                     IsColumnFiltered="True" />
 
+                <control:DataGridCheckBoxColumn
+                    Binding="{Binding Manager}"
+                    Header="Manager"
+                    IsColumnFiltered="True" />
+
                 <control:DataGridTextColumn
                     Binding="{Binding StartDate}"
                     Header="Start Date"
                     IsColumnFiltered="True" />
 
-                <control:DataGridTextColumn
-                    Binding="{Binding Manager}"
-                    Header="Manager"
-                    IsColumnFiltered="True" />
             </control:FilterDataGrid.Columns>
         </control:FilterDataGrid>
 
@@ -158,7 +159,7 @@
             x:Name="FilterDataGridAuto"
             Grid.Row="4"
             AutoGenerateColumns="True"
-            ExcludeFields="lastname, age, manager"
+            ExcludeFields="lastname, age"
             FilterLanguage="Spanish"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             ShowElapsedTime="True"

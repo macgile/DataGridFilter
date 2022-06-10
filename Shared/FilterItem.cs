@@ -6,7 +6,6 @@
 // File       : FilterItem.cs
 // Created    : 26/01/2021
 
-
 #endregion
 
 using System;
@@ -25,6 +24,7 @@ namespace FilterDataGrid
         bool IsChanged { get; set; }
         object Label { get; set; }
         int Level { get; set; }
+
         #endregion Public Properties
     }
 
@@ -48,7 +48,6 @@ namespace FilterDataGrid
         /// Content length
         /// </summary>
         public int ContentLength { get; set; }
-
 
         /// <summary>
         ///     Field type
@@ -154,7 +153,8 @@ namespace FilterDataGrid
 
             IsChanged = initialState != isChecked;
 
-            // filter Item linked to the day, it propagates the status changes
+            // filter Item linked to the day, it propagates the states changes.
+            // Only the days have a reference to an item in the list used to generate the tree.
             if (Item != null)
             {
                 Item.IsChanged = IsChanged;

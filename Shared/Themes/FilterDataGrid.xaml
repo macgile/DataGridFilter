@@ -514,7 +514,6 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -601,55 +600,71 @@
                             </Button.Style>
                         </Button>
 
-                        <!--  Row 1: SEPARATOR  -->
-                        <Separator
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="0,2"
-                            Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}" />
+                        <!--  Row 1: SEPARATOR / SEARCH BOX  -->
+                        <Grid Grid.Row="1" Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                        <!--  Row 2: SEARCH BOX  -->
-                        <Border
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Margin="0,4,4,2"
-                            Padding="0,2"
-                            VerticalAlignment="Top"
-                            Background="Transparent"
-                            BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}"
-                            BorderThickness="1">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                            <!--  Row 1: SEPARATOR  -->
+                            <Separator
+                                Grid.Row="0"
+                                Margin="0,2"
+                                Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}" />
 
-                                <TextBox
-                                    x:Name="SearchBox"
-                                    Grid.Column="0"
-                                    Margin="0"
-                                    Padding="2,0,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalContentAlignment="Center"
-                                    AcceptsReturn="False"
-                                    DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}"
-                                    Focusable="True"
-                                    FontSize="13"
-                                    MaxLength="20"
-                                    Style="{StaticResource PlaceHolder}"
-                                    TabIndex="1"
-                                    Tag="{Binding Translate.Contains}">
-                                    <TextBox.InputBindings>
-                                        <KeyBinding Key="Enter" Command="{x:Static control:FilterDataGrid.ApplyFilter}" />
-                                    </TextBox.InputBindings>
-                                </TextBox>
-                            </Grid>
-                        </Border>
+                            <!--  Row 2: SEARCH BOX  -->
+                            <Border
+                                Grid.Row="1"
+                                Margin="0,4,4,2"
+                                Padding="0,2"
+                                VerticalAlignment="Top"
+                                Background="Transparent"
+                                BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}"
+                                BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                        <!--  Row 3: ICON (filter is active)  -->
+                                    <TextBox
+                                        x:Name="SearchBox"
+                                        Grid.Column="0"
+                                        Margin="0"
+                                        Padding="2,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalContentAlignment="Center"
+                                        AcceptsReturn="False"
+                                        DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}"
+                                        Focusable="True"
+                                        FontSize="13"
+                                        MaxLength="20"
+                                        Style="{StaticResource PlaceHolder}"
+                                        TabIndex="1"
+                                        Tag="{Binding Translate.Contains}">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{x:Static control:FilterDataGrid.ApplyFilter}" />
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+                                </Grid>
+                            </Border>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=FieldType}" Value="{x:Type sys:Boolean}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
+
+                        <!--  Row 2, Col 0 : ICON (filter is active)  -->
                         <Path
                             x:Name="PathIsFiltered"
-                            Grid.Row="3"
+                            Grid.Row="2"
                             Grid.Column="0"
                             Width="19"
                             Height="20"
@@ -673,10 +688,10 @@
                             </Path.Style>
                         </Path>
 
-                        <!--  Row 3: (LISTBOX/TREEVIEW)  -->
+                        <!--  Row 2, Col 1 : (LISTBOX/TREEVIEW)  -->
                         <Grid
                             x:Name="GridItemControl"
-                            Grid.Row="3"
+                            Grid.Row="2"
                             Grid.Column="1"
                             Margin="0,4,4,4"
                             DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}">
@@ -715,7 +730,7 @@
                                             IsThreeState="False">
                                             <CheckBox.Content>
                                                 <MultiBinding Converter="{StaticResource StringFormatConverter}" ConverterParameter="Culture">
-                                                    <Binding Path="Translate.Neutral" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
+                                                    <Binding Path="control:Loc.Neutral" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
                                                     <Binding Path="Label" />
                                                     <Binding Path="Translate.Culture" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
                                                 </MultiBinding>
@@ -790,9 +805,9 @@
                             </TreeView>
                         </Grid>
 
-                        <!--  Row 4: OK/CANCEL BUTTON  -->
+                        <!--  Row 3: OK/CANCEL BUTTON  -->
                         <UniformGrid
-                            Grid.Row="4"
+                            Grid.Row="3"
                             Grid.Column="1"
                             Margin="0,6,4,6"
                             HorizontalAlignment="Right"
@@ -819,10 +834,10 @@
                                 TabIndex="4" />
                         </UniformGrid>
 
-                        <!--  Row 5: RESIZE GRIP  -->
+                        <!--  Row 4: RESIZE GRIP  -->
                         <Thumb
                             x:Name="PopupThumb"
-                            Grid.Row="5"
+                            Grid.Row="4"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
                             Width="20"

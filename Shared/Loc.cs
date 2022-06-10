@@ -1,4 +1,5 @@
 ﻿#region (c) 2022 Gilles Macabies All right reserved
+
 // Solution   : FilterDataGrid
 // Projet     : FilterDataGrid
 // File       : Loc.cs
@@ -197,6 +198,34 @@ namespace FilterDataGrid
                     }
                 },
                 {
+                    "True", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "已選中" },
+                        { Local.Dutch,   "Aangevinkt" },
+                        { Local.English, "Checked" },
+                        { Local.French,  "Coché" },
+                        { Local.German,  "Geprüft" },
+                        { Local.Italian, "Controllato" },
+                        { Local.Polish,  "Zaznaczone" },
+                        { Local.Russian, "Проверено" },
+                        { Local.Spanish, "Comprobado" }
+                    }
+                },
+                {
+                    "False", new Dictionary<Local, string>
+                    {
+                        { Local.Chinese, "未選中" },
+                        { Local.Dutch,   "Niet aangevinkt" },
+                        { Local.English, "Unchecked" },
+                        { Local.French,  "Décoché" },
+                        { Local.German,  "Ungeprüft" },
+                        { Local.Italian, "Deselezionato" },
+                        { Local.Polish,  "Niezaznaczone" },
+                        { Local.Russian, "непроверено" },
+                        { Local.Spanish, "Sin marcar" }
+                    }
+                },
+                {
                     "RemoveAll", new Dictionary<Local, string>
                     {
                         { Local.Chinese, "删除所有过滤器" },
@@ -259,11 +288,15 @@ namespace FilterDataGrid
 
         public string Status => Translate("Status");
 
-        public string RemoveAll => Translate("RemoveAll");
-
         public string Toggle => Translate("Toggle");
 
-        public string Neutral => "{0}"; 
+        public string RemoveAll => Translate("RemoveAll");
+
+        public string IsTrue => Translate("True");
+
+        public string IsFalse => Translate("False");
+
+        public static string Neutral => "{0}";
 
         #endregion Public Properties
 

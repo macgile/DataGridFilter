@@ -308,6 +308,16 @@ namespace FilterDataGrid
             }
         }
 
+        public Type FieldType
+        {
+            get => fieldType;
+            set
+            {
+                fieldType = value;
+                OnPropertyChanged("FieldType");
+            }
+        }
+
         #endregion Public Properties
 
         #region Private Properties
@@ -321,13 +331,13 @@ namespace FilterDataGrid
         /// Popup filtered items (ListBox/TreeView)
         /// </summary>
         private IEnumerable<FilterItem> PopupViewItems =>
-            ItemCollectionView?.OfType<FilterItem>().Skip(1) ?? new List<FilterItem>();
+            ItemCollectionView?.OfType<FilterItem>().Where(c => c.Level != 0) ?? new List<FilterItem>();
 
         /// <summary>
         /// Popup source collection (ListBox/TreeView)
         /// </summary>
         private IEnumerable<FilterItem> SourcePopupViewItems =>
-            ItemCollectionView?.SourceCollection.OfType<FilterItem>().Skip(1) ?? new List<FilterItem>();
+            ItemCollectionView?.SourceCollection.OfType<FilterItem>().Where(c => c.Level != 0) ?? new List<FilterItem>();
 
         #endregion Private Properties
 
@@ -575,7 +585,7 @@ namespace FilterDataGrid
                                                  Initialize = true, // default state
                                                  FieldType = fieldType,
 
-                                                 // filter Item linked to the day, it propagates the status changes
+                                                 // filter Item linked to the day, it propagates the states changes
                                                  Item = day.FirstOrDefault()?.Item,
 
                                                  Children = new List<FilterItemDate>()
@@ -652,8 +662,10 @@ namespace FilterDataGrid
             {
                 // get the columns that can be filtered
                 var columns = Columns
-                    .Where(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered) ||
-                                (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered))
+                    .Where(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered)
+                                || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered)
+                                || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered)
+                                )
                     .Select(c => c)
                     .ToList();
 
@@ -697,10 +709,25 @@ namespace FilterDataGrid
 
                             column.FieldName = ((Binding)column.Binding).Path.Path;
                         }
-                        else if (columnType == typeof(DataGridTemplateColumn))
+
+                        if (columnType == typeof(DataGridTemplateColumn))
                         {
                             // DataGridTemplateColumn has no culture property
                             var column = (DataGridTemplateColumn)col;
+
+                            // template
+                            column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+                        }
+
+                        if (columnType == typeof(DataGridCheckBoxColumn))
+                        {
+                            // DataGridCheckBoxColumn has no culture property
+                            var column = (DataGridCheckBoxColumn)col;
+
+                            column.FieldName = ((Binding)column.Binding).Path.Path;
+
+                            if (((Binding)column.Binding).ConverterCulture == null)
+                                ((Binding)column.Binding).ConverterCulture = Translate.Culture;
 
                             // template
                             column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
@@ -970,15 +997,23 @@ namespace FilterDataGrid
             {
                 foreach (var col in Columns)
                 {
-                    // ReSharper disable once ConvertIfStatementToSwitchExpression
-                    // ReSharper disable once ConvertIfStatementToSwitchStatement
-                    if (col is DataGridTextColumn ctxt && ctxt.IsColumnFiltered)
-                        fieldName = ctxt.FieldName;
+                    switch (col)
+                    {
+                        case DataGridTextColumn ctxt when ctxt.IsColumnFiltered:
+                            fieldName = ctxt.FieldName;
+                            break;
 
-                    if (col is DataGridTemplateColumn ctpl && ctpl.IsColumnFiltered)
-                        fieldName = ctpl.FieldName;
+                        case DataGridTemplateColumn ctpl when ctpl.IsColumnFiltered:
+                            fieldName = ctpl.FieldName;
+                            break;
 
-                    //if (string.IsNullOrEmpty(fieldName)) continue;
+                        case DataGridCheckBoxColumn chk when chk.IsColumnFiltered:
+                            fieldName = chk.FieldName;
+                            break;
+
+                        case null:
+                            continue;
+                    }
 
                     button = VisualTreeHelpers.GetHeader(col, this)
                         ?.FindVisualChild<Button>("FilterButton");
@@ -986,8 +1021,8 @@ namespace FilterDataGrid
                     if (button == null || string.IsNullOrEmpty(fieldName)) continue;
 
                     CurrentFilter = GlobalFilterList.FirstOrDefault(c => c.FieldName == fieldName);
-                    if (CurrentFilter != null)
-                        RemoveCurrentFilter();
+
+                    if (CurrentFilter != null) RemoveCurrentFilter();
                 }
             }
             catch (Exception ex)
@@ -1004,7 +1039,7 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "RemoveCurrentFilter");
 
-            // if (CurrentFilter == null) return;
+            if (CurrentFilter == null) return;
 
             popup.IsOpen = false; // raise PopupClosed event
 
@@ -1193,6 +1228,14 @@ namespace FilterDataGrid
                     currentColumn = column;
                 }
 
+                if (columnType == typeof(DataGridCheckBoxColumn))
+                {
+                    var column = (DataGridCheckBoxColumn)header.Column;
+                    fieldName = column.FieldName;
+                    column.CanUserSort = false;
+                    currentColumn = column;
+                }
+
                 // invalid fieldName
                 if (string.IsNullOrEmpty(fieldName)) return;
 
@@ -1202,7 +1245,7 @@ namespace FilterDataGrid
 
                 // get type or underlying type if nullable
                 if (fieldProperty != null)
-                    fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
+                    FieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
 
                 // If no filter, add filter to GlobalFilterList list
                 CurrentFilter = GlobalFilterList.FirstOrDefault(f => f.FieldName == fieldName) ??
@@ -1255,11 +1298,18 @@ namespace FilterDataGrid
                     // sorting is a very slow operation, using ParallelQuery
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
 
-                    // add the first item (select all) at the top of list
-                    filterItemList = new List<FilterItem>(sourceObjectList.Count + 2)
+                    if (fieldType == typeof(bool))
                     {
-                        new FilterItem {Label = Translate.All, IsChecked = true, Level = 0 }
-                    };
+                        filterItemList = new List<FilterItem>(sourceObjectList.Count + 1);
+                    }
+                    else
+                    {
+                        // add the first element (select all) at the top of list
+                        filterItemList = new List<FilterItem>(sourceObjectList.Count + 2)
+                        {
+                            new FilterItem { Label = Translate.All, IsChecked = true, Level = 0 }
+                        };
+                    }
 
                     // add all items (not null) to the filterItemList,
                     // the list of dates is calculated by BuildTree from this list
@@ -1273,18 +1323,25 @@ namespace FilterDataGrid
                         Initialize = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
                     }));
 
-                    // if exist, add a empty item (Blank) at the bottom of the list
-                    if (emptyItem)
-                    {
-                        filterItemList.Add(new FilterItem
+                    if (fieldType == typeof(bool))
+                        filterItemList.ToList().ForEach(c =>
                         {
-                            Content = null,
-                            FieldType = fieldType,
-                            Label = Translate.Empty,
-                            Level = -1,
-                            Initialize = CurrentFilter?.PreviouslyFilteredItems?.Contains(null) == false
+                            c.Label = (bool)c.Content ? Translate.IsTrue : Translate.IsFalse;
                         });
-                    }
+
+                    // add a empty item(if exist) at the bottom of the list
+                    if (!emptyItem) return;
+
+                    sourceObjectList.Insert(sourceObjectList.Count, null);
+
+                    filterItemList.Add(new FilterItem
+                    {
+                        FieldType = fieldType,
+                        Content = null,
+                        Label = Translate.Empty,
+                        Level = -1,
+                        Initialize = CurrentFilter?.PreviouslyFilteredItems?.Contains(null) == false
+                    });
                 });
 
                 // ItemsSource (ListBow/TreeView)
