@@ -730,7 +730,7 @@
                                             IsThreeState="False">
                                             <CheckBox.Content>
                                                 <MultiBinding Converter="{StaticResource StringFormatConverter}" ConverterParameter="Culture">
-                                                    <Binding Path="control:Loc.Neutral" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
+                                                    <Binding Path="Translate.Neutral" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
                                                     <Binding Path="Label" />
                                                     <Binding Path="Translate.Culture" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
                                                 </MultiBinding>

@@ -296,7 +296,7 @@ namespace FilterDataGrid
 
         public string IsFalse => Translate("False");
 
-        public static string Neutral => "{0}";
+        public string Neutral => "{0}";
 
         #endregion Public Properties
 
