@@ -267,15 +267,13 @@
                                                 <Button.Content>
                                                     <Grid SnapsToDevicePixels="False" UseLayoutRounding="True">
                                                         <Path
-                                                            Width="14"
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center"
-                                                            Data="{DynamicResource FilterDelete}"
+                                                            Width="13"
+                                                            Data="{DynamicResource Recycle}"
                                                             Stretch="Uniform">
                                                             <Path.Style>
                                                                 <Style TargetType="Path">
                                                                     <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Foreground}" />
-                                                                    <Setter Property="Opacity" Value="0.4" />
+                                                                    <Setter Property="Opacity" Value="0.5" />
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding ElementName=ButtonRemoveAll, Path=IsEnabled}" Value="True">
                                                                             <Setter Property="Opacity" Value="1" />

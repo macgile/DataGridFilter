@@ -150,6 +150,7 @@ namespace FilterDataGrid
         #region Private Fields
 
         private Stopwatch stopWatchFilter = new Stopwatch();
+        private DataGridColumnHeadersPresenter columnHeadersPresenter;
         private bool pending;
         private bool search;
         private Button button;
@@ -960,7 +961,7 @@ namespace FilterDataGrid
                 // clear resources
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
                 CurrentFilter = null;
-                ReactivateSorting();
+               // ReactivateSorting();
                 ResetCursor();
             }
 
@@ -982,8 +983,9 @@ namespace FilterDataGrid
             searchText = string.Empty;
             search = false;
 
-            // re-enable datagrid
-            IsEnabled = true;
+            // re-enable columnHeadersPresenter
+            if (columnHeadersPresenter != null)
+                columnHeadersPresenter.IsEnabled = true;
         }
 
         /// <summary>
@@ -1149,6 +1151,7 @@ namespace FilterDataGrid
             Debug.WriteLineIf(DebugMode, "\r\nShowFilterCommand");
 
             // reset previous elapsed time
+            ElapsedTime = new TimeSpan(0, 0, 0);
             stopWatchFilter = Stopwatch.StartNew();
 
             // clear search text (!important)
@@ -1172,17 +1175,19 @@ namespace FilterDataGrid
 
                 // then down to the current popup
                 popup = VisualTreeHelpers.FindChild<Popup>(header, "FilterPopup");
+                columnHeadersPresenter = VisualTreeHelpers.FindAncestor<DataGridColumnHeadersPresenter>(header);
 
-                if (popup == null) return;
+                if (popup == null || columnHeadersPresenter == null) return;
+
+                // disable columnHeadersPresenter while popup is open
+                if (columnHeadersPresenter != null)
+                    columnHeadersPresenter.IsEnabled = false;
 
                 // popup handle event
                 popup.Closed += PopupClosed;
 
                 // disable popup background clickthrough, contribution : WORDIBOI
                 popup.MouseDown += onMousedown;
-
-                // disable datagrid while popup is open
-                IsEnabled = false;
 
                 // resizable grid
                 sizableContentGrid = VisualTreeHelpers.FindChild<Grid>(popup.Child, "SizableContentGrid");
@@ -1216,24 +1221,24 @@ namespace FilterDataGrid
                 {
                     var column = (DataGridTextColumn)header.Column;
                     fieldName = column.FieldName;
-                    column.CanUserSort = false;
-                    currentColumn = column;
+                    //column.CanUserSort = false;
+                    //currentColumn = column;
                 }
 
                 if (columnType == typeof(DataGridTemplateColumn))
                 {
                     var column = (DataGridTemplateColumn)header.Column;
                     fieldName = column.FieldName;
-                    column.CanUserSort = false;
-                    currentColumn = column;
+                    //column.CanUserSort = false;
+                    //currentColumn = column;
                 }
 
                 if (columnType == typeof(DataGridCheckBoxColumn))
                 {
                     var column = (DataGridCheckBoxColumn)header.Column;
                     fieldName = column.FieldName;
-                    column.CanUserSort = false;
-                    currentColumn = column;
+                    //column.CanUserSort = false;
+                    //currentColumn = column;
                 }
 
                 // invalid fieldName
@@ -1263,7 +1268,7 @@ namespace FilterDataGrid
                 // set cursor
                 Mouse.OverrideCursor = Cursors.Wait;
 
-                var filterItemList = new List<FilterItem>();
+                List<FilterItem> filterItemList = null;//new List<FilterItem>();
 
                 // get the list of values distinct from the list of raw values of the current column
                 await Task.Run(() =>
@@ -1484,7 +1489,7 @@ namespace FilterDataGrid
             }
             finally
             {
-                ReactivateSorting();
+                //ReactivateSorting();
                 ResetCursor();
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
                 pending = false;
