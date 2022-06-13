@@ -21,9 +21,8 @@
     <PackageProjectUrl>https://github.com/macgile/DataGridFilter</PackageProjectUrl>
     <RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>Copyright © 2021 Gilles Macabies</Copyright>
-    <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
     <NeutralLanguage />
     <Description>
@@ -32,10 +31,15 @@
       Translation of labels and formatting of dates in the available languages : English, French, Russian, German, Italian, Chinese, Dutch.
     </Description>
     <PackageTags>DataGrid Excel Filter WPF C# Control .Net Free</PackageTags>
-    <PackageReleaseNotes>
-</PackageReleaseNotes>
-    <Version>1.2.5</Version>
+    <PackageReleaseNotes>Added Polish and Spanish language.
+Added DataGridCheckboxColumn column type.
+Ability to "remove all filters" at once.
+Refactoring and correction of logical errors.</PackageReleaseNotes>
+    <Version>1.2.6</Version>
     <PackageLicenseExpression></PackageLicenseExpression>
+    <Title>A DataGrid control that implements filters for each column like Excel, automatically or custom generated.</Title>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0-windows|AnyCPU'">
@@ -43,18 +47,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
       <None Include="..\Shared\Readme.txt">
           <Pack>True</Pack>
           <PackagePath></PackagePath>
       </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

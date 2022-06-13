@@ -182,7 +182,6 @@ namespace FilterDataGrid
         private Type fieldType;
 
         private bool startsWith;
-        private object currentColumn;
 
         private readonly Dictionary<string, Predicate<object>> criteria = new Dictionary<string, Predicate<object>>();
 
@@ -315,7 +314,7 @@ namespace FilterDataGrid
             set
             {
                 fieldType = value;
-                OnPropertyChanged("FieldType");
+                OnPropertyChanged();
             }
         }
 
@@ -751,26 +750,6 @@ namespace FilterDataGrid
         private void OnSorted(object sender, EventArgs e)
         {
             ResetCursor();
-        }
-
-        /// <summary>
-        ///     Reactivate sorting
-        /// </summary>
-        private void ReactivateSorting()
-        {
-            switch (currentColumn)
-            {
-                case null:
-                    return;
-
-                case DataGridTextColumn column:
-                    column.CanUserSort = true;
-                    break;
-
-                case DataGridTemplateColumn templateColumn:
-                    templateColumn.CanUserSort = true;
-                    break;
-            }
         }
 
         /// <summary>
