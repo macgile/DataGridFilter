@@ -42,6 +42,7 @@ Refactoring and correction of logical errors.</PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
+  <!-- ReSharper disable once UnknownProperty -->
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0-windows|AnyCPU'">
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
