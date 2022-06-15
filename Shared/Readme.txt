@@ -31,6 +31,9 @@ General use:
             <control:FilterDataGrid.Columns>
                 <control:DataGridTextColumn IsColumnFiltered="True" ...
 
+        - Custom CheckBoxColumn
+           <control:DataGridCheckBoxColumn IsColumnFiltered="True" ...
+
           * FieldName property of TemplateColumn is required
         - Custom TemplateColumn :
             <control:FilterDataGrid.Columns>   

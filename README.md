@@ -60,12 +60,13 @@ To understand how the filter works, you can consult the article posted on [CodeP
   > :warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
 [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 
-- **Custom TextColumn**
+- **Custom TextColumn / CheckBoxColumn**
      > *If you add custom columns, you must set **AutoGenerateColumns="False"***
 
   ```xml
   <control:FilterDataGrid.Columns>   
-      <control:DataGridTextColumn IsColumnFiltered="True" ...
+      <control:DataGridTextColumn     IsColumnFiltered="True" ... />
+      <control:DataGridCheckBoxColumn IsColumnFiltered="True" ... />
   ```
 
 - **Custom TemplateColumn**  
