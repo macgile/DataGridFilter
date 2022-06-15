@@ -29,10 +29,10 @@ General use:
 
         - Custom TextColumn / CheckBoxColumn :  
             <control:FilterDataGrid.Columns>
-                <control:DataGridTextColumn IsColumnFiltered="True" ...
-                <control:DataGridCheckBoxColumn IsColumnFiltered="True" ...
+                <control:DataGridTextColumn IsColumnFiltered="True" ... />
+                <control:DataGridCheckBoxColumn IsColumnFiltered="True" ... />
           
           * FieldName property of TemplateColumn is required
         - Custom TemplateColumn :
             <control:FilterDataGrid.Columns>   
-                <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ...
+                <control:DataGridTemplateColumn IsColumnFiltered="True" FieldName="LastName" ... />

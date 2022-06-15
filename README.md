@@ -75,7 +75,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
   ```xml
   <control:FilterDataGrid.Columns>   
       <control:DataGridTemplateColumn IsColumnFiltered="True"
-                               FieldName="LastName" ...
+                               FieldName="LastName" ... />
   ```
 
 ## Global Style
