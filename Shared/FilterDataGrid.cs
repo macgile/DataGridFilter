@@ -46,7 +46,7 @@ namespace FilterDataGrid
             // load resources
             var resourcesDico = new ResourceDictionary
             {
-                Source = new Uri("/FilterDataGrid;component/Themes/FilterDataGrid.xaml", UriKind.RelativeOrAbsolute)
+                Source = new Uri("/FilterDataGrid;component/Themes/FilterDataGrid.xaml", UriKind.Relative)
             };
 
             Resources.MergedDictionaries.Add(resourcesDico);
