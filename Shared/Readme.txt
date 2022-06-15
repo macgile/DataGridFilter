@@ -27,13 +27,11 @@ General use:
 
           * If you add custom columns, you must set the property AutoGenerateColumns to "False"
 
-        - Custom TextColumn :  
+        - Custom TextColumn / CheckBoxColumn :  
             <control:FilterDataGrid.Columns>
                 <control:DataGridTextColumn IsColumnFiltered="True" ...
-
-        - Custom CheckBoxColumn
-           <control:DataGridCheckBoxColumn IsColumnFiltered="True" ...
-
+                <control:DataGridCheckBoxColumn IsColumnFiltered="True" ...
+          
           * FieldName property of TemplateColumn is required
         - Custom TemplateColumn :
             <control:FilterDataGrid.Columns>   
