@@ -1,9 +1,3 @@
-<!--
-Edited
-https://dillinger.io/
-https://kramdown.gettalong.org/quickref.html
-https://shields.io/category/version
--->
 # WPF Filterable DataGrid, multi language
 
 <!--
@@ -13,7 +7,7 @@ https://shields.io/category/version
 ![Nuget package](https://img.shields.io/nuget/v/FilterDataGrid)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter?include_prereleases)  
 
-![datagrid image demo](FilterDataGrid.png)  
+![datagrid image demo](https://raw.githubusercontent.com/macgile/DataGridFilter/master/FilterDataGrid.png)  
 
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
 for each column like Excel, in automatic or custom generation.  
@@ -109,7 +103,7 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 
 ## Demonstration
 
-![datagrid image demo](capture.gif)  
+![datagrid image demo](https://raw.githubusercontent.com/macgile/DataGridFilter/master/capture.gif)  
 
 ## Contributors
 
@@ -127,4 +121,3 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 <a href="https://github.com/macgile/DataGridFilter/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=macgile/DataGridFilter" />
 </a>
-
