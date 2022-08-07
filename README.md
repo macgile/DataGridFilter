@@ -21,8 +21,8 @@ The **Nuget package** is available [here](https://www.nuget.org/packages/FilterD
 
 To understand how the filter works, you can consult the article posted on [CodeProject](https://www.codeproject.com/Articles/5292782/WPF-DataGrid-Filterable-multi-language).  
 
-> **For operation closer to that of Excel, see the beta version available in the repository [FilterDataGrid-Beta](https://github.com/macgile/FilterDataGrid-Beta).  
-This beta version uses a new filtering method that is completely different from the current version or the one commonly used to filter data (as far as I know).**  
+> **For operation closer to that of Excel, see the version available in the repository [FilterDataGrid-Beta](https://github.com/macgile/FilterDataGrid-Beta).  
+This version uses a new filtering method that is completely different from the current version or the one commonly used to filter data (as far as I know).**  
 
 ## How to use
 
