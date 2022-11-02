@@ -16,6 +16,7 @@ namespace FilterDataGrid
 {
     public enum Local
     {
+        TChinese,
         Chinese,
         Dutch,
         English,
@@ -37,6 +38,7 @@ namespace FilterDataGrid
         // culture name(used for dates)
         private static readonly Dictionary<Local, string> CultureNames = new Dictionary<Local, string>
         {
+            { Local.TChinese, "zh-Hant" },
             { Local.Chinese, "zh-Hans" },
             { Local.Dutch,   "nl-NL" },
             { Local.English, "en-US" },
@@ -58,6 +60,7 @@ namespace FilterDataGrid
                 {
                     "All", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "(全選)" },
                         { Local.Chinese, "(全选)" },
                         { Local.Dutch,   "(Alles selecteren)" },
                         { Local.English, "(Select all)" },
@@ -73,6 +76,7 @@ namespace FilterDataGrid
                 {
                     "Empty", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "(空白)" },
                         { Local.Chinese, "(空白)" },
                         { Local.Dutch,   "(Leeg)" },
                         { Local.English, "(Blank)" },
@@ -88,6 +92,7 @@ namespace FilterDataGrid
                 {
                     "Clear", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "清除篩選 \"{0}\"" },
                         { Local.Chinese, "清除过滤器 \"{0}\"" },
                         { Local.Dutch,   "Filter \"{0}\" verwijderen" },
                         { Local.English, "Clear filter \"{0}\"" },
@@ -104,6 +109,7 @@ namespace FilterDataGrid
                 {
                     "Contains", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "搜尋(包含)" },
                         { Local.Chinese, "搜索(包含)" },
                         { Local.Dutch,   "Zoek (bevat)" },
                         { Local.English, "Search (contains)" },
@@ -120,6 +126,7 @@ namespace FilterDataGrid
                 {
                     "StartsWith", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "搜尋(字元開頭)" },
                         { Local.Chinese, "搜索 (来自)" },
                         { Local.Dutch,   "Zoek (beginnen met)" },
                         { Local.English, "Search (startswith)" },
@@ -136,6 +143,7 @@ namespace FilterDataGrid
                 {
                     "Toggle", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "切換包含/開始於" },
                         { Local.Chinese, "切換包含/開始於" },
                         { Local.Dutch,   "Toggle bevat/begint met" },
                         { Local.English, "Toggle contains/startswith" },
@@ -152,6 +160,7 @@ namespace FilterDataGrid
                 {
                     "Ok", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "確定" },
                         { Local.Chinese, "确定" },
                         { Local.Dutch,   "Ok" },
                         { Local.English, "Ok" },
@@ -167,6 +176,7 @@ namespace FilterDataGrid
                 {
                     "Cancel", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "取消" },
                         { Local.Chinese, "取消" },
                         { Local.Dutch,   "Annuleren" },
                         { Local.English, "Cancel" },
@@ -182,6 +192,7 @@ namespace FilterDataGrid
                 {
                     "Status", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "{0:n0} 找到 {1:n0} 條記錄" },
                         { Local.Chinese, "{0:n0} 找到了 {1:n0} 条记录" },
                         { Local.Dutch,   "{0:n0} rij(en) gevonden op {1:n0}" },
                         { Local.English, "{0:n0} record(s) found on {1:n0}" },
@@ -197,6 +208,7 @@ namespace FilterDataGrid
                 {
                     "ElapsedTime", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "經過時間{0:mm}:{0:ss}.{0:ff}" },
                         { Local.Chinese, "经过时间{0:mm}:{0:ss}.{0:ff}" },
                         { Local.Dutch,   "Verstreken tijd {0:mm}:{0:ss}.{0:ff}" },
                         { Local.English, "Elapsed time {0:mm}:{0:ss}.{0:ff}" },
@@ -212,6 +224,7 @@ namespace FilterDataGrid
                 {
                     "True", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "已選中" },
                         { Local.Chinese, "已選中" },
                         { Local.Dutch,   "Aangevinkt" },
                         { Local.English, "Checked" },
@@ -227,6 +240,7 @@ namespace FilterDataGrid
                 {
                     "False", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "未選中" },
                         { Local.Chinese, "未選中" },
                         { Local.Dutch,   "Niet aangevinkt" },
                         { Local.English, "Unchecked" },
@@ -242,6 +256,7 @@ namespace FilterDataGrid
                 {
                     "RemoveAll", new Dictionary<Local, string>
                     {
+                        { Local.TChinese, "清除所有篩選" },
                         { Local.Chinese, "删除所有过滤器" },
                         { Local.Dutch,   "Alle filters verwijderen" },
                         { Local.English, "Remove all filters" },
