@@ -1,0 +1,27 @@
+﻿<Application
+    x:Class="DemoAppNet5.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:control="http://filterdatagrid.control.com/2021"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style
+            x:Key="FilterDatagridStyle"
+            BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
+                                                           ResourceId=FilterDataGridStyle}}"
+            TargetType="{x:Type control:FilterDataGrid}">
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="AlternatingRowBackground" Value="WhiteSmoke" />
+            <Setter Property="AlternationCount" Value="2" />
+            <Setter Property="ColumnWidth" Value="*" />
+            <Setter Property="HorizontalGridLinesBrush" Value="LightGray" />
+            <Setter Property="VerticalGridLinesBrush" Value="LightGray" />
+            <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+            <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
+            <Setter Property="BorderBrush" Value="LightSlateGray" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="RowHeaderWidth" Value="40" />
+        </Style>
+    </Application.Resources>
+</Application>

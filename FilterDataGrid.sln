@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32519.111
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilterDataGrid.Net", "FilterDataGrid.Net\FilterDataGrid.Net.csproj", "{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApp.Net5.0", "DemoApp.Net5.0\DemoApp.Net5.0.csproj", "{03366D93-4240-4880-A847-2326A7C324C9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApp.Net6.0", "DemoApp.Net6.0\DemoApp.Net6.0.csproj", "{8650A7D3-33D7-4D37-B040-E6378E1DDC33}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedModelView", "SharedModelView\SharedModelView.shproj", "{E2E134A8-314F-43B4-BCC6-206D2BB5705C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03366D93-4240-4880-A847-2326A7C324C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03366D93-4240-4880-A847-2326A7C324C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03366D93-4240-4880-A847-2326A7C324C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03366D93-4240-4880-A847-2326A7C324C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8650A7D3-33D7-4D37-B040-E6378E1DDC33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8650A7D3-33D7-4D37-B040-E6378E1DDC33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8650A7D3-33D7-4D37-B040-E6378E1DDC33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8650A7D3-33D7-4D37-B040-E6378E1DDC33}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6EC7BC8-FC6A-44D2-A84C-CCD48B53A6E5}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedModelView\SharedModelView.projitems*{03366d93-4240-4880-a847-2326a7c324c9}*SharedItemsImports = 5
+		SharedModelView\SharedModelView.projitems*{8650a7d3-33d7-4d37-b040-e6378e1ddc33}*SharedItemsImports = 5
+		SharedModelView\SharedModelView.projitems*{e2e134a8-314f-43b4-bcc6-206d2bb5705c}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal
