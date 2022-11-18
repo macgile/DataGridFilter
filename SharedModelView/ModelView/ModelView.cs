@@ -45,17 +45,17 @@ namespace SharedModelView.ModelView
 
         #region Private Fields
 
-        private ICollectionView collView = null!;
+        private ICollectionView collView;
         private int count;
-        private string search = null!;
+        private string search = string.Empty;
 
         #endregion Private Fields
 
         #region Public Properties
 
-        public ObservableCollection<Employe> Employes { get; set; } = null!;
+        public ObservableCollection<Employe> Employes { get; set; }
 
-        public ObservableCollection<Employe> FilteredList { get; set; } = null!;
+        public ObservableCollection<Employe> FilteredList { get; set; }
 
         public int[] NumberItems { get; } =
         {
@@ -81,16 +81,18 @@ namespace SharedModelView.ModelView
                 {
                     var item = (Employe)e;
                     return item != null &&
-                           (item.LastName.StartsWith(search, StringComparison.OrdinalIgnoreCase)
-                            || item.FirstName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
+                           (item.LastName != null && item.LastName.StartsWith(search, StringComparison.OrdinalIgnoreCase)
+                            || item.FirstName != null && item.FirstName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
                 };
 
-                collView.Refresh();
+                if (collView != null)
+                {
+                    collView.Refresh();
+                    FilteredList = new ObservableCollection<Employe>(collView.OfType<Employe>());
+                }
 
-                FilteredList = new ObservableCollection<Employe>(collView.OfType<Employe>());
-
-                OnPropertyChanged("Search");
-                OnPropertyChanged("FilteredList");
+                OnPropertyChanged(nameof(Search));
+                OnPropertyChanged(nameof(FilteredList));
             }
         }
 

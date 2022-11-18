@@ -129,7 +129,7 @@ namespace SharedModelView.ModelView
                 Rnd.Next(0, 10) != 1
                     ? new DateTime(2012 + Rnd.Next(10), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59),
                         Rnd.Next(59))
-                    : null,
+                    : (DateTime?)null,
 
                 // is manager
                 Rnd.Next() % 2 == 1);
