@@ -102,7 +102,7 @@ namespace FilterDataGrid
                         { Local.Polish, "Wyczyść filtr \"{0}\"" },
                         { Local.Russian, "Очистить фильтр \"{0}\"" },
                         { Local.Spanish, "Limpiar filtros \"{0}\"" },
-                        { Local.Japanese, "\"{0}\"からフィルターをクリア" }
+                        { Local.Japanese, "\"{0}\" からフィルターをクリア" }
                     }
                 },
 
@@ -119,7 +119,7 @@ namespace FilterDataGrid
                         { Local.Polish, "Szukaj (zawiera)" },
                         { Local.Russian, "Искать (содержит)" },
                         { Local.Spanish, "Buscar (contiene)" },
-                        { Local.Japanese, "検索(含む)" }
+                        { Local.Japanese, "検索 (含む)" }
                     }
                 },
 
