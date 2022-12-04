@@ -7,7 +7,7 @@
 ![Nuget package](https://img.shields.io/nuget/v/FilterDataGrid)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter?include_prereleases)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
-[![Net Version](https://img.shields.io/badge/net%20version-net4.7.2,%20netcore3.1,%20net5.0,%20net6.0,%20net7.0-blue)](https://shields.io)
+[![Net Version](https://img.shields.io/badge/net%20version-net4.7.2%20netcore3.1%20net5.0%20net6.0%20net7.0-blue)](https://shields.io)
 
 ![datagrid image demo](https://raw.githubusercontent.com/macgile/DataGridFilter/master/FilterDataGrid.png)  
 
