@@ -56,11 +56,11 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\icon.png">
+    <None Include="..\icon.ico">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\icon.ico">
+    <None Include="..\icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
