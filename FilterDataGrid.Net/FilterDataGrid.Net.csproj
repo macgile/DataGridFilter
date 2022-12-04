@@ -1,40 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0-windows;;net6.0-windows;net5.0-windows;net472-windows;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472-windows;netcoreapp3.1;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
     <OutputType>Library</OutputType>
     <UseWPF>true</UseWPF>
     <RootNamespace>FilterDataGrid</RootNamespace>
     <AssemblyName>FilterDataGrid</AssemblyName>
+
   </PropertyGroup>
 
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- ReSharper disable UnknownProperty -->
+    <Product Condition=" '$(TargetFramework)' == 'net472-windows'">FilterDataGrid Net472-windows</Product>
+    <Product Condition=" '$(TargetFramework)' == 'netcoreapp3.1'">FilterDataGrid NetCOREAPP3.1</Product>
+    <Product Condition=" '$(TargetFramework)' == 'net5.0-windows'">FilterDataGrid Net5.0-windows</Product>
+    <Product Condition=" '$(TargetFramework)' == 'net6.0-windows'">FilterDataGrid Net6.0-windows</Product>
+    <Product Condition=" '$(TargetFramework)' == 'net7.0-windows'">FilterDataGrid Net7.0-windows</Product>
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyName>FilterDataGrid</AssemblyName>
-    <RootNamespace>FilterDataGrid</RootNamespace>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>Macabies Gilles</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/macgile/DataGridFilter</PackageProjectUrl>
     <RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>Copyright © 2021 Gilles Macabies</Copyright>
     <PackageIconUrl />
     <NeutralLanguage />
     <Description>
       A DataGrid control that inherits from the base DataGrid control class and override some methods to
       implement filters for each column like Excel, in automatic or custom generation.
-      Translation of labels and formatting of dates in the available languages : English, French, Russian, German, Italian, Chinese, Dutch.
+      Translation of labels and date formatting in the following languages :
+      Chinese(traditional and simplified), Dutch, English, French, German, Italian, Japanese, Polish, Russian, Spanish.
     </Description>
-    <PackageTags>DataGrid Excel Filter WPF C# Control .Net Free</PackageTags>
+    <PackageTags>DataGrid Excel Filter WPF C# Control .Net .NetCore Free</PackageTags>
     <PackageReleaseNotes>
-      Added Polish and Spanish language.
-      Added DataGridCheckboxColumn column type.
-      Ability to "remove all filters" at once.
-      Refactoring and correction of logical errors.
+      Net6.0 and Net7.0 support.
+      Added Japanese and Traditional Chinese languages.
+      Removed pure Net Framework 4.7.2 version of FilterDataGrid.
+      Mutualization in a shared project of the view model for the generation of test applications for the different versions of .Net.
     </PackageReleaseNotes>
     <Version>1.2.7</Version>
     <PackageLicenseExpression></PackageLicenseExpression>
@@ -46,10 +51,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
-  <!-- ReSharper disable once UnknownProperty -->
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0-windows|AnyCPU'">
-    <DefineConstants>DEBUG</DefineConstants>
-  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="icon.ico" />
   </ItemGroup>
@@ -75,7 +77,6 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
 
 
 </Project>

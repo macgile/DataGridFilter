@@ -2,20 +2,18 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <RootNamespace>DemoApp.Net7._0</RootNamespace>
     <UseWPF>true</UseWPF>
-    <RootNamespace>DemoAppNet5</RootNamespace>
     <!--<RestoreAdditionalProjectSources>././FilterDataGrid.Net/bin/Debug</RestoreAdditionalProjectSources>-->
     <!--<PackageReference Include="FilterDataGrid" Version="1.2.7" />-->
   </PropertyGroup>
 
-
   <ItemGroup>
     <ProjectReference Include="..\FilterDataGrid.Net\FilterDataGrid.Net.csproj"
-                      AdditionalProperties="TargetFramework=net5.0-windows" />
+                      AdditionalProperties="TargetFramework=net7.0-windows" />
   </ItemGroup>
 
   <Import Project="..\SharedModelView\SharedModelView.projitems" Label="Shared" />
-
 
 </Project>
