@@ -12,7 +12,7 @@
   <PropertyGroup>
     <!-- ReSharper disable UnknownProperty -->
     <Product Condition=" '$(TargetFramework)' == 'net472-windows'">FilterDataGrid Net472-windows</Product>
-    <Product Condition=" '$(TargetFramework)' == 'netcoreapp3.1'">FilterDataGrid NetCOREAPP3.1</Product>
+    <Product Condition=" '$(TargetFramework)' == 'netcoreapp3.1'">FilterDataGrid NetCoreApp3.1</Product>
     <Product Condition=" '$(TargetFramework)' == 'net5.0-windows'">FilterDataGrid Net5.0-windows</Product>
     <Product Condition=" '$(TargetFramework)' == 'net6.0-windows'">FilterDataGrid Net6.0-windows</Product>
     <Product Condition=" '$(TargetFramework)' == 'net7.0-windows'">FilterDataGrid Net7.0-windows</Product>
@@ -40,6 +40,7 @@
       Added Japanese and Traditional Chinese languages.
       Removed pure Net Framework 4.7.2 version of FilterDataGrid.
       Mutualization in a shared project of the view model for the generation of test applications for the different versions of .Net.
+      Removed ComponentResourceKey from FilterDataGrid style.
     </PackageReleaseNotes>
     <Version>1.2.7</Version>
     <PackageLicenseExpression></PackageLicenseExpression>
@@ -50,7 +51,6 @@
     <FileVersion>1.2.7.0</FileVersion>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
-
 
   <ItemGroup>
     <Content Include="icon.ico" />

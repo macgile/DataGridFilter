@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sharedModelView="clr-namespace:SharedModelView"
-    Title="Demo NetFramework 4.7.2 Application"
+    Title="Demo NetFramework 4.7.2 App"
     Width="1024"
     Height="900"
     WindowStartupLocation="CenterScreen"
@@ -162,9 +162,6 @@
             ExcludeFields="lastname, age"
             FilterLanguage="Japanese"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
-            ShowElapsedTime="True"
-            ShowRowsCount="True"
-            ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}" />
     </Grid>
 </Window>

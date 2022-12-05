@@ -465,7 +465,7 @@ namespace FilterDataGrid
                 ItemsSourceCount = Items.Count;
                 ElapsedTime = new TimeSpan(0, 0, 0);
                 OnPropertyChanged(nameof(ItemsSourceCount));
-
+               
                 // Calculate row header width
                 if (ShowRowsCount)
                 {
@@ -478,7 +478,11 @@ namespace FilterDataGrid
                         Margin = new Thickness(2.0)
                     };
                     txt.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    RowHeaderWidth = Math.Ceiling(txt.DesiredSize.Width);
+                    RowHeaderWidth =  Math.Max(Math.Ceiling(txt.DesiredSize.Width), RowHeaderWidth >=0 ? RowHeaderWidth:0);
+                }
+                else
+                {
+                    RowHeaderWidth = 0;
                 }
 
                 // get collection type

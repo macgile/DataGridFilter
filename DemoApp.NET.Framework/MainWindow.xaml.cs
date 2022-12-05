@@ -5,14 +5,14 @@
 // Projet     : DemoApp.NET.Framework
 // File       : MainWindow.xaml.cs
 // Created    : 18/11/2022
-// 
+//
 
 #endregion
 
+using SharedModelView.ModelView;
 using System;
 using System.Diagnostics;
 using System.Windows;
-using SharedModelView.ModelView;
 
 namespace DemoApp.NET.Framework
 {

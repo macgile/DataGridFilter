@@ -205,20 +205,13 @@
         </Setter>
     </Style>
 
-    <!--  DEFAULT STYLE EXTERNAL ACCESS AND CONTROL MODEL FOR DATAGRID  -->
-    <Style
-        x:Key="{ComponentResourceKey {x:Type control:FilterDataGrid},
-                                     FilterDataGridStyle}"
-        BasedOn="{StaticResource {x:Type DataGrid}}"
-        TargetType="{x:Type control:FilterDataGrid}">
-
-        <!--  DISABLING CanUserAddRows :  AggregateException when user can add row  -->
-        <Setter Property="CanUserAddRows" Value="False" />
+    <!--  FILTERDATAGRID STYLE  -->
+    <Style TargetType="{x:Type control:FilterDataGrid}">
 
         <!--  DATAGRID TEMPLATE  -->
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type DataGrid}">
+                <ControlTemplate TargetType="control:FilterDataGrid">
                     <Border
                         x:Name="DatagridBorder"
                         Padding="{TemplateBinding Padding}"

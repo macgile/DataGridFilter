@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sharedModelView="clr-namespace:SharedModelView"
-    Title="Net7.0 Demo Application"
+    Title="Net7.0 Demo App"
     Width="1024"
     Height="900"
     WindowStartupLocation="CenterScreen"
@@ -83,7 +83,7 @@
             CUSTOM COLUMNS
             See the global style "FilterDatagridStyle" in App.xaml
         -->
-        <control:FilterDataGrid
+        <FilterDataGrid
             x:Name="FilterDataGrid"
             Grid.Row="2"
             AutoGenerateColumns="False"
@@ -94,7 +94,7 @@
             ShowRowsCount="True"
             ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}">
-            <control:FilterDataGrid.Columns>
+            <FilterDataGrid.Columns>
                 <control:DataGridTemplateColumn
                     FieldName="FirstName"
                     Header="First name"
@@ -132,8 +132,8 @@
                     Header="Start Date"
                     IsColumnFiltered="True" />
 
-            </control:FilterDataGrid.Columns>
-        </control:FilterDataGrid>
+            </FilterDataGrid.Columns>
+        </FilterDataGrid>
 
         <!--
             AUTO GENERATE COLUMNS
@@ -162,9 +162,6 @@
             ExcludeFields="lastname, age"
             FilterLanguage="Japanese"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
-            ShowElapsedTime="True"
-            ShowRowsCount="True"
-            ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}" />
     </Grid>
 </Window>
