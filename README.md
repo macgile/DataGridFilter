@@ -79,13 +79,13 @@ This version uses a new filtering method that is completely different from the c
 ## Global Style
 
 >You can define a global style which overrides the default style of "FilterDataGrid"  
+:warning: **The ComponentResourceKey is obsolete from version 1.2.7**   
+~~BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
+        ResourceId=FilterDataGridStyle}}"~~
 
 ```xml
 <Style
-            x:Key="FilterDatagridStyle"
-            BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
-                                                           ResourceId=FilterDataGridStyle}}"
-            TargetType="{x:Type control:FilterDataGrid}">
+            x:Key="FilterDatagridStyle" TargetType="{x:Type control:FilterDataGrid}">
             <Setter Property="Margin" Value="10" />
             <Setter Property="RowHeaderWidth" Value="40" />
      ...
