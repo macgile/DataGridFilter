@@ -51,7 +51,7 @@ This version uses a new filtering method that is completely different from the c
   - **ShowStatusBar** : *displays the status bar*, default : false  
   - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
   - **ShowRowsCount** : *display the number of rows*, default : false  
-  *- If the value passed to **RowHeaderWidth** is greater than the calculation of the width of the column, this is the one that is used*  
+  *- If the value passed to **RowHeaderWidth** is greater than the calculation of the width of the column, this is the one that is used.*  
   - **FilterLanguage** : *translation into available language*, default : English  
   - **ExcludeFields** : *comma separated fields to exclude from filter, only works in AutoGenerateColumns mode*  
   - **DateFormatString** : *date display format*, default : "d"  
