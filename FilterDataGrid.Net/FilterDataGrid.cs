@@ -1509,17 +1509,17 @@ namespace FilterDataGrid
 
                     const double border = 1d;
 
-                    // get the ContentPresenter from the hostingWindow
-                    var contentPresenter = VisualTreeHelpers.FindChild<ContentPresenter>(hostingWindow);
+                    // get the Datagrid from the hostingWindow
+                    var datagrid = VisualTreeHelpers.FindChild<FilterDataGrid>(hostingWindow);
 
                     var hostSize = new Point
                     {
-                        X = contentPresenter.ActualWidth,
-                        Y = contentPresenter.ActualHeight
+                        X = datagrid.ActualWidth,
+                        Y = datagrid.ActualHeight
                     };
 
                     // get the X, Y position of the header
-                    var headerContentOrigin = header.TransformToVisual(contentPresenter).Transform(new Point(0, 0));
+                    var headerContentOrigin = header.TransformToVisual(datagrid).Transform(new Point(0, 0));
                     var headerDataGridOrigin = header.TransformToVisual(this).Transform(new Point(0, 0));
 
                     var headerSize = new Point { X = header.ActualWidth, Y = header.ActualHeight };
