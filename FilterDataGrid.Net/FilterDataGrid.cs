@@ -487,11 +487,7 @@ namespace FilterDataGrid
 
                 // get collection type
                 if (ItemsSourceCount > 0)
-                    // contribution : APFLKUACHA
-                    collectionType = ItemsSource is ICollectionView collectionView
-                        ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
-                        : ItemsSource?.GetType().GenericTypeArguments.FirstOrDefault();
-
+                    collectionType = ItemsSource.Cast<object>().First().GetType();
                 // generating custom columns
                 if (!AutoGenerateColumns && collectionType != null) GeneratingCustomsColumn();
             }
