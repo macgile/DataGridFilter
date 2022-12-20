@@ -205,6 +205,26 @@
         </Setter>
     </Style>
 
+    <!--DATAGRIDROW SELECTED RECTANGLE STYLE-->
+    <Style TargetType="{x:Type DataGridRow}">
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="BorderBrush" Value="blue" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Margin" Value="-1,0,0,0"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type DataGridCell}">
+        <Setter Property="Foreground" Value="Black"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!--  FILTERDATAGRID STYLE  -->
     <Style TargetType="{x:Type control:FilterDataGrid}">
 
@@ -399,6 +419,7 @@
     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="DataGridColumnHeader">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
+    
 
     <!--  FILTER BUTTON CONTROLTEMPLATE  -->
     <ControlTemplate x:Key="FilterButtonControlTemplate" TargetType="{x:Type Button}">
