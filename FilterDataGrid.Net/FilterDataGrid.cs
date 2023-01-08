@@ -1539,16 +1539,20 @@ namespace FilterDataGrid
                     grid.MaxWidth = MaxSize(popUpSize.X + delta.X - border);
                     grid.MaxHeight = MaxSize(popUpSize.Y + delta.Y - border);
 
-                    // remove offset
-                    if (popup.HorizontalOffset == 0)
-                        grid.MaxWidth = MaxSize(grid.MaxWidth -= offset);
 
+                    // remove offset
+                    // contributing to the fix : VASHBALDEUS
+                    if (popup.HorizontalOffset == 0)
+                        grid.MaxWidth = MaxSize(Math.Abs(grid.MaxWidth - offset));
+                    
                     // the height of popup is too large, reduce it, because it overflows down.
                     if (delta.Y <= 0d)
                     {
                         grid.MaxHeight = MaxSize(popUpSize.Y - Math.Abs(delta.Y) - border);
                         grid.Height = grid.MaxHeight;
-                        grid.MinHeight = grid.MaxHeight;
+
+                        // contributing to the fix : VASHBALDEUS
+                        grid.MinHeight = grid.MaxHeight == 0 ? grid.MinHeight : grid.MaxHeight; 
                     }
                 }
             }
