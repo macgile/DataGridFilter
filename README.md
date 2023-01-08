@@ -25,7 +25,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 > **For operation closer to that of Excel, see the version available in the repository [FilterDataGrid-Beta](https://github.com/macgile/FilterDataGrid-Beta).  
 This version uses a new filtering method that is completely different from the current version or the one commonly used to filter data (as far as I know).**  
 
-:warning: Attention in version 1.2.6 you must add the global style so that the FilterDataGrid is displayed correctly, this is a bug fixed in the current version.  
+:warning: **Attention in version 1.2.6 you must add the global style so that the FilterDataGrid is displayed correctly, this is a bug fixed in the current version.**  
 
 ```xml
 <Style x:Key="FilterDatagridStyle" 
