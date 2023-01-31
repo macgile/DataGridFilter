@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -142,6 +143,47 @@ namespace FilterDataGrid
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
         {
             return new HashSet<T>(source, comparer);
+        }
+
+        public static PropertyInfo GetPropertyInfo(Type src, string propName)
+        {
+            if (src == null) throw new ArgumentException("Value cannot be null.", "src");
+            if (propName == null) throw new ArgumentException("Value cannot be null.", "propName");
+
+            if (propName.Contains("."))//complex type nested
+            {
+                var temp = propName.Split(new char[] { '.' }, 2);
+                return GetPropertyInfo(GetPropertyInfo(src, temp[0]).PropertyType, temp[1]);
+            }
+            else
+            {
+                var prop = (src as Type).GetProperty(propName);
+                return prop != null ? prop : null;
+            }
+        }
+
+        public static Object GetPropValue(this Object obj, String name)
+        {
+            foreach (String part in name.Split('.'))
+            {
+                if (obj == null) { return null; }
+
+                Type type = obj.GetType();
+                PropertyInfo info = type.GetProperty(part);
+                if (info == null) { return null; }
+
+                obj = info.GetValue(obj, null);
+            }
+            return obj;
+        }
+
+        public static T GetPropValue<T>(this Object obj, String name)
+        {
+            Object retval = GetPropValue(obj, name);
+            if (retval == null) { return default(T); }
+
+            // throws InvalidCastException if types are incompatible
+            return (T)retval;
         }
 
         #endregion Public Methods
