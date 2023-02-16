@@ -14,7 +14,7 @@
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
 for each column like Excel, in automatic or custom generation.  
 
-Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Italian, Japanese, Polish, Russian, Spanish.**
+Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Italian, Japanese, Polish, Russian, Spanish, Turkish.**
 
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
