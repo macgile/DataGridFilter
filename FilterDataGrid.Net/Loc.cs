@@ -7,9 +7,24 @@
 
 #endregion
 
+#region CONTRIBUTORS
+
+// Turkish              : BEDIRHANSAMSA
+// Japanese             : iBadaMorae
+// Italian              : aetasoul
+// Dutch                : Tenera
+// Simplified Chinese   : SWH998
+// Traditional Chinese  : BeCare4
+// Russian              : anyousib
+
+// Improved translations and number format : Apflkuacha
+
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+
 // ReSharper disable UnusedMember.Global
 
 namespace FilterDataGrid
@@ -23,10 +38,11 @@ namespace FilterDataGrid
         French,
         German,
         Italian,
+        Japanese,
         Polish,
         Russian,
         Spanish,
-        Japanese
+        Turkish
     }
 
     public class Loc
@@ -45,10 +61,11 @@ namespace FilterDataGrid
             { Local.French,  "fr-FR" },
             { Local.German,  "de-DE" },
             { Local.Italian, "it-IT" },
+            { Local.Japanese, "ja-JP" },
             { Local.Polish,  "pl-PL" },
             { Local.Russian, "ru-RU" },
             { Local.Spanish, "es-ES" },
-            { Local.Japanese, "ja-JP" }
+            { Local.Turkish, "tr-TR" }
         };
 
         /// <summary>
@@ -67,10 +84,11 @@ namespace FilterDataGrid
                         { Local.French,  "(Sélectionner tout)" },
                         { Local.German,  "(Alle auswählen)" },
                         { Local.Italian, "(Seleziona tutto)" },
+                        { Local.Japanese, "(すべて選択)" },
                         { Local.Polish, "(Zaznacz wszystkie)" },
                         { Local.Russian, "(Выбрать все)" },
                         { Local.Spanish, "(Seleccionar todos)" },
-                        { Local.Japanese, "(すべて選択)" }
+                        { Local.Turkish, "(Hepsini seç)" },
                     }
                 },
                 {
@@ -83,10 +101,11 @@ namespace FilterDataGrid
                         { Local.French,  "(Vides)" },
                         { Local.German,  "(Leer)" },
                         { Local.Italian, "(Vuoto)" },
+                        { Local.Japanese, "(空白)" },
                         { Local.Polish, "(Pusty)" },
                         { Local.Russian, "(Заготовки)" },
                         { Local.Spanish, "(Vacio)"},
-                        { Local.Japanese, "(空白)" }
+                        { Local.Turkish, "(Boş)" }
                     }
                 },
                 {
@@ -99,10 +118,11 @@ namespace FilterDataGrid
                         { Local.French,  "Effacer le filtre \"{0}\"" },
                         { Local.German,  "Filter löschen \"{0}\"" },
                         { Local.Italian, "Cancella filtro \"{0}\"" },
+                        { Local.Japanese, "\"{0}\" からフィルターをクリア" },
                         { Local.Polish, "Wyczyść filtr \"{0}\"" },
                         { Local.Russian, "Очистить фильтр \"{0}\"" },
                         { Local.Spanish, "Limpiar filtros \"{0}\"" },
-                        { Local.Japanese, "\"{0}\" からフィルターをクリア" }
+                        { Local.Turkish, "\"{0}\" filtresini temizle" }
                     }
                 },
 
@@ -116,10 +136,11 @@ namespace FilterDataGrid
                         { Local.French,  "Rechercher (contient)" },
                         { Local.German,  "Suche (enthält)" },
                         { Local.Italian, "Cerca (contiene)" },
+                        { Local.Japanese, "検索 (含む)" },
                         { Local.Polish, "Szukaj (zawiera)" },
                         { Local.Russian, "Искать (содержит)" },
                         { Local.Spanish, "Buscar (contiene)" },
-                        { Local.Japanese, "検索 (含む)" }
+                        { Local.Turkish, "Ara (içerir)" },
                     }
                 },
 
@@ -133,10 +154,11 @@ namespace FilterDataGrid
                         { Local.French,  "Rechercher (commence par)" },
                         { Local.German,  "Suche (beginnen mit)" },
                         { Local.Italian, "Cerca (inizia con)" },
+                        { Local.Japanese, "検索 (で始まる)" },
                         { Local.Polish, "Szukaj (zaczyna się od)" },
                         { Local.Russian, "Искать (hачни с)" },
                         { Local.Spanish, "Buscar (comienza con)" },
-                        { Local.Japanese, "検索 (で始まる)" }
+                        { Local.Turkish, "Ara (ile başlar)" },
                     }
                 },
 
@@ -150,10 +172,11 @@ namespace FilterDataGrid
                         { Local.French,  "Basculer contient/commence par" },
                         { Local.German,  "Toggle enthält/beginnt mit" },
                         { Local.Italian, "Toggle contiene/inizia con" },
+                        { Local.Japanese, "含む/で始まるの切り替え" },
                         { Local.Polish,  "Przełącz zawiera/zaczyna się od" },
                         { Local.Russian, "Переключить содержит/начинается с" },
                         { Local.Spanish, "Toggle contiene/comienza con" },
-                        { Local.Japanese, "含む/で始まるの切り替え" }
+                        { Local.Turkish, "İçerir/ile başlar arasında geçiş yap" },
                     }
                 },
 
@@ -167,10 +190,11 @@ namespace FilterDataGrid
                         { Local.French,  "Ok" },
                         { Local.German,  "Ok" },
                         { Local.Italian, "Ok" },
+                        { Local.Japanese, "确定" },
                         { Local.Polish,  "Ok" },
                         { Local.Russian, "Ok" },
                         { Local.Spanish, "Aceptar" },
-                        { Local.Japanese, "确定" }
+                        { Local.Turkish, "Tamam" }
                     }
                 },
                 {
@@ -183,10 +207,11 @@ namespace FilterDataGrid
                         { Local.French,  "Annuler" },
                         { Local.German,  "Abbrechen" },
                         { Local.Italian, "Annulla" },
+                        { Local.Japanese, "取り消し" },
                         { Local.Polish,  "Anuluj" },
                         { Local.Russian, "Отмена" },
                         { Local.Spanish, "Cancelar" },
-                        { Local.Japanese, "取り消し" }
+                        { Local.Turkish, "İptal" }
                     }
                 },
                 {
@@ -199,10 +224,11 @@ namespace FilterDataGrid
                         { Local.French,  "{0:n0} enregistrement(s) trouvé(s) sur {1:n0}" },
                         { Local.German,  "{0:n0} zeilen angezeigt von {1:n0}" },
                         { Local.Italian, "{0:n0} oggetti trovati su {1:n0}" },
+                        { Local.Japanese, "{1:n0} レコード中 {0:n0}個が見つかりました " },
                         { Local.Polish,  "{0:n0} rekord(y) znaleziony(e) w {1:n0}" },
                         { Local.Russian, "{0:n0} записей найдено на {1:n0}" },
                         { Local.Spanish, "{0:n0} registro(s) encontrado(s) de {1:n0}"},
-                        { Local.Japanese, "{1:n0} レコード中 {0:n0}個が見つかりました " }
+                        { Local.Turkish, "{1:n0} kayıt içerisinden {0:n0} kayıt bulundu" }
                     }
                 },
                 {
@@ -215,10 +241,11 @@ namespace FilterDataGrid
                         { Local.French,  "Temps écoulé {0:mm}:{0:ss}.{0:ff}" },
                         { Local.German,  "Verstrichene Zeit {0:mm}:{0:ss}.{0:ff}" },
                         { Local.Italian, "Tempo trascorso {0:mm}:{0:ss}.{0:ff}" },
+                        { Local.Japanese, "経過時間{0:mm}:{0:ss}.{0:ff}" },
                         { Local.Polish,  "Zajęło {0:mm}:{0:ss}.{0:ff}" },
                         { Local.Russian, "Пройденное время {0:mm}:{0:ss}.{0:ff}" },
                         { Local.Spanish, "Tiempo transurrido {0:mm}:{0:ss}.{0:ff}"},
-                        { Local.Japanese, "経過時間{0:mm}:{0:ss}.{0:ff}" }
+                        { Local.Turkish, "Geçen süre {0:dd}:{0:ss}.{0:ff}" },
                     }
                 },
                 {
@@ -231,10 +258,11 @@ namespace FilterDataGrid
                         { Local.French,  "Coché" },
                         { Local.German,  "Ausgewählt" },
                         { Local.Italian, "Controllato" },
+                        { Local.Japanese, "選択済み" },
                         { Local.Polish,  "Zaznaczone" },
                         { Local.Russian, "Проверено" },
                         { Local.Spanish, "Comprobado" },
-                        { Local.Japanese, "選択済み" },
+                        { Local.Turkish, "Seçili" },
                     }
                 },
                 {
@@ -247,10 +275,11 @@ namespace FilterDataGrid
                         { Local.French,  "Décoché" },
                         { Local.German,  "Nicht ausgewählt" },
                         { Local.Italian, "Deselezionato" },
+                        { Local.Japanese, "未選択" },
                         { Local.Polish,  "Niezaznaczone" },
                         { Local.Russian, "непроверено" },
                         { Local.Spanish, "Sin marcar" },
-                        { Local.Japanese, "未選択" }
+                        { Local.Turkish, "Seçili değil" },
                     }
                 },
                 {
@@ -263,10 +292,11 @@ namespace FilterDataGrid
                         { Local.French,  "Supprimer tous les filtres" },
                         { Local.German,  "Alle Filter entfernen" },
                         { Local.Italian, "Rimuovi tutti i filtri" },
+                        { Local.Japanese, "すべてのフィルターをクリア" },
                         { Local.Polish,  "Usuń wszystkie filtry" },
                         { Local.Russian, "Удалить все фильтры" },
                         { Local.Spanish, "Eliminar todos los filtros" },
-                        { Local.Japanese, "すべてのフィルターをクリア" },
+                        { Local.Turkish, "Tüm filtreleri kaldır" },
                     }
                 }
             };

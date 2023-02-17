@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sharedModelView="clr-namespace:SharedModelView"
-    Title="Demo NetFramework 4.7.2 App"
+    Title="Demo NetFramework 4.8.0 App"
     Width="1024"
     Height="900"
     WindowStartupLocation="CenterScreen"

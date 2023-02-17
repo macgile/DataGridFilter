@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472-windows;netcoreapp3.1;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48-windows;netcoreapp3.1;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
     <OutputType>Library</OutputType>
     <UseWPF>true</UseWPF>
     <RootNamespace>FilterDataGrid</RootNamespace>
@@ -11,7 +11,7 @@
 
   <PropertyGroup>
     <!-- ReSharper disable UnknownProperty -->
-    <Product Condition=" '$(TargetFramework)' == 'net472-windows'">FilterDataGrid Net472-windows</Product>
+    <Product Condition=" '$(TargetFramework)' == 'net48-windows'">FilterDataGrid Net48-windows</Product>
     <Product Condition=" '$(TargetFramework)' == 'netcoreapp3.1'">FilterDataGrid NetCoreApp3.1</Product>
     <Product Condition=" '$(TargetFramework)' == 'net5.0-windows'">FilterDataGrid Net5.0-windows</Product>
     <Product Condition=" '$(TargetFramework)' == 'net6.0-windows'">FilterDataGrid Net6.0-windows</Product>
