@@ -202,6 +202,10 @@ namespace FilterDataGrid
         public string Status => Translate(TranslatableElements.Status);
         public string Toggle => Translate(TranslatableElements.Toggle);
 
+        #endregion Public Properties
+
+        #region Private Properties
+
         private static ILanguageDictionary Dutch { get; } = new LanguageDictionary("Dutch", new CultureInfo("nl-NL"),
             new Dictionary<TranslatableElements, string>
             {
@@ -442,7 +446,7 @@ namespace FilterDataGrid
 
         private ILanguageDictionary SelectedLanguage { get; set; }
 
-        #endregion Public Properties
+        #endregion Private Properties
     }
 
     // Contributor : dankovics.jozsef
