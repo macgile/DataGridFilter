@@ -145,18 +145,17 @@ namespace FilterDataGrid
         #region Public Constructors
 
         public Loc() {
-            Language = Local.English;
+            language = Local.English;
+            SelectedLanguage = English;
         }
 
         #endregion Public Constructors
 
         #region Public Properties
 
-        public CultureInfo Culture { get; set; }
-
-        public string DisplayName { get; set; }
-
-        public string EnglishName { get; set; }
+        public CultureInfo Culture => SelectedLanguage.Culture;
+        public string DisplayName => SelectedLanguage.Culture.DisplayName;
+        public string EnglishName => SelectedLanguage.Language;
 
         public Local Language {
             get => language;
@@ -169,11 +168,7 @@ namespace FilterDataGrid
                         BindingFlags.Static | BindingFlags.NonPublic);
 
                 if (propertyInfo == null) return;
-
                 SelectedLanguage = (ILanguageDictionary)propertyInfo.GetValue(null);
-                Culture = SelectedLanguage.Culture;
-                DisplayName = Culture.DisplayName;
-                EnglishName = SelectedLanguage.Language;
             }
         }
 
