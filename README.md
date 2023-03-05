@@ -14,7 +14,7 @@
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
 for each column like Excel, in automatic or custom generation.  
 
-Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Italian, Japanese, Polish, Russian, Spanish, Turkish.**
+Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Hungarian, Italian, Japanese, Polish, Russian, Spanish, Turkish.**
 
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
@@ -131,6 +131,7 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 <a href="https://github.com/ottosson" target="_blank">
   <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/3355320?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d" />
 </a>
+
 
 <!-- Made with [contributors-img](https://contrib.rocks). -->
 <a href="https://github.com/macgile/DataGridFilter/graphs/contributors">

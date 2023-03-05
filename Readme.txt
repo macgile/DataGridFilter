@@ -22,7 +22,7 @@ General use:
             ExcludeFields      : comma separated fields to exclude from filter, only works in AutoGenerateColumns mode
             DateFormatString   : Date display format, default : "d"
             FilterLanguage     : Translation into available language, default : English
-                                 Languages available : Chinese(traditional and simplified), Dutch, English, French, German, Italian, Japanese, Polish, Russian, Spanish, Turkish.
+                                 Languages available : Chinese(traditional and simplified), Dutch, English, French, German, Hungarian, Italian, Japanese, Polish, Russian, Spanish, Turkish.
                                   
 
           * If you add custom columns, you must set the property AutoGenerateColumns to "False"

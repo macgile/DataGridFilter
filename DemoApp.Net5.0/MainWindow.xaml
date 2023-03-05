@@ -75,7 +75,7 @@
                 FontWeight="DemiBold" />
             <Label
                 HorizontalAlignment="Right"
-                Content="{Binding ElementName=FilterDataGrid, Path=Translate.LanguageName}"
+                Content="{Binding ElementName=FilterDataGrid, Path=Translate.DisplayName}"
                 ContentStringFormat="Filter Language : {0}" />
         </UniformGrid>
 
@@ -151,7 +151,7 @@
                 FontWeight="DemiBold" />
             <Label
                 HorizontalAlignment="Right"
-                Content="{Binding ElementName=FilterDataGridAuto, Path=Translate.LanguageName}"
+                Content="{Binding ElementName=FilterDataGridAuto, Path=Translate.DisplayName}"
                 ContentStringFormat="Filter Language : {0}" />
         </UniformGrid>
 
@@ -160,7 +160,7 @@
             Grid.Row="4"
             AutoGenerateColumns="True"
             ExcludeFields="lastname, age"
-            FilterLanguage="Japanese"
+            FilterLanguage="Hungarian"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource FilterDatagridStyle}" />
     </Grid>
