@@ -720,11 +720,15 @@
                                             IsChecked="{Binding IsChecked}"
                                             IsThreeState="False">
                                             <CheckBox.Content>
-                                                <MultiBinding Converter="{StaticResource StringFormatConverter}" ConverterParameter="Culture">
-                                                    <Binding Path="Translate.Neutral" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
-                                                    <Binding Path="Label" />
-                                                    <Binding Path="Translate.Culture" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
-                                                </MultiBinding>
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding Converter="{StaticResource StringFormatConverter}" ConverterParameter="Culture">
+                                                            <Binding Path="Translate.Neutral" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
+                                                            <Binding Path="Label" />
+                                                            <Binding Path="Translate.Culture" RelativeSource="{RelativeSource AncestorType={x:Type control:FilterDataGrid}}" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                             </CheckBox.Content>
                                         </CheckBox>
                                         <DataTemplate.Triggers>
