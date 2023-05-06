@@ -102,6 +102,15 @@ namespace FilterDataGrid
                 new PropertyMetadata("d"));
 
         /// <summary>
+        ///     Permanent Filter
+        /// </summary>
+        public static readonly DependencyProperty PermanentFilterProperty =
+            DependencyProperty.Register("PermanentFilter",
+                typeof(Dictionary<string, Predicate<object>>),
+                typeof(FilterDataGrid),
+                new PropertyMetadata());
+
+        /// <summary>
         ///     Language displayed
         /// </summary>
         public static readonly DependencyProperty FilterLanguageProperty =
@@ -221,6 +230,15 @@ namespace FilterDataGrid
         {
             get => (string)GetValue(DateFormatStringProperty);
             set => SetValue(DateFormatStringProperty, value);
+        }
+
+        /// <summary>
+        ///     Date format displayed
+        /// </summary>
+        public Dictionary<string, Predicate<object>> PermanentFilters
+        {
+            get => (Dictionary<string, Predicate<object>>)GetValue(PermanentFilterProperty);
+            set => SetValue(PermanentFilterProperty, value);
         }
 
         /// <summary>
