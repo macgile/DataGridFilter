@@ -757,7 +757,7 @@
                                 Background="Transparent"
                                 BorderBrush="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor, AncestorLevel=1}, Path=BorderBrush}"
                                 BorderThickness="1"
-                                ItemsSource="{Binding TreeviewItems, UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding TreeViewItems, UpdateSourceTrigger=PropertyChanged}"
                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 TabIndex="2">
@@ -791,7 +791,7 @@
                                     <Style TargetType="TreeView">
                                         <Setter Property="Visibility" Value="Visible" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding TreeviewItems.Count, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                                            <DataTrigger Binding="{Binding TreeViewItems.Count, UpdateSourceTrigger=PropertyChanged}" Value="0">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
