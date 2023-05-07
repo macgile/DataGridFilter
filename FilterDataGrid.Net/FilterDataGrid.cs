@@ -986,7 +986,7 @@ namespace FilterDataGrid
                     // ReSharper disable MergeIntoPattern
 
                     // .NET Framework all C# 7.3
-                    // 'recursive patterns' is not available on .NET Framework 4.8. Only in version 8.0 or greater.
+                    // 'recursive patterns' is not available on .NET Framework 4.8. Only in version C# 8.0 or greater.
 
                     switch (col)
                     {

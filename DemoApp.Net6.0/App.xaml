@@ -18,6 +18,7 @@
             <Setter Property="BorderBrush" Value="LightSlateGray" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="CanUserAddRows" Value="False" />
         </Style>
     </Application.Resources>
 </Application>
