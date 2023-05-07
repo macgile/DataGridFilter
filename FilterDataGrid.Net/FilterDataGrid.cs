@@ -1002,26 +1002,6 @@ namespace FilterDataGrid
                             fieldName = column.FieldName;
                             break;
 
-
-                        //case col.typeof(DataGridTextColumn):
-                        //    fieldName = ((DataGridTextColumn)col).FieldName;
-
-                        //    break;
-
-
-
-                        //case DataGridTextColumn ctxt when ctxt.IsColumnFiltered:
-                        //    fieldName = ctxt.FieldName;
-                        //    break;
-
-                        //case DataGridTemplateColumn ctpl when ctpl.IsColumnFiltered:
-                        //    fieldName = ctpl.FieldName;
-                        //    break;
-
-                        //case DataGridCheckBoxColumn chk when chk.IsColumnFiltered:
-                        //    fieldName = chk.FieldName;
-                        //    break;
-
                         case null:
                             continue;
                     }
