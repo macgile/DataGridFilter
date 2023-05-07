@@ -44,12 +44,12 @@ namespace FilterDataGrid
             Debug.WriteLineIf(DebugMode, "Constructor");
 
             // load resources
-            var resourcesDico = new ResourceDictionary
+            var resourceDictionary = new ResourceDictionary
             {
                 Source = new Uri("/FilterDataGrid;component/Themes/FilterDataGrid.xaml", UriKind.Relative)
             };
 
-            Resources.MergedDictionaries.Add(resourcesDico);
+            Resources.MergedDictionaries.Add(resourceDictionary);
 
             // initial popup size
             popUpSize = new Point
@@ -120,7 +120,7 @@ namespace FilterDataGrid
                 new PropertyMetadata(false));
 
         /// <summary>
-        ///     Show statusbar
+        ///     Show status bar
         /// </summary>
         public static readonly DependencyProperty ShowStatusBarProperty =
             DependencyProperty.Register("ShowStatusBar",
@@ -164,7 +164,7 @@ namespace FilterDataGrid
         private Grid sizableContentGrid;
 
         private List<string> excludedFields;
-        private List<FilterItemDate> treeview;
+        private List<FilterItemDate> treeView;
         private List<FilterItem> listBoxItems;
 
         private Point popUpSize;
@@ -176,7 +176,7 @@ namespace FilterDataGrid
         private TextBox searchTextBox;
         private Thumb thumb;
 
-        private TimeSpan elased;
+        private TimeSpan elapsed;
 
         private Type collectionType;
         private Type fieldType;
@@ -190,7 +190,7 @@ namespace FilterDataGrid
         #region Public Properties
 
         /// <summary>
-        ///     Excluded Fileds
+        ///     Excluded Fields
         /// </summary>
         public string ExcludeFields
         {
@@ -228,10 +228,10 @@ namespace FilterDataGrid
         /// </summary>
         public TimeSpan ElapsedTime
         {
-            get => elased;
+            get => elapsed;
             set
             {
-                elased = value;
+                elapsed = value;
                 OnPropertyChanged();
             }
         }
@@ -283,15 +283,15 @@ namespace FilterDataGrid
         public Loc Translate { get; private set; }
 
         /// <summary>
-        /// Treeview ItemsSource
+        /// Tree View ItemsSource
         /// </summary>
-        public List<FilterItemDate> TreeviewItems
+        public List<FilterItemDate> TreeViewItems
         {
-            get => treeview ?? new List<FilterItemDate>();
+            get => treeView ?? new List<FilterItemDate>();
             set
             {
-                treeview = value;
-                OnPropertyChanged(nameof(TreeviewItems));
+                treeView = value;
+                OnPropertyChanged(nameof(TreeViewItems));
             }
         }
 
@@ -424,7 +424,7 @@ namespace FilterDataGrid
         }
 
         /// <summary>
-        ///     The source of the Datagrid items has been changed (refresh or on loading)
+        ///     The source of the Data grid items has been changed (refresh or on loading)
         /// </summary>
         /// <param name="oldValue"></param>
         /// <param name="newValue"></param>
@@ -552,7 +552,7 @@ namespace FilterDataGrid
                 // INFO:
                 // Initialize   : does not call the SetIsChecked method
                 // IsChecked    : call the SetIsChecked method
-                // (see the FilterItem class for more informations)
+                // (see the FilterItem class for more information)
 
                 var dateTimes = dates.ToList();
 
@@ -904,7 +904,7 @@ namespace FilterDataGrid
             var yAdjust = sizableContentGrid.Height + e.VerticalChange;
             var xAdjust = sizableContentGrid.Width + e.HorizontalChange;
 
-            //make sure not to resize to negative width or heigth
+            //make sure not to resize to negative width or height
             xAdjust = sizableContentGrid.ActualWidth + xAdjust > minWidth ? xAdjust : minWidth;
             yAdjust = sizableContentGrid.ActualHeight + yAdjust > minHeight ? yAdjust : minHeight;
 
@@ -961,7 +961,7 @@ namespace FilterDataGrid
             Cursor = cursor;
 
             ListBoxItems = new List<FilterItem>();
-            TreeviewItems = new List<FilterItemDate>();
+            TreeViewItems = new List<FilterItemDate>();
 
             searchText = string.Empty;
             search = false;
@@ -984,16 +984,16 @@ namespace FilterDataGrid
                 {
                     switch (col)
                     {
-                        case DataGridTextColumn ctxt when ctxt.IsColumnFiltered:
-                            fieldName = ctxt.FieldName;
+                        case DataGridTextColumn {IsColumnFiltered: true} dataGridTextColumn:
+                            fieldName = dataGridTextColumn.FieldName;
                             break;
 
-                        case DataGridTemplateColumn ctpl when ctpl.IsColumnFiltered:
-                            fieldName = ctpl.FieldName;
+                        case DataGridTemplateColumn {IsColumnFiltered: true} dataGridTemplateColumn:
+                            fieldName = dataGridTemplateColumn.FieldName;
                             break;
 
-                        case DataGridCheckBoxColumn chk when chk.IsColumnFiltered:
-                            fieldName = chk.FieldName;
+                        case DataGridCheckBoxColumn {IsColumnFiltered: true} dataGridCheckBoxColumn:
+                            fieldName = dataGridCheckBoxColumn.FieldName;
                             break;
 
                         case null:
@@ -1106,13 +1106,13 @@ namespace FilterDataGrid
             // apply filter
             ItemCollectionView.Refresh();
 
-            if (CurrentFilter.FieldType != typeof(DateTime) || treeview == null) return;
+            if (CurrentFilter.FieldType != typeof(DateTime) || treeView == null) return;
 
-            // rebuild treeview rebuild treeview
+            // rebuild treeView rebuild treeView
             if (string.IsNullOrEmpty(searchText))
             {
                 // fill the tree with the elements of the list of the original items
-                TreeviewItems = BuildTree(SourcePopupViewItems);
+                TreeViewItems = BuildTree(SourcePopupViewItems);
             }
             else
             {
@@ -1120,7 +1120,7 @@ namespace FilterDataGrid
                 var items = PopupViewItems.Where(i => i.IsChecked).ToList();
 
                 // if at least one item is not null, fill in the tree structure otherwise the tree structure contains only the item (select all).
-                TreeviewItems = BuildTree(items.Any() ? items : null);
+                TreeViewItems = BuildTree(items.Any() ? items : null);
             }
         }
 
@@ -1169,7 +1169,7 @@ namespace FilterDataGrid
                 // popup handle event
                 popup.Closed += PopupClosed;
 
-                // disable popup background clickthrough, contribution : WORDIBOI
+                // disable popup background click-through, contribution : WORDIBOI
                 popup.MouseDown += onMousedown;
 
                 // resizable grid
@@ -1334,7 +1334,7 @@ namespace FilterDataGrid
 
                 // ItemsSource (ListBow/TreeView)
                 if (fieldType == typeof(DateTime))
-                    TreeviewItems = BuildTree(filterItemList);
+                    TreeViewItems = BuildTree(filterItemList);
                 else
                     ListBoxItems = filterItemList;
 
