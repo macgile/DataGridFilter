@@ -982,19 +982,45 @@ namespace FilterDataGrid
             {
                 foreach (var col in Columns)
                 {
+
+                    // ReSharper disable MergeIntoPattern
+
+                    // .NET Framework all C# 7.3
+                    // 'recursive patterns' is not available on .NET Framework 4.8. Only in version 8.0 or greater.
+
                     switch (col)
                     {
-                        case DataGridTextColumn {IsColumnFiltered: true} dataGridTextColumn:
-                            fieldName = dataGridTextColumn.FieldName;
+                        case DataGridTextColumn column :
+                            fieldName = column.FieldName;
+                        break;
+
+                        case DataGridTemplateColumn column :
+                            fieldName = column.FieldName;
                             break;
 
-                        case DataGridTemplateColumn {IsColumnFiltered: true} dataGridTemplateColumn:
-                            fieldName = dataGridTemplateColumn.FieldName;
+                        case DataGridCheckBoxColumn column :
+                            fieldName = column.FieldName;
                             break;
 
-                        case DataGridCheckBoxColumn {IsColumnFiltered: true} dataGridCheckBoxColumn:
-                            fieldName = dataGridCheckBoxColumn.FieldName;
-                            break;
+
+                        //case col.typeof(DataGridTextColumn):
+                        //    fieldName = ((DataGridTextColumn)col).FieldName;
+
+                        //    break;
+
+
+
+                        //case DataGridTextColumn ctxt when ctxt.IsColumnFiltered:
+                        //    fieldName = ctxt.FieldName;
+                        //    break;
+
+                        //case DataGridTemplateColumn ctpl when ctpl.IsColumnFiltered:
+                        //    fieldName = ctpl.FieldName;
+                        //    break;
+
+                        //case DataGridCheckBoxColumn chk when chk.IsColumnFiltered:
+                        //    fieldName = chk.FieldName;
+                        //    break;
 
                         case null:
                             continue;
