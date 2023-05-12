@@ -12,6 +12,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -136,6 +137,15 @@ namespace FilterDataGrid
                 typeof(bool),
                 typeof(FilterDataGrid),
                 new PropertyMetadata(false));
+
+        /// <summary>
+        ///     Get or set a filter preset
+        /// </summary>
+        public static readonly DependencyProperty FilterPresetProperty =
+            DependencyProperty.Register("FilterPreset",
+                typeof(ObservableCollection<FilterCommon>),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(new ObservableCollection<FilterCommon>(), FilterPresetChanged));
 
         #endregion Public DependencyProperty
 
@@ -318,6 +328,12 @@ namespace FilterDataGrid
             }
         }
 
+        public string FilterPreset
+        {
+            get => (string)GetValue(FilterPresetProperty);
+            set => SetValue(FilterPresetProperty, value);
+        }
+
         #endregion Public Properties
 
         #region Private Properties
@@ -342,6 +358,11 @@ namespace FilterDataGrid
         #endregion Private Properties
 
         #region Protected Methods
+        protected static void FilterPresetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+
 
         // CALL ORDER :
         // Constructor
