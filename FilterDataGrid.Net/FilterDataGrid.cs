@@ -328,9 +328,9 @@ namespace FilterDataGrid
             }
         }
 
-        public string FilterPreset
+        public ObservableCollection<FilterCommon> FilterPreset
         {
-            get => (string)GetValue(FilterPresetProperty);
+            get => new ObservableCollection<FilterCommon>(GlobalFilterList);
             set => SetValue(FilterPresetProperty, value);
         }
 
@@ -341,7 +341,7 @@ namespace FilterDataGrid
         private FilterCommon CurrentFilter { get; set; }
         private ICollectionView CollectionViewSource { get; set; }
         private ICollectionView ItemCollectionView { get; set; }
-        private List<FilterCommon> GlobalFilterList { get; } = new List<FilterCommon>();
+        private List<FilterCommon> GlobalFilterList { get; set; } = new List<FilterCommon>();
 
         /// <summary>
         /// Popup filtered items (ListBox/TreeView)
@@ -360,7 +360,17 @@ namespace FilterDataGrid
         #region Protected Methods
         protected static void FilterPresetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-
+            var filterDataGrid = (FilterDataGrid)d;
+            
+            //remove all existing filters
+            filterDataGrid.RemoveAllFilterCommand(null, null); 
+            
+            //loop through the filters in the preset and apply them
+            foreach (FilterCommon filter in (ObservableCollection<FilterCommon>)e.NewValue) 
+            {
+                filterDataGrid.CurrentFilter = filter;
+                filterDataGrid.ApplyFilterCommand(null, null);
+            }
         }
 
 
