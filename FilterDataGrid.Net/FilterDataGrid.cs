@@ -61,6 +61,7 @@ namespace FilterDataGrid
 
             CommandBindings.Add(new CommandBinding(ShowFilter, ShowFilterCommand, CanShowFilter));
             CommandBindings.Add(new CommandBinding(ApplyFilter, ApplyFilterCommand, CanApplyFilter)); // Ok
+            CommandBindings.Add(new CommandBinding(ApplyAllFilter, ApplyAllFilterCommand, CanApplyAllFilterCommand));
             CommandBindings.Add(new CommandBinding(CancelFilter, CancelFilterCommand));
             CommandBindings.Add(new CommandBinding(RemoveFilter, RemoveFilterCommand, CanRemoveFilter));
             CommandBindings.Add(new CommandBinding(IsChecked, CheckedAllCommand));
@@ -73,6 +74,7 @@ namespace FilterDataGrid
         #region Command
 
         public static readonly ICommand ApplyFilter = new RoutedCommand();
+        public static readonly ICommand ApplyAllFilter = new RoutedCommand();
         public static readonly ICommand CancelFilter = new RoutedCommand();
         public static readonly ICommand ClearSearchBox = new RoutedCommand();
         public static readonly ICommand IsChecked = new RoutedCommand();
@@ -145,7 +147,7 @@ namespace FilterDataGrid
             DependencyProperty.Register("FilterPreset",
                 typeof(ObservableCollection<FilterCommon>),
                 typeof(FilterDataGrid),
-                new PropertyMetadata(new ObservableCollection<FilterCommon>(), FilterPresetChanged));
+                new PropertyMetadata(new ObservableCollection<FilterCommon>()));
 
         #endregion Public DependencyProperty
 
@@ -163,7 +165,6 @@ namespace FilterDataGrid
         private DataGridColumnHeadersPresenter columnHeadersPresenter;
         private bool pending;
         private bool search;
-        private Button button;
         private const bool DebugMode = false;
         private Cursor cursor;
         private int searchLength;
@@ -331,7 +332,10 @@ namespace FilterDataGrid
         public ObservableCollection<FilterCommon> FilterPreset
         {
             get => new ObservableCollection<FilterCommon>(GlobalFilterList);
-            set => SetValue(FilterPresetProperty, value);
+            set {
+                SetValue(FilterPresetProperty, value);
+                OnFilterPresetChanged(value);
+            }
         }
 
         #endregion Public Properties
@@ -358,19 +362,12 @@ namespace FilterDataGrid
         #endregion Private Properties
 
         #region Protected Methods
-        protected static void FilterPresetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        protected void OnFilterPresetChanged(ObservableCollection<FilterCommon> filterPreset)
         {
-            var filterDataGrid = (FilterDataGrid)d;
-            
-            //remove all existing filters
-            filterDataGrid.RemoveAllFilterCommand(null, null); 
-            
-            //loop through the filters in the preset and apply them
-            foreach (FilterCommon filter in (ObservableCollection<FilterCommon>)e.NewValue) 
-            {
-                filterDataGrid.CurrentFilter = filter;
-                filterDataGrid.ApplyFilterCommand(null, null);
-            }
+            //remove all existing filters and clean up the cache
+            RemoveAllFilterCommand(null, null);
+            GlobalFilterList = filterPreset.ToList();
+            ApplyAllFilterCommand(null, null);
         }
 
 
@@ -712,9 +709,9 @@ namespace FilterDataGrid
                     if (col.HeaderTemplate != null)
                     {
                         // reset filter Button
-                        var buttonFilter = VisualTreeHelpers.GetHeader(col, this)
+                        var button = VisualTreeHelpers.GetHeader(col, this)
                             ?.FindVisualChild<Button>("FilterButton");
-                        if (buttonFilter != null) FilterState.SetIsFiltered(buttonFilter, false);
+                        if (button != null) FilterState.SetIsFiltered(button, false);
                     }
                     else
                     {
@@ -1002,6 +999,21 @@ namespace FilterDataGrid
                 columnHeadersPresenter.IsEnabled = true;
         }
 
+        private void ApplyAllFilterCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            foreach(FilterCommon filter in GlobalFilterList)
+            {
+                CurrentFilter = filter;
+                ApplyFilterCommand(null, null);
+            }
+        }
+
+        private void CanApplyAllFilterCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+
         /// <summary>
         /// Remove All Filter
         /// </summary>
@@ -1021,15 +1033,15 @@ namespace FilterDataGrid
 
                     switch (col)
                     {
-                        case DataGridTextColumn column :
-                            fieldName = column.FieldName;
-                        break;
-
-                        case DataGridTemplateColumn column :
+                        case DataGridTextColumn column:
                             fieldName = column.FieldName;
                             break;
 
-                        case DataGridCheckBoxColumn column :
+                        case DataGridTemplateColumn column:
+                            fieldName = column.FieldName;
+                            break;
+
+                        case DataGridCheckBoxColumn column:
                             fieldName = column.FieldName;
                             break;
 
@@ -1037,13 +1049,9 @@ namespace FilterDataGrid
                             continue;
                     }
 
-                    button = VisualTreeHelpers.GetHeader(col, this)
-                        ?.FindVisualChild<Button>("FilterButton");
-
-                    if (button == null || string.IsNullOrEmpty(fieldName)) continue;
+                    if (string.IsNullOrEmpty(fieldName)) continue;
 
                     CurrentFilter = GlobalFilterList.FirstOrDefault(c => c.FieldName == fieldName);
-
                     if (CurrentFilter != null) RemoveCurrentFilter();
                 }
             }
@@ -1065,7 +1073,12 @@ namespace FilterDataGrid
 
             popup.IsOpen = false; // raise PopupClosed event
 
-            // button icon reset
+            // set button icon (filtered or not)
+
+            var col = Columns.FirstOrDefault(c => string.Equals(c.Header.ToString().Replace(" ", ""), CurrentFilter.FieldName, StringComparison.InvariantCultureIgnoreCase));
+            if (col == null) return;
+            Button button = VisualTreeHelpers.GetHeader(col, this)
+                ?.FindVisualChild<Button>("FilterButton");
             FilterState.SetIsFiltered(button, false);
 
             ElapsedTime = new TimeSpan(0, 0, 0);
@@ -1181,7 +1194,8 @@ namespace FilterDataGrid
             try
             {
                 // filter button
-                button = (Button)e.OriginalSource;
+                Button button = (Button)e.OriginalSource;
+                FilterState.SetIsFiltered(button, CurrentFilter?.IsFiltered ?? false);
 
                 if (Items.Count == 0 || button == null) return;
 
@@ -1418,7 +1432,7 @@ namespace FilterDataGrid
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void ApplyFilterCommand(object sender, ExecutedRoutedEventArgs e)
+        private void ApplyFilterCommand(object sender, ExecutedRoutedEventArgs e)
         {
             Debug.WriteLineIf(DebugMode, "\r\nApplyFilterCommand");
 
@@ -1430,95 +1444,101 @@ namespace FilterDataGrid
             // set cursor wait
             Mouse.OverrideCursor = Cursors.Wait;
 
-            try
+            lock(CurrentFilter)
             {
-                await Task.Run(() =>
+                try
                 {
-                    var previousFiltered = CurrentFilter.PreviouslyFilteredItems;
-                    bool blankIsUnchecked;
-
-                    if (search)
+                    Task.Run(() =>
                     {
-                        // result of the research
-                        var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
+                        var previousFiltered = CurrentFilter.PreviouslyFilteredItems;
+                        bool blankIsUnchecked;
 
-                        // unchecked : all items except searchResult
-                        var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
-                        uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
+                        if (search)
+                        {
+                            // result of the research
+                            var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
 
-                        previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
+                            // unchecked : all items except searchResult
+                            var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
+                            uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
 
-                        previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
+                            previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
 
-                        blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
-                    }
-                    else
-                    {
-                        // changed popup items
-                        var changedItems = PopupViewItems.Where(c => c.IsChanged).ToList();
+                            previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
 
-                        var checkedItems = changedItems.Where(c => c.IsChecked);
-                        var uncheckedItems = changedItems.Where(c => !c.IsChecked).ToList();
-
-                        // previous item except unchecked items checked again
-                        previousFiltered.ExceptWith(checkedItems.Select(c => c.Content));
-                        previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
-
-                        blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
-                    }
-
-                    // two values, null and string.empty
-                    if (CurrentFilter.FieldType != typeof(DateTime) &&
-                        previousFiltered.Any(c => c == null || c.ToString() == string.Empty))
-                    {
-                        // if (blank) item is unchecked, add string.Empty.
-                        // at this step, the null value is already added previously
-                        if (blankIsUnchecked)
-                            previousFiltered.Add(string.Empty);
-
-                        // if (blank) item is rechecked, remove string.Empty.
+                            blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
+                        }
                         else
-                            previousFiltered.RemoveWhere(item => item?.ToString() == string.Empty);
-                    }
+                        {
+                            // changed popup items
+                            var changedItems = PopupViewItems.Where(c => c.IsChanged).ToList();
 
-                    // add a filter if it is not already added previously
-                    if (!CurrentFilter.IsFiltered) CurrentFilter.AddFilter(criteria);
+                            var checkedItems = changedItems.Where(c => c.IsChecked);
+                            var uncheckedItems = changedItems.Where(c => !c.IsChecked).ToList();
 
-                    // add current filter to GlobalFilterList
-                    if (GlobalFilterList.All(f => f.FieldName != CurrentFilter.FieldName))
-                        GlobalFilterList.Add(CurrentFilter);
+                            // previous item except unchecked items checked again
+                            previousFiltered.ExceptWith(checkedItems.Select(c => c.Content));
+                            previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
 
-                    // set the current field name as the last filter name
-                    lastFilter = CurrentFilter.FieldName;
-                });
+                            blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
+                        }
 
-                // apply filter
-                CollectionViewSource.Refresh();
+                        // two values, null and string.empty
+                        if (CurrentFilter.FieldType != typeof(DateTime) &&
+                            previousFiltered.Any(c => c == null || c.ToString() == string.Empty))
+                        {
+                            // if (blank) item is unchecked, add string.Empty.
+                            // at this step, the null value is already added previously
+                            if (blankIsUnchecked)
+                                previousFiltered.Add(string.Empty);
 
-                // remove the current filter if there is no items to filter
-                if (!CurrentFilter.PreviouslyFilteredItems.Any())
-                    RemoveCurrentFilter();
+                            // if (blank) item is rechecked, remove string.Empty.
+                            else
+                                previousFiltered.RemoveWhere(item => item?.ToString() == string.Empty);
+                        }
 
-                // set button icon (filtered or not)
-                FilterState.SetIsFiltered(button, CurrentFilter?.IsFiltered ?? false);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"FilterDataGrid.ApplyFilterCommand error : {ex.Message}");
-                throw;
-            }
-            finally
-            {
-                //ReactivateSorting();
-                ResetCursor();
-                ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
-                pending = false;
-                CurrentFilter = null;
+                        // add a filter if it is not already added previously
+                        if (!CurrentFilter.IsFiltered) CurrentFilter.AddFilter(criteria);
 
-                stopWatchFilter.Stop();
-                ElapsedTime = stopWatchFilter.Elapsed;
+                        // add current filter to GlobalFilterList
+                        if (GlobalFilterList.All(f => f.FieldName != CurrentFilter.FieldName))
+                            GlobalFilterList.Add(CurrentFilter);
 
-                Debug.WriteLineIf(DebugMode, $"FilterDataGrid.ApplyFilterCommand Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
+                        // set the current field name as the last filter name
+                        lastFilter = CurrentFilter.FieldName;
+                    }).Wait();
+
+                    // apply filter
+                    CollectionViewSource.Refresh();
+
+                    // remove the current filter if there is no items to filter
+                    if (!CurrentFilter.PreviouslyFilteredItems.Any())
+                        RemoveCurrentFilter();
+
+                    var col = Columns.FirstOrDefault(c => String.Equals(c.Header.ToString().Replace(" ", ""), CurrentFilter.FieldName, StringComparison.InvariantCultureIgnoreCase));
+                    if (col == null) return;
+                    Button button = VisualTreeHelpers.GetHeader(col, this)
+                        ?.FindVisualChild<Button>("FilterButton");
+                    FilterState.SetIsFiltered(button, CurrentFilter?.IsFiltered ?? false);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"FilterDataGrid.ApplyFilterCommand error : {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    //ReactivateSorting();
+                    ResetCursor();
+                    ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
+                    pending = false;
+                    CurrentFilter = null;
+
+                    stopWatchFilter.Stop();
+                    ElapsedTime = stopWatchFilter.Elapsed;
+
+                    Debug.WriteLineIf(DebugMode, $"FilterDataGrid.ApplyFilterCommand Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
+                }
             }
         }
 
