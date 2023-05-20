@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -30,6 +31,7 @@ namespace FilterDataGrid
         public FilterCommon()
         {
             PreviouslyFilteredItems = new HashSet<object>(EqualityComparer<object>.Default);
+            Criteria = new HashSet<Predicate<object>>();
         }
 
         #endregion Public Constructors
@@ -52,6 +54,7 @@ namespace FilterDataGrid
         }
 
         public HashSet<object> PreviouslyFilteredItems { get; set; }
+        public HashSet<Predicate<object>> Criteria { get; set; }
 
         public Loc Translate { get; set; }
 
@@ -62,7 +65,7 @@ namespace FilterDataGrid
         /// <summary>
         ///     Add the filter to the predicate dictionary
         /// </summary>
-        public void AddFilter(Dictionary<string, Predicate<object>> criteria)
+        public void AddFilter()
         {
             if (IsFiltered) return;
 
@@ -77,8 +80,7 @@ namespace FilterDataGrid
             }
 
             // add to list of predicates
-            criteria.Add(FieldName, Predicate);
-
+            Criteria.Add(Predicate);
             IsFiltered = true;
         }
 

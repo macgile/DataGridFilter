@@ -194,8 +194,6 @@ namespace FilterDataGrid
 
         private bool startsWith;
 
-        private readonly Dictionary<string, Predicate<object>> criteria = new Dictionary<string, Predicate<object>>();
-
         #endregion Private Fields
 
         #region Public Properties
@@ -331,9 +329,8 @@ namespace FilterDataGrid
 
         public ObservableCollection<FilterCommon> FilterPreset
         {
-            get => new ObservableCollection<FilterCommon>(GlobalFilterList);
+            get  => new ObservableCollection<FilterCommon>(GlobalFilterList);
             set {
-                SetValue(FilterPresetProperty, value);
                 OnFilterPresetChanged(value);
             }
         }
@@ -345,7 +342,8 @@ namespace FilterDataGrid
         private FilterCommon CurrentFilter { get; set; }
         private ICollectionView CollectionViewSource { get; set; }
         private ICollectionView ItemCollectionView { get; set; }
-        private List<FilterCommon> GlobalFilterList { get; set; } = new List<FilterCommon>();
+
+        private List<FilterCommon> GlobalFilterList = new List<FilterCommon>();
 
         /// <summary>
         /// Popup filtered items (ListBox/TreeView)
@@ -474,8 +472,8 @@ namespace FilterDataGrid
                     // reset GlobalFilterList list
                     GlobalFilterList.Clear();
 
-                    // reset criteria List
-                    criteria.Clear();
+                    // reset criteria List => already done by clearing globalFilterList
+                    //GlobalFilterList.ForEach(filter => filter.Criteria.Clear());
 
                     // free previous resource
                     CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
@@ -711,7 +709,7 @@ namespace FilterDataGrid
                         // reset filter Button
                         var button = VisualTreeHelpers.GetHeader(col, this)
                             ?.FindVisualChild<Button>("FilterButton");
-                        if (button != null) FilterState.SetIsFiltered(button, false);
+                        if (button != null) FilterState.SetIsFiltered(button, CurrentFilter?.IsFiltered ?? false);
                     }
                     else
                     {
@@ -892,8 +890,8 @@ namespace FilterDataGrid
         /// <returns></returns>
         private bool Filter(object o)
         {
-            return criteria.Values
-                .Aggregate(true, (prevValue, predicate) => prevValue && predicate(o));
+            var criteria = GlobalFilterList.SelectMany(f => f.Criteria);
+            return criteria.Aggregate(true, (prevValue, predicate) => prevValue && predicate(o));
         }
 
         /// <summary>
@@ -1001,7 +999,7 @@ namespace FilterDataGrid
 
         private void ApplyAllFilterCommand(object sender, ExecutedRoutedEventArgs e)
         {
-            foreach(FilterCommon filter in GlobalFilterList)
+            foreach (FilterCommon filter in GlobalFilterList)
             {
                 CurrentFilter = filter;
                 ApplyFilterCommand(null, null);
@@ -1086,7 +1084,7 @@ namespace FilterDataGrid
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            if (CurrentFilter.IsFiltered && criteria.Remove(CurrentFilter.FieldName))
+            if (CurrentFilter.IsFiltered)
                 CollectionViewSource.Refresh();
 
             if (GlobalFilterList.Contains(CurrentFilter))
@@ -1195,7 +1193,7 @@ namespace FilterDataGrid
             {
                 // filter button
                 Button button = (Button)e.OriginalSource;
-                FilterState.SetIsFiltered(button, CurrentFilter?.IsFiltered ?? false);
+                FilterState.SetIsFiltered(button, true);
 
                 if (Items.Count == 0 || button == null) return;
 
@@ -1451,54 +1449,57 @@ namespace FilterDataGrid
                     Task.Run(() =>
                     {
                         var previousFiltered = CurrentFilter.PreviouslyFilteredItems;
-                        bool blankIsUnchecked;
+                        bool blankIsUnchecked = false; //preset value to default
+                        
+                        //if(!previousFiltered.Any())
+                        //{
+                            if (search)
+                            {
+                                // result of the research
+                                var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
 
-                        if (search)
-                        {
-                            // result of the research
-                            var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
+                                // unchecked : all items except searchResult
+                                var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
+                                uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
 
-                            // unchecked : all items except searchResult
-                            var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
-                            uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
+                                previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
 
-                            previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
+                                previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
 
-                            previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
-
-                            blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
-                        }
-                        else
-                        {
-                            // changed popup items
-                            var changedItems = PopupViewItems.Where(c => c.IsChanged).ToList();
-
-                            var checkedItems = changedItems.Where(c => c.IsChecked);
-                            var uncheckedItems = changedItems.Where(c => !c.IsChecked).ToList();
-
-                            // previous item except unchecked items checked again
-                            previousFiltered.ExceptWith(checkedItems.Select(c => c.Content));
-                            previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
-
-                            blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
-                        }
-
-                        // two values, null and string.empty
-                        if (CurrentFilter.FieldType != typeof(DateTime) &&
-                            previousFiltered.Any(c => c == null || c.ToString() == string.Empty))
-                        {
-                            // if (blank) item is unchecked, add string.Empty.
-                            // at this step, the null value is already added previously
-                            if (blankIsUnchecked)
-                                previousFiltered.Add(string.Empty);
-
-                            // if (blank) item is rechecked, remove string.Empty.
+                                blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
+                            }
                             else
-                                previousFiltered.RemoveWhere(item => item?.ToString() == string.Empty);
-                        }
+                            {
+                                // changed popup items
+                                var changedItems = PopupViewItems.Where(c => c.IsChanged).ToList();
+
+                                var checkedItems = changedItems.Where(c => c.IsChecked);
+                                var uncheckedItems = changedItems.Where(c => !c.IsChecked).ToList();
+
+                                // previous item except unchecked items checked again
+                                previousFiltered.ExceptWith(checkedItems.Select(c => c.Content));
+                                previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
+
+                                blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
+                            }
+
+                            // two values, null and string.empty
+                            if (CurrentFilter.FieldType != typeof(DateTime) &&
+                                previousFiltered.Any(c => c == null || c.ToString() == string.Empty))
+                            {
+                                // if (blank) item is unchecked, add string.Empty.
+                                // at this step, the null value is already added previously
+                                if (blankIsUnchecked)
+                                    previousFiltered.Add(string.Empty);
+
+                                // if (blank) item is rechecked, remove string.Empty.
+                                else
+                                    previousFiltered.RemoveWhere(item => item?.ToString() == string.Empty);
+                            }
+                        //}
 
                         // add a filter if it is not already added previously
-                        if (!CurrentFilter.IsFiltered) CurrentFilter.AddFilter(criteria);
+                        if (!CurrentFilter.IsFiltered) CurrentFilter.AddFilter();
 
                         // add current filter to GlobalFilterList
                         if (GlobalFilterList.All(f => f.FieldName != CurrentFilter.FieldName))
