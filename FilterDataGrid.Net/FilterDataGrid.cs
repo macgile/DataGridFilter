@@ -61,7 +61,6 @@ namespace FilterDataGrid
 
             CommandBindings.Add(new CommandBinding(ShowFilter, ShowFilterCommand, CanShowFilter));
             CommandBindings.Add(new CommandBinding(ApplyFilter, ApplyFilterCommand, CanApplyFilter)); // Ok
-            CommandBindings.Add(new CommandBinding(ApplyAllFilter, ApplyAllFilterCommand, CanApplyAllFilterCommand));
             CommandBindings.Add(new CommandBinding(CancelFilter, CancelFilterCommand));
             CommandBindings.Add(new CommandBinding(RemoveFilter, RemoveFilterCommand, CanRemoveFilter));
             CommandBindings.Add(new CommandBinding(IsChecked, CheckedAllCommand));
@@ -327,9 +326,9 @@ namespace FilterDataGrid
             }
         }
 
-        public ObservableCollection<FilterCommon> FilterPreset
+        public List<FilterCommon> FilterPreset
         {
-            get  => new ObservableCollection<FilterCommon>(GlobalFilterList);
+            get  => GlobalFilterList;
             set {
                 OnFilterPresetChanged(value);
             }
@@ -360,14 +359,6 @@ namespace FilterDataGrid
         #endregion Private Properties
 
         #region Protected Methods
-        protected void OnFilterPresetChanged(ObservableCollection<FilterCommon> filterPreset)
-        {
-            //remove all existing filters and clean up the cache
-            RemoveAllFilterCommand(null, null);
-            GlobalFilterList = filterPreset.ToList();
-            ApplyAllFilterCommand(null, null);
-        }
-
 
         // CALL ORDER :
         // Constructor
@@ -472,9 +463,6 @@ namespace FilterDataGrid
                     // reset GlobalFilterList list
                     GlobalFilterList.Clear();
 
-                    // reset criteria List => already done by clearing globalFilterList
-                    //GlobalFilterList.ForEach(filter => filter.Criteria.Clear());
-
                     // free previous resource
                     CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
 
@@ -554,6 +542,21 @@ namespace FilterDataGrid
         #endregion Protected Methods
 
         #region Private Methods
+
+        //apply the filterpreset that is saved earlier
+        private void OnFilterPresetChanged(List<FilterCommon> filterPreset)
+        {
+            //remove all existing filters and clean up the cache
+            CollectionViewSource = new ;
+            RemoveAllFilterCommand(null, null);
+            GlobalFilterList = filterPreset;
+
+            foreach (FilterCommon filter in GlobalFilterList)
+            {
+                CurrentFilter = filter;
+                ApplyFilterCommand(null, null);
+            }
+        }
 
         /// <summary>
         ///     Build the item tree
@@ -997,20 +1000,6 @@ namespace FilterDataGrid
                 columnHeadersPresenter.IsEnabled = true;
         }
 
-        private void ApplyAllFilterCommand(object sender, ExecutedRoutedEventArgs e)
-        {
-            foreach (FilterCommon filter in GlobalFilterList)
-            {
-                CurrentFilter = filter;
-                ApplyFilterCommand(null, null);
-            }
-        }
-
-        private void CanApplyAllFilterCommand(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
 
         /// <summary>
         /// Remove All Filter
@@ -1072,8 +1061,10 @@ namespace FilterDataGrid
             popup.IsOpen = false; // raise PopupClosed event
 
             // set button icon (filtered or not)
-
-            var col = Columns.FirstOrDefault(c => string.Equals(c.Header.ToString().Replace(" ", ""), CurrentFilter.FieldName, StringComparison.InvariantCultureIgnoreCase));
+            var col = Columns.FirstOrDefault(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered && dtx.FieldName == CurrentFilter.FieldName)
+                                || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered && dtp.FieldName == CurrentFilter.FieldName)
+                                || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered && dcb.FieldName == CurrentFilter.FieldName)
+                                );
             if (col == null) return;
             Button button = VisualTreeHelpers.GetHeader(col, this)
                 ?.FindVisualChild<Button>("FilterButton");
@@ -1193,8 +1184,6 @@ namespace FilterDataGrid
             {
                 // filter button
                 Button button = (Button)e.OriginalSource;
-                FilterState.SetIsFiltered(button, true);
-
                 if (Items.Count == 0 || button == null) return;
 
                 // contribution : OTTOSSON
@@ -1322,8 +1311,7 @@ namespace FilterDataGrid
                     });
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
-                    if (lastFilter == CurrentFilter.FieldName)
-                        sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems ?? new HashSet<object>());
+                    sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems ?? new HashSet<object>());
 
                     // empty item flag
                     // if they exist, remove all null or empty string values from the list.
@@ -1450,23 +1438,24 @@ namespace FilterDataGrid
                     {
                         var previousFiltered = CurrentFilter.PreviouslyFilteredItems;
                         bool blankIsUnchecked = false; //preset value to default
-                        
-                        //if(!previousFiltered.Any())
-                        //{
+
+                        bool frontendFilterChanged = PopupViewItems.Any(c => c.IsChanged);
+                        if (frontendFilterChanged)
+                        {
                             if (search)
-                            {
-                                // result of the research
-                                var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
+                                {
+                                    // result of the research
+                                    var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
 
-                                // unchecked : all items except searchResult
-                                var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
-                                uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
+                                    // unchecked : all items except searchResult
+                                    var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
+                                    uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
 
-                                previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
+                                    previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
 
-                                previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
+                                    previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
 
-                                blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
+                                    blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
                             }
                             else
                             {
@@ -1496,7 +1485,7 @@ namespace FilterDataGrid
                                 else
                                     previousFiltered.RemoveWhere(item => item?.ToString() == string.Empty);
                             }
-                        //}
+                        }
 
                         // add a filter if it is not already added previously
                         if (!CurrentFilter.IsFiltered) CurrentFilter.AddFilter();
@@ -1516,7 +1505,10 @@ namespace FilterDataGrid
                     if (!CurrentFilter.PreviouslyFilteredItems.Any())
                         RemoveCurrentFilter();
 
-                    var col = Columns.FirstOrDefault(c => String.Equals(c.Header.ToString().Replace(" ", ""), CurrentFilter.FieldName, StringComparison.InvariantCultureIgnoreCase));
+                    var col = Columns.FirstOrDefault(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered && dtx.FieldName == CurrentFilter.FieldName)
+                                || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered && dtp.FieldName == CurrentFilter.FieldName)
+                                || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered && dcb.FieldName == CurrentFilter.FieldName)
+                                );
                     if (col == null) return;
                     Button button = VisualTreeHelpers.GetHeader(col, this)
                         ?.FindVisualChild<Button>("FilterButton");
