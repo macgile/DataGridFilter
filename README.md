@@ -7,7 +7,7 @@
 ![Nuget package](https://img.shields.io/nuget/v/FilterDataGrid)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter?include_prereleases)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
-[![Net Version](https://img.shields.io/badge/net%20version-net4.7.2%20netcore3.1%20net5.0%20net6.0%20net7.0-blue)](https://shields.io)
+[![Net Version](https://img.shields.io/badge/net%20version-net4.8%20netcore3.1%20net5.0%20net6.0%20net7.0-blue)](https://shields.io)
 
 ![datagrid image demo](https://raw.githubusercontent.com/macgile/DataGridFilter/master/FilterDataGrid.png)  
 
@@ -43,10 +43,12 @@ TargetType="{x:Type control:FilterDataGrid}">
 
 - Or manually add **FilterDataGrid.dll** as reference in your project
 
-- Add **Namespace** into your xaml :  
+- Add **Namespace** :
 
 ```xml
-    <Window xmlns:control="http://filterdatagrid.control.com/2021" ..
+    xmlns:control="http://filterdatagrid.control.com/2021"  
+    or
+    xmlns:control="clr-namespace:FilterDataGrid;assembly=FilterDataGrid"  
 ```
 
 - **Control**  
@@ -90,7 +92,7 @@ TargetType="{x:Type control:FilterDataGrid}">
 ## Global Style
 
 >You can define a global style which overrides the default style of "FilterDataGrid"  
-:warning: **The ComponentResourceKey is obsolete from version 1.2.7**   
+:warning: **The ComponentResourceKey is obsolete from version 1.2.7**
 ~~BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
         ResourceId=FilterDataGridStyle}}"~~
 
@@ -131,7 +133,6 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 <a href="https://github.com/ottosson" target="_blank">
   <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/3355320?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d" />
 </a>
-
 
 <!-- Made with [contributors-img](https://contrib.rocks). -->
 <a href="https://github.com/macgile/DataGridFilter/graphs/contributors">
