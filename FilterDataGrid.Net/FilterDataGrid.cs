@@ -74,7 +74,6 @@ namespace FilterDataGrid
         #region Command
 
         public static readonly ICommand ApplyFilter = new RoutedCommand();
-        public static readonly ICommand ApplyAllFilter = new RoutedCommand();
         public static readonly ICommand CancelFilter = new RoutedCommand();
         public static readonly ICommand ClearSearchBox = new RoutedCommand();
         public static readonly ICommand IsChecked = new RoutedCommand();
@@ -139,15 +138,6 @@ namespace FilterDataGrid
                 typeof(bool),
                 typeof(FilterDataGrid),
                 new PropertyMetadata(false));
-
-        /// <summary>
-        ///     Get or set a filter preset
-        /// </summary>
-        public static readonly DependencyProperty FilterPresetProperty =
-            DependencyProperty.Register("FilterPreset",
-                typeof(ObservableCollection<FilterCommon>),
-                typeof(FilterDataGrid),
-                new PropertyMetadata(new ObservableCollection<FilterCommon>()));
 
         #endregion Public DependencyProperty
 
