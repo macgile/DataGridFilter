@@ -552,7 +552,6 @@ namespace FilterDataGrid
             foreach (FilterCommon filter in filterPreset.ToList())
             {
                 //gather missing information that could not be serialized
-                filter.AddCriteria();
                 var fieldProperty = collectionType.GetProperty(filter.FieldName);
                 if (fieldProperty != null)
                     fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
@@ -565,12 +564,9 @@ namespace FilterDataGrid
                     FieldProperty = fieldProperty,
                     FieldType = fieldType,
                     PreviouslyFilteredItems = filter.PreviouslyFilteredItems,
-                    IsFiltered = true,
-                    Criteria = filter.Criteria,
+                    IsFiltered = false,
                     Translate = Translate
                 };
-
-                GlobalFilterList.Add(CurrentFilter);
 
                 //apply current filter
                 ApplyFilterCommand(null, null);
