@@ -16,7 +16,7 @@
     <!-- Do not remove this line -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageOutputPath>..\NuGet</PackageOutputPath>
 
     <!-- Package version -->
