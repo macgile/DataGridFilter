@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -342,7 +343,7 @@ namespace FilterDataGrid
         private ICollectionView CollectionViewSource { get; set; }
         private ICollectionView ItemCollectionView { get; set; }
 
-        private List<FilterCommon> GlobalFilterList = new List<FilterCommon>();
+        private readonly List<FilterCommon> GlobalFilterList = new List<FilterCommon>();
 
         /// <summary>
         /// Popup filtered items (ListBox/TreeView)
@@ -546,14 +547,32 @@ namespace FilterDataGrid
         //apply the filterpreset that is saved earlier
         private void OnFilterPresetChanged(List<FilterCommon> filterPreset)
         {
-            //remove all existing filters and clean up the cache
-            CollectionViewSource = new ;
             RemoveAllFilterCommand(null, null);
-            GlobalFilterList = filterPreset;
 
-            foreach (FilterCommon filter in GlobalFilterList)
+            foreach (FilterCommon filter in filterPreset.ToList())
             {
-                CurrentFilter = filter;
+                //gather missing information that could not be serialized
+                filter.AddCriteria();
+                var fieldProperty = collectionType.GetProperty(filter.FieldName);
+                if (fieldProperty != null)
+                    fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
+
+
+                //set current filter
+                CurrentFilter = new FilterCommon()
+                {
+                    FieldName = filter.FieldName,
+                    FieldProperty = fieldProperty,
+                    FieldType = fieldType,
+                    PreviouslyFilteredItems = filter.PreviouslyFilteredItems,
+                    IsFiltered = true,
+                    Criteria = filter.Criteria,
+                    Translate = Translate
+                };
+
+                GlobalFilterList.Add(CurrentFilter);
+
+                //apply current filter
                 ApplyFilterCommand(null, null);
             }
         }
@@ -1008,6 +1027,8 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void RemoveAllFilterCommand(object sender, ExecutedRoutedEventArgs e)
         {
+
+            //remove all existing filters and clean up the cache
             try
             {
                 foreach (var col in Columns)
@@ -1058,12 +1079,12 @@ namespace FilterDataGrid
 
             if (CurrentFilter == null) return;
 
-            popup.IsOpen = false; // raise PopupClosed event
+            if(popup != null) popup.IsOpen = false; // raise PopupClosed event
 
             // set button icon (filtered or not)
-            var col = Columns.FirstOrDefault(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered && dtx.FieldName == CurrentFilter.FieldName)
-                                || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered && dtp.FieldName == CurrentFilter.FieldName)
-                                || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered && dcb.FieldName == CurrentFilter.FieldName)
+            var col = Columns.FirstOrDefault(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered && dtx.FieldName == CurrentFilter?.FieldName)
+                                || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered && dtp.FieldName == CurrentFilter?.FieldName)
+                                || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered && dcb.FieldName == CurrentFilter?.FieldName)
                                 );
             if (col == null) return;
             Button button = VisualTreeHelpers.GetHeader(col, this)
@@ -1075,7 +1096,7 @@ namespace FilterDataGrid
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            if (CurrentFilter.IsFiltered)
+            if (CurrentFilter.IsFiltered && CurrentFilter.RemoveFilter())
                 CollectionViewSource.Refresh();
 
             if (GlobalFilterList.Contains(CurrentFilter))
@@ -1425,7 +1446,7 @@ namespace FilterDataGrid
             stopWatchFilter.Start();
 
             pending = true;
-            popup.IsOpen = false; // raise PopupClosed event
+            if(popup != null) popup.IsOpen = false; // raise PopupClosed event if popup was opened
 
             // set cursor wait
             Mouse.OverrideCursor = Cursors.Wait;
@@ -1443,19 +1464,19 @@ namespace FilterDataGrid
                         if (frontendFilterChanged)
                         {
                             if (search)
-                                {
-                                    // result of the research
-                                    var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
+                            {
+                                // result of the research
+                                var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
 
-                                    // unchecked : all items except searchResult
-                                    var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
-                                    uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
+                                // unchecked : all items except searchResult
+                                var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
+                                uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
 
-                                    previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
+                                previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
 
-                                    previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
+                                previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
 
-                                    blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
+                                blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
                             }
                             else
                             {
@@ -1488,7 +1509,7 @@ namespace FilterDataGrid
                         }
 
                         // add a filter if it is not already added previously
-                        if (!CurrentFilter.IsFiltered) CurrentFilter.AddFilter();
+                        if (!CurrentFilter.IsFiltered) CurrentFilter.AddCriteria();
 
                         // add current filter to GlobalFilterList
                         if (GlobalFilterList.All(f => f.FieldName != CurrentFilter.FieldName))
@@ -1505,9 +1526,9 @@ namespace FilterDataGrid
                     if (!CurrentFilter.PreviouslyFilteredItems.Any())
                         RemoveCurrentFilter();
 
-                    var col = Columns.FirstOrDefault(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered && dtx.FieldName == CurrentFilter.FieldName)
-                                || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered && dtp.FieldName == CurrentFilter.FieldName)
-                                || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered && dcb.FieldName == CurrentFilter.FieldName)
+                    var col = Columns.FirstOrDefault(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered && dtx.FieldName == CurrentFilter?.FieldName)
+                                || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered && dtp.FieldName == CurrentFilter?.FieldName)
+                                || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered && dcb.FieldName == CurrentFilter?.FieldName)
                                 );
                     if (col == null) return;
                     Button button = VisualTreeHelpers.GetHeader(col, this)

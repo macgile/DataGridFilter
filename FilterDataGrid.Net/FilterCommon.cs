@@ -11,8 +11,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -39,10 +39,14 @@ namespace FilterDataGrid
         #region Public Properties
 
         public string FieldName { get; set; }
+
+        [JsonIgnore]
         public Type FieldType { get; set; }
 
+        [JsonIgnore]
         public PropertyInfo FieldProperty { get; set; }
 
+        [JsonIgnore]
         public bool IsFiltered
         {
             get => isFiltered;
@@ -54,8 +58,11 @@ namespace FilterDataGrid
         }
 
         public HashSet<object> PreviouslyFilteredItems { get; set; }
+
+        [JsonIgnore]
         public HashSet<Predicate<object>> Criteria { get; set; }
 
+        [JsonIgnore]
         public Loc Translate { get; set; }
 
         #endregion Public Properties
@@ -65,7 +72,7 @@ namespace FilterDataGrid
         /// <summary>
         ///     Add the filter to the predicate dictionary
         /// </summary>
-        public void AddFilter()
+        public void AddCriteria()
         {
             if (IsFiltered) return;
 
@@ -82,6 +89,15 @@ namespace FilterDataGrid
             // add to list of predicates
             Criteria.Add(Predicate);
             IsFiltered = true;
+        }
+
+        public bool RemoveFilter()
+        {
+            if (!IsFiltered) return false;
+
+            Criteria.Clear();
+            isFiltered = false;
+            return true;
         }
 
         #endregion Public Methods
