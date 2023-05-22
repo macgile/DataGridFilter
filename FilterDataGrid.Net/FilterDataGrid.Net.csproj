@@ -10,24 +10,32 @@
 
   <PropertyGroup>
 
-    <!--<ApplicationIcon>icon.ico</ApplicationIcon>-->
     <Authors>Gilles Macabies</Authors>
     <Copyright>Gilles Macabies 2023</Copyright>
+
+    <!-- Do not remove this line -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>..\NuGet</PackageOutputPath>
+
+    <!-- Package version -->
+    <Version>1.2.7</Version>
+
     <IsPublishable>False</IsPublishable>
     <NeutralLanguage />
+
     <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
     <PackageProjectUrl>https://github.com/macgile/DataGridFilter</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>GitHub</RepositoryType>
     <RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
 
-    <!-- Nuget package version -->
-    <Version>1.2.7</Version>
+
 
     <Title>A DataGrid control that implements filters for each column like Excel, automatically or custom generated.</Title>
     <Description>
@@ -44,7 +52,9 @@
       Removed pure Net Framework 4.7.2 version of FilterDataGrid.
       Removed ComponentResourceKey from FilterDataGrid style.
     </PackageReleaseNotes>
-
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\Users\GILLES\source\repos\macgile\FilterDataGrid.Production\NuGet\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
+   
   </PropertyGroup>
 
   <!-- Additional Package Items -->
@@ -57,11 +67,11 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\README.md">
+    <None Include="..\NuGet\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\Readme.txt">
+    <None Include="..\NuGet\Readme.txt">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

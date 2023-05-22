@@ -369,6 +369,7 @@ FodyWeavers.xsd
 *.nupkg
 icon.png
 nuget/
+/NuGet
 
 # Batch construct file
 *.bat

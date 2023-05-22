@@ -206,6 +206,13 @@
     </Style>
 
     <!--  FILTERDATAGRID STYLE  -->
+
+
+
+
+
+
+
     <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type control:FilterDataGrid}">
 
         <!--  DATAGRID TEMPLATE  -->
