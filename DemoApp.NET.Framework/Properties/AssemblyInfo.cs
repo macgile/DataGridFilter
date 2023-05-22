@@ -8,7 +8,7 @@ using System.Windows;
 // l'ensemble d'attributs suivant. Pour modifier les informations
 // associées à un assembly.
 [assembly: AssemblyTitle("DemoApp.NET.Framework")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Description")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("DemoApp.NET.Framework")]

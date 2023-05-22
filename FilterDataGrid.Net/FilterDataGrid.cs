@@ -25,6 +25,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
+// ReSharper disable UseNameofForDependencyProperty
 namespace FilterDataGrid
 {
     /// <summary>
@@ -46,9 +47,10 @@ namespace FilterDataGrid
             // load resources
             var resourceDictionary = new ResourceDictionary
             {
-                Source = new Uri("/FilterDataGrid;component/Themes/FilterDataGrid.xaml", UriKind.Relative)
+                Source = new Uri("/FilterDataGrid;component/Themes/Generic.xaml", UriKind.Relative)
             };
 
+            // https://learn.microsoft.com/fr-fr/dotnet/desktop/wpf/controls/control-authoring-overview?view=netframeworkdesktop-4.8
             Resources.MergedDictionaries.Add(resourceDictionary);
 
             // initial popup size
@@ -291,7 +293,7 @@ namespace FilterDataGrid
             set
             {
                 treeView = value;
-                OnPropertyChanged(nameof(TreeViewItems));
+                OnPropertyChanged();
             }
         }
 
@@ -304,7 +306,7 @@ namespace FilterDataGrid
             set
             {
                 listBoxItems = value;
-                OnPropertyChanged(nameof(ListBoxItems));
+                OnPropertyChanged();
             }
         }
 
@@ -653,7 +655,7 @@ namespace FilterDataGrid
         /// <summary>
         ///     Handle Mousedown, contribution : WORDIBOI
         /// </summary>
-        private readonly MouseButtonEventHandler onMousedown = (o, eArgs) => { eArgs.Handled = true; };
+        private readonly MouseButtonEventHandler onMousedown = (_, eArgs) => { eArgs.Handled = true; };
 
         /// <summary>
         ///     Generate custom columns that can be filtered
@@ -665,6 +667,7 @@ namespace FilterDataGrid
             try
             {
                 // get the columns that can be filtered
+                // ReSharper disable MergeIntoPattern
                 var columns = Columns
                     .Where(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered)
                                 || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered)
@@ -1006,10 +1009,9 @@ namespace FilterDataGrid
                             continue;
                     }
 
-                    button = VisualTreeHelpers.GetHeader(col, this)
-                        ?.FindVisualChild<Button>("FilterButton");
+                    if (string.IsNullOrEmpty(fieldName) || VisualTreeHelpers.GetHeader(col, this)
+                            ?.FindVisualChild<Button>("FilterButton") == null) continue;
 
-                    if (button == null || string.IsNullOrEmpty(fieldName)) continue;
 
                     CurrentFilter = GlobalFilterList.FirstOrDefault(c => c.FieldName == fieldName);
 
