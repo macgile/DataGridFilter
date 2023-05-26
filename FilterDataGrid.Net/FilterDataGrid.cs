@@ -1237,7 +1237,7 @@ namespace FilterDataGrid
 
                 // get type of field
                 fieldType = null;
-                var fieldProperty = collectionType.GetProperty(fieldName);
+                var fieldProperty = Extensions.GetPropertyInfo(collectionType, fieldName);
 
                 // get type or underlying type if nullable
                 if (fieldProperty != null)
@@ -1270,12 +1270,12 @@ namespace FilterDataGrid
                         if (fieldType == typeof(DateTime))
                             // possible distinct values because time part is removed
                             sourceObjectList = Items.Cast<object>()
-                                .Select(x => (object)((DateTime?)fieldProperty?.GetValue(x, null))?.Date)
+                                .Select(x => (object)((DateTime?)Extensions.GetPropValue(x, fieldName))?.Date)
                                 .Distinct()
                                 .ToList();
                         else
                             sourceObjectList = Items.Cast<object>()
-                                .Select(x => fieldProperty?.GetValue(x, null))
+                                .Select(x => Extensions.GetPropValue(x, fieldName))
                                 .Distinct()
                                 .ToList();
                     });

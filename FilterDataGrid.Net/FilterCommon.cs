@@ -70,8 +70,8 @@ namespace FilterDataGrid
             bool Predicate(object o)
             {
                 var value = FieldType == typeof(DateTime)
-                    ? ((DateTime?)FieldProperty?.GetValue(o, null))?.Date
-                    : FieldProperty?.GetValue(o, null);
+                   ? ((DateTime?)Extensions.GetPropValue(o, FieldName))?.Date
+                   : Extensions.GetPropValue(o, FieldName);
 
                 return !PreviouslyFilteredItems.Contains(value);
             }
