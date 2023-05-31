@@ -30,7 +30,7 @@ namespace FilterDataGrid
 
         public FilterCommon()
         {
-            PreviouslyFilteredItems = new HashSet<object>(EqualityComparer<object>.Default);
+            FilteredItems = new HashSet<object>(EqualityComparer<object>.Default);
             Criteria = new HashSet<Predicate<object>>();
         }
 
@@ -57,7 +57,7 @@ namespace FilterDataGrid
             }
         }
 
-        public HashSet<object> PreviouslyFilteredItems { get; set; }
+        public HashSet<object> FilteredItems { get; set; }
 
         [JsonIgnore]
         public HashSet<Predicate<object>> Criteria { get; set; }
@@ -83,7 +83,7 @@ namespace FilterDataGrid
                     ? ((DateTime?)FieldProperty?.GetValue(o, null))?.Date
                     : FieldProperty?.GetValue(o, null);
 
-                return !PreviouslyFilteredItems.Contains(value);
+                return FilteredItems.Contains(value);
             }
 
             // add to list of predicates

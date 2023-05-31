@@ -26,6 +26,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FilterDataGrid
 {
@@ -165,6 +166,7 @@ namespace FilterDataGrid
         private Grid sizableContentGrid;
 
         private List<string> excludedFields;
+        private Dictionary<string, FilterItem> filterableItems;
         private List<FilterItemDate> treeView;
         private List<FilterItem> listBoxItems;
 
@@ -533,7 +535,6 @@ namespace FilterDataGrid
         #endregion Protected Methods
 
         #region Private Methods
-
         //apply the filterpreset that is saved earlier
         private void OnFilterPresetChanged(List<FilterCommon> filterPreset)
         {
@@ -541,8 +542,17 @@ namespace FilterDataGrid
 
             foreach (FilterCommon filter in filterPreset.ToList())
             {
+
+                PropertyInfo fieldProperty = ItemsSource.Cast<object>()?
+                                               .FirstOrDefault()?
+                                               .GetType()
+                                               .GetProperty(filter.FieldName);
+                //foreach (var item in ItemsSource[0])
+                //{
+                //    fieldProperty = if (item.GetType().GetProperty(filter.FieldName)
+                //}
                 //gather missing information that could not be serialized
-                var fieldProperty = collectionType.GetProperty(filter.FieldName);
+                //var fieldProperty = collectionType.GetProperty(filter.FieldName);
                 if (fieldProperty != null)
                     fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
 
@@ -553,7 +563,7 @@ namespace FilterDataGrid
                     FieldName = filter.FieldName,
                     FieldProperty = fieldProperty,
                     FieldType = fieldType,
-                    PreviouslyFilteredItems = filter.PreviouslyFilteredItems,
+                    FilteredItems = filter.FilteredItems,
                     IsFiltered = false,
                     Translate = Translate
                 };
@@ -593,7 +603,7 @@ namespace FilterDataGrid
                 foreach (var y in dateTimes.Where(c => c.Level == 1)
                              .Select(filterItem => new
                              {
-                                 ((DateTime)filterItem.Content).Date,
+                                 DateTime.Parse(filterItem.Content.ToString()).Date,
                                  Item = filterItem
                              })
                              .GroupBy(g => g.Date.Year)
@@ -1141,7 +1151,7 @@ namespace FilterDataGrid
             var textBox = (TextBox)sender;
 
             // fix TextChanged event fires twice I did not find another solution
-            if (textBox == null || textBox.Text == searchText || ItemCollectionView == null) return;
+            if (textBox == null || textBox.Text == searchText) return;
 
             searchText = textBox.Text;
 
@@ -1191,7 +1201,7 @@ namespace FilterDataGrid
             {
                 // filter button
                 Button button = (Button)e.OriginalSource;
-                if (Items.Count == 0 || button == null) return;
+                if (button == null) return;
 
                 // contribution : OTTOSSON
                 // for the moment this functionality is not tested, I do not know if it can cause unexpected effects
@@ -1269,67 +1279,64 @@ namespace FilterDataGrid
                     //currentColumn = column;
                 }
 
-                // invalid fieldName
-                if (string.IsNullOrEmpty(fieldName)) return;
 
-                // get type of field
-                fieldType = null;
-                var fieldProperty = collectionType.GetProperty(fieldName);
+                if(CurrentFilter is null)
+                {
+                    // invalid fieldName
+                    if (string.IsNullOrEmpty(fieldName)) return;
 
-                // get type or underlying type if nullable
-                if (fieldProperty != null)
-                    FieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
+                    // get type of field
+                    fieldType = null;
+                    var fieldProperty = collectionType.GetProperty(fieldName);
 
-                // If no filter, add filter to GlobalFilterList list
-                CurrentFilter = GlobalFilterList.FirstOrDefault(f => f.FieldName == fieldName) ??
-                                new FilterCommon
-                                {
-                                    FieldName = fieldName,
-                                    FieldType = fieldType,
-                                    Translate = Translate,
-                                    FieldProperty = fieldProperty
-                                };
+                    // get type or underlying type if nullable
+                    if (fieldProperty != null)
+                        FieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
 
-                // list of all item values, filtered and unfiltered (previous filtered items)
-                var sourceObjectList = new List<object>();
+                    // If no filter, add filter to GlobalFilterList list
+                    CurrentFilter = GlobalFilterList.FirstOrDefault(f => f.FieldName == fieldName) ??
+                                    new FilterCommon
+                                    {
+                                        FieldName = fieldName,
+                                        FieldType = fieldType,
+                                        Translate = Translate,
+                                        FieldProperty = fieldProperty
+                                    };
+                }
 
                 // set cursor
                 Mouse.OverrideCursor = Cursors.Wait;
-
-                List<FilterItem> filterItemList = null;//new List<FilterItem>();
-
-                // get the list of values distinct from the list of raw values of the current column
+                
+                
                 await Task.Run(() =>
-                {
-                    // contribution : STEFAN HEIMEL
-                    Dispatcher.Invoke(() =>
+                { 
+                    // gather all values that are in the column of a certain fieldName
+                    List<object> sourceObjectList = new List<object>();
+
+                    foreach (var item in ItemsSource)
                     {
+                        //get all values for the popup based on a fieldName
+                        object propertyValue = null;
                         if (fieldType == typeof(DateTime))
-                            // possible distinct values because time part is removed
-                            sourceObjectList = Items.Cast<object>()
-                                .Select(x => (object)((DateTime?)fieldProperty?.GetValue(x, null))?.Date)
-                                .Distinct()
-                                .ToList();
+                            propertyValue = (object)FilterHelper.GetPropertyValue<DateTime>(item, fieldName).Date.ToString("yyyy/MM/dd");
                         else
-                            sourceObjectList = Items.Cast<object>()
-                                .Select(x => fieldProperty?.GetValue(x, null))
-                                .Distinct()
-                                .ToList();
-                    });
+                            propertyValue = FilterHelper.GetPropertyValue<string>(item, fieldName);
+                        
+                        //check if there are any empty values, do not add them to the popup
+                        if (string.IsNullOrEmpty((string)propertyValue)) continue;
 
-                    // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
-                    sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems ?? new HashSet<object>());
-
-                    // empty item flag
-                    // if they exist, remove all null or empty string values from the list.
-                    // content == null and content == "" are two different things but both labeled as (blank)
-                    var emptyItem = sourceObjectList.RemoveAll(v => v == null || v.Equals(string.Empty)) > 0;
-
-                    // TODO : AggregateException when user can add row
+                        //only add distinct values, so only if they do not exist
+                        if (!sourceObjectList.Contains(propertyValue))
+                        {
+                            sourceObjectList.Add(propertyValue);
+                        }
+                    }
 
                     // sorting is a very slow operation, using ParallelQuery
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
 
+                    //convert the sourceObjectList to a filterItem that is used in the popup
+                    List<FilterItem> filterItemList = new List<FilterItem>();
                     if (fieldType == typeof(bool))
                     {
                         filterItemList = new List<FilterItem>(sourceObjectList.Count + 1);
@@ -1345,26 +1352,23 @@ namespace FilterDataGrid
 
                     // add all items (not null) to the filterItemList,
                     // the list of dates is calculated by BuildTree from this list
-                    filterItemList.AddRange(sourceObjectList.Select(item => new FilterItem
-                    {
-                        Content = item,
-                        ContentLength = item?.ToString()?.Length ?? 0,
-                        FieldType = fieldType,
-                        Label = item,
-                        Level = 1,
-                        Initialize = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
-                    }));
+                    filterItemList.AddRange(sourceObjectList.Select(item => 
+                        new FilterItem
+                        {
+                            Content = item,
+                            ContentLength = item?.ToString()?.Length ?? 0,
+                            FieldType = fieldType,
+                            Label = item,
+                            Level = 1,
+                            Initialize = CurrentFilter.FilteredItems.Count <= 0 ? true : CurrentFilter.FilteredItems?.Contains(item) == true
+                        }
+                    ));
 
                     if (fieldType == typeof(bool))
                         filterItemList.ToList().ForEach(c =>
                         {
-                            c.Label = (bool)c.Content ? Translate.IsTrue : Translate.IsFalse;
+                            c.Label = bool.Parse(c.Content.ToString()) ? Translate.IsTrue : Translate.IsFalse;
                         });
-
-                    // add a empty item(if exist) at the bottom of the list
-                    if (!emptyItem) return;
-
-                    sourceObjectList.Insert(sourceObjectList.Count, null);
 
                     filterItemList.Add(new FilterItem
                     {
@@ -1372,21 +1376,21 @@ namespace FilterDataGrid
                         Content = null,
                         Label = Translate.Empty,
                         Level = -1,
-                        Initialize = CurrentFilter?.PreviouslyFilteredItems?.Contains(null) == false
+                        Initialize = CurrentFilter?.FilteredItems?.Contains(null) == false
                     });
+
+                    // ItemsSource (ListBow/TreeView)
+                    if (fieldType == typeof(DateTime))
+                        TreeViewItems = BuildTree(filterItemList);
+                    else
+                        ListBoxItems = filterItemList;
+
+                    // Set ICollectionView for filtering in the pop-up window
+                    ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(filterItemList);
+
+                    // set filter in popup
+                    if (ItemCollectionView.CanFilter) ItemCollectionView.Filter = SearchFilter;
                 });
-
-                // ItemsSource (ListBow/TreeView)
-                if (fieldType == typeof(DateTime))
-                    TreeViewItems = BuildTree(filterItemList);
-                else
-                    ListBoxItems = filterItemList;
-
-                // Set ICollectionView for filtering in the pop-up window
-                ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(filterItemList);
-
-                // set filter in popup
-                if (ItemCollectionView.CanFilter) ItemCollectionView.Filter = SearchFilter;
 
                 // set the placement and offset of the PopUp in relation to the header and the main window of the application
                 // i.e (placement : bottom left or bottom right)
@@ -1443,54 +1447,21 @@ namespace FilterDataGrid
                 {
                     Task.Run(() =>
                     {
-                        var previousFiltered = CurrentFilter.PreviouslyFilteredItems;
-                        bool blankIsUnchecked = false; //preset value to default
-
+                        
                         bool frontendFilterChanged = PopupViewItems.Any(c => c.IsChanged);
                         if (frontendFilterChanged)
                         {
                             if (search)
                             {
-                                // result of the research
-                                var searchResult = PopupViewItems.Where(c => c.IsChecked).ToList();
-
-                                // unchecked : all items except searchResult
-                                var uncheckedItems = SourcePopupViewItems.Except(searchResult).ToList();
-                                uncheckedItems.AddRange(searchResult.Where(c => c.IsChecked == false));
-
-                                previousFiltered.ExceptWith(searchResult.Select(c => c.Content));
-
-                                previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
-
-                                blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
+                                CurrentFilter.FilteredItems = PopupViewItems.Where(c => c.IsChecked)
+                                                                       .Select(c => c.Content)
+                                                                       .ToHashSet();
                             }
                             else
                             {
-                                // changed popup items
-                                var changedItems = PopupViewItems.Where(c => c.IsChanged).ToList();
-
-                                var checkedItems = changedItems.Where(c => c.IsChecked);
-                                var uncheckedItems = changedItems.Where(c => !c.IsChecked).ToList();
-
-                                // previous item except unchecked items checked again
-                                previousFiltered.ExceptWith(checkedItems.Select(c => c.Content));
-                                previousFiltered.UnionWith(uncheckedItems.Select(c => c.Content));
-
-                                blankIsUnchecked = uncheckedItems.Any(c => c.Level == -1);
-                            }
-
-                            // two values, null and string.empty
-                            if (CurrentFilter.FieldType != typeof(DateTime) &&
-                                previousFiltered.Any(c => c == null || c.ToString() == string.Empty))
-                            {
-                                // if (blank) item is unchecked, add string.Empty.
-                                // at this step, the null value is already added previously
-                                if (blankIsUnchecked)
-                                    previousFiltered.Add(string.Empty);
-
-                                // if (blank) item is rechecked, remove string.Empty.
-                                else
-                                    previousFiltered.RemoveWhere(item => item?.ToString() == string.Empty);
+                                CurrentFilter.FilteredItems = PopupViewItems.Where(c => c.IsChecked)
+                                                                        .Select(c => c.Content)
+                                                                        .ToHashSet();
                             }
                         }
 
@@ -1509,7 +1480,7 @@ namespace FilterDataGrid
                     CollectionViewSource.Refresh();
 
                     // remove the current filter if there is no items to filter
-                    if (!CurrentFilter.PreviouslyFilteredItems.Any())
+                    if (!CurrentFilter.FilteredItems.Any())
                         RemoveCurrentFilter();
 
                     var col = Columns.FirstOrDefault(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered && dtx.FieldName == CurrentFilter?.FieldName)

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -53,6 +54,34 @@ namespace FilterDataGrid
         }
 
         #endregion Public Methods
+    }
+
+    public static class FilterHelper
+    {
+        public static T GetPropertyValue<T>(object item, string fieldName)
+        {
+            Type itemType = item.GetType();
+            PropertyInfo propertyInfo = itemType.GetProperty(fieldName);
+
+            if(propertyInfo != null)
+            {
+                object propertyValue = propertyInfo.GetValue(item);
+
+                if(propertyValue != null)
+                {
+                    if(propertyValue is T typedValue)
+                    {
+                        return typedValue;
+                    }
+                    else if (typeof(T) == typeof(string))
+                    {
+                        return (T)(object)propertyValue.ToString();
+                    }
+                }
+            }
+
+            return default(T);
+        }
     }
 
     /// <summary>
