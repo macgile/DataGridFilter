@@ -166,7 +166,6 @@ namespace FilterDataGrid
         private Grid sizableContentGrid;
 
         private List<string> excludedFields;
-        private Dictionary<string, FilterItem> filterableItems;
         private List<FilterItemDate> treeView;
         private List<FilterItem> listBoxItems;
 
@@ -547,12 +546,6 @@ namespace FilterDataGrid
                                                .FirstOrDefault()?
                                                .GetType()
                                                .GetProperty(filter.FieldName);
-                //foreach (var item in ItemsSource[0])
-                //{
-                //    fieldProperty = if (item.GetType().GetProperty(filter.FieldName)
-                //}
-                //gather missing information that could not be serialized
-                //var fieldProperty = collectionType.GetProperty(filter.FieldName);
                 if (fieldProperty != null)
                     fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
 
@@ -1279,20 +1272,19 @@ namespace FilterDataGrid
                     //currentColumn = column;
                 }
 
+                // invalid fieldName
+                if (string.IsNullOrEmpty(fieldName)) return;
+                
+                // get type of field
+                fieldType = null;
+                var fieldProperty = collectionType.GetProperty(fieldName);
 
-                if(CurrentFilter is null)
+                // get type or underlying type if nullable
+                if (fieldProperty != null)
+                    FieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
+
+                if (CurrentFilter is null)
                 {
-                    // invalid fieldName
-                    if (string.IsNullOrEmpty(fieldName)) return;
-
-                    // get type of field
-                    fieldType = null;
-                    var fieldProperty = collectionType.GetProperty(fieldName);
-
-                    // get type or underlying type if nullable
-                    if (fieldProperty != null)
-                        FieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
-
                     // If no filter, add filter to GlobalFilterList list
                     CurrentFilter = GlobalFilterList.FirstOrDefault(f => f.FieldName == fieldName) ??
                                     new FilterCommon
@@ -1307,29 +1299,26 @@ namespace FilterDataGrid
                 // set cursor
                 Mouse.OverrideCursor = Cursors.Wait;
                 
-                
                 await Task.Run(() =>
-                { 
+                {
                     // gather all values that are in the column of a certain fieldName
-                    List<object> sourceObjectList = new List<object>();
+                    List<object> sourceObjectList = null;
 
-                    foreach (var item in ItemsSource)
+                    if(fieldType == typeof(DateTime))
                     {
-                        //get all values for the popup based on a fieldName
-                        object propertyValue = null;
-                        if (fieldType == typeof(DateTime))
-                            propertyValue = (object)FilterHelper.GetPropertyValue<DateTime>(item, fieldName).Date.ToString("yyyy/MM/dd");
-                        else
-                            propertyValue = FilterHelper.GetPropertyValue<string>(item, fieldName);
-                        
-                        //check if there are any empty values, do not add them to the popup
-                        if (string.IsNullOrEmpty((string)propertyValue)) continue;
-
-                        //only add distinct values, so only if they do not exist
-                        if (!sourceObjectList.Contains(propertyValue))
-                        {
-                            sourceObjectList.Add(propertyValue);
-                        }
+                        sourceObjectList = ItemsSource.Cast<object>()
+                                .Select(x => (object)FilterHelper.GetPropertyValue<DateTime?>(x, fieldName)?.Date)
+                                .Where(x => x != null)
+                                .Distinct()
+                                .ToList();
+                    }
+                    else
+                    {
+                        sourceObjectList = ItemsSource.Cast<object>()
+                                .Select(x => fieldProperty?.GetValue(x, null))
+                                .Where(x => x != null)
+                                .Distinct()
+                                .ToList();
                     }
 
                     // sorting is a very slow operation, using ParallelQuery
@@ -1369,15 +1358,17 @@ namespace FilterDataGrid
                         {
                             c.Label = bool.Parse(c.Content.ToString()) ? Translate.IsTrue : Translate.IsFalse;
                         });
-
-                    filterItemList.Add(new FilterItem
+                    else
                     {
-                        FieldType = fieldType,
-                        Content = null,
-                        Label = Translate.Empty,
-                        Level = -1,
-                        Initialize = CurrentFilter?.FilteredItems?.Contains(null) == false
-                    });
+                        filterItemList.Add(new FilterItem
+                        {
+                            FieldType = fieldType,
+                            Content = null,
+                            Label = Translate.Empty,
+                            Level = -1,
+                            Initialize = sourceObjectList.Contains(null) || sourceObjectList.Contains(string.Empty)
+                        });
+                    }
 
                     // ItemsSource (ListBow/TreeView)
                     if (fieldType == typeof(DateTime))
@@ -1389,7 +1380,9 @@ namespace FilterDataGrid
                     ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(filterItemList);
 
                     // set filter in popup
-                    if (ItemCollectionView.CanFilter) ItemCollectionView.Filter = SearchFilter;
+                    if (ItemCollectionView.CanFilter)
+                        ItemCollectionView.Filter = SearchFilter;
+
                 });
 
                 // set the placement and offset of the PopUp in relation to the header and the main window of the application
