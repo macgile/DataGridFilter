@@ -119,12 +119,17 @@ namespace FilterDataGrid
         /// <summary>
         ///     Remove all filters
         /// </summary>
-        RemoveAll
+        RemoveAll,
+
+        /// <summary>
+        ///         Indeterminate
+        /// </summary>
+        Indeterminate,
     }
 
     // Contributor : dankovics.jozsef
-    public interface ILanguageDictionary {
-
+    public interface ILanguageDictionary
+    {
         #region Public Properties
 
         CultureInfo Culture { get; }
@@ -134,8 +139,8 @@ namespace FilterDataGrid
         #endregion Public Properties
     }
 
-    public class Loc {
-
+    public class Loc
+    {
         #region Private Fields
 
         private Local language;
@@ -144,7 +149,8 @@ namespace FilterDataGrid
 
         #region Public Constructors
 
-        public Loc() {
+        public Loc()
+        {
             language = Local.English;
             SelectedLanguage = English;
         }
@@ -201,6 +207,7 @@ namespace FilterDataGrid
         public string StartsWith => Translate(TranslatableElements.StartsWith);
         public string Status => Translate(TranslatableElements.Status);
         public string Toggle => Translate(TranslatableElements.Toggle);
+        public string Indeterminate => Translate(TranslatableElements.Indeterminate);
 
         #endregion Public Properties
 
@@ -221,7 +228,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Verstreken tijd {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Aangevinkt" },
                 { TranslatableElements.False, "Niet aangevinkt" },
-                { TranslatableElements.RemoveAll, "Alle filters verwijderen" }
+                { TranslatableElements.RemoveAll, "Alle filters verwijderen" },
+                { TranslatableElements.Indeterminate, "Onbepaald" },
             });
 
         private static ILanguageDictionary English { get; } = new LanguageDictionary("English", new CultureInfo("en-US"),
@@ -239,7 +247,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Elapsed time {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Checked" },
                 { TranslatableElements.False, "Unchecked" },
-                { TranslatableElements.RemoveAll, "Remove all filters" }
+                { TranslatableElements.RemoveAll, "Remove all filters" },
+                { TranslatableElements.Indeterminate, "Indeterminate" },
             });
 
         private static ILanguageDictionary French { get; } = new LanguageDictionary("French", new CultureInfo("fr-FR"),
@@ -257,7 +266,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Temps écoulé {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Coché" },
                 { TranslatableElements.False, "Décoché" },
-                { TranslatableElements.RemoveAll, "Supprimer tous les filtres" }
+                { TranslatableElements.RemoveAll, "Supprimer tous les filtres" },
+                { TranslatableElements.Indeterminate, "Indéterminée" },
             });
 
         private static ILanguageDictionary German { get; } = new LanguageDictionary("German", new CultureInfo("de-DE"),
@@ -275,7 +285,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Verstrichene Zeit {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Ausgewählt" },
                 { TranslatableElements.False, "Nicht ausgewählt" },
-                { TranslatableElements.RemoveAll, "Alle Filter entfernen" }
+                { TranslatableElements.RemoveAll, "Alle Filter entfernen" },
+                { TranslatableElements.Indeterminate, "Unbestimmt" },
             });
 
         private static ILanguageDictionary Hungarian { get; } = new LanguageDictionary("Hungarian",
@@ -294,7 +305,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Eltelt idő {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "True" },
                 { TranslatableElements.False, "False" },
-                { TranslatableElements.RemoveAll, "Összes szűrő törlése" }
+                { TranslatableElements.RemoveAll, "Összes szűrő törlése" },
+                { TranslatableElements.Indeterminate, "Határozatlan" },
             });
 
         private static ILanguageDictionary Italian { get; } = new LanguageDictionary("Italian", new CultureInfo("it-IT"),
@@ -312,7 +324,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Tempo trascorso {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Controllato" },
                 { TranslatableElements.False, "Deselezionato" },
-                { TranslatableElements.RemoveAll, "Rimuovi tutti i filtri" }
+                { TranslatableElements.RemoveAll, "Rimuovi tutti i filtri" },
+                { TranslatableElements.Indeterminate, "Indeterminato" },
             });
 
         private static ILanguageDictionary Japanese { get; } = new LanguageDictionary("Japanese",
@@ -331,7 +344,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "経過時間{0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "選択済み" },
                 { TranslatableElements.False, "未選択" },
-                { TranslatableElements.RemoveAll, "すべてのフィルターをクリア" }
+                { TranslatableElements.RemoveAll, "すべてのフィルターをクリア" },
+                { TranslatableElements.Indeterminate, "不定" },
             });
 
         private static ILanguageDictionary Polish { get; } = new LanguageDictionary("Polish", new CultureInfo("pl-PL"),
@@ -349,7 +363,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Zajęło {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Zaznaczone" },
                 { TranslatableElements.False, "Niezaznaczone" },
-                { TranslatableElements.RemoveAll, "Usuń wszystkie filtry" }
+                { TranslatableElements.RemoveAll, "Usuń wszystkie filtry" },
+                { TranslatableElements.Indeterminate, "Nieokreślony" },
             });
 
         private static ILanguageDictionary Russian { get; } = new LanguageDictionary("Russian", new CultureInfo("ru-RU"),
@@ -367,7 +382,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Пройденное время {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Проверено" },
                 { TranslatableElements.False, "непроверено" },
-                { TranslatableElements.RemoveAll, "Удалить все фильтры" }
+                { TranslatableElements.RemoveAll, "Удалить все фильтры" },
+                { TranslatableElements.Indeterminate, "Неопределенный" },
             });
 
         private static ILanguageDictionary SimplifiedChinese { get; } = new LanguageDictionary("SimplifiedChinese",
@@ -386,7 +402,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "经过时间{0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "已選中" },
                 { TranslatableElements.False, "未選中" },
-                { TranslatableElements.RemoveAll, "删除所有过滤器" }
+                { TranslatableElements.RemoveAll, "删除所有过滤器" },
+                { TranslatableElements.Indeterminate, "不定" },
             });
 
         private static ILanguageDictionary Spanish { get; } = new LanguageDictionary("Spanish", new CultureInfo("es-ES"),
@@ -404,7 +421,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Tiempo transurrido {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Comprobado" },
                 { TranslatableElements.False, "Sin marcar" },
-                { TranslatableElements.RemoveAll, "Eliminar todos los filtros" }
+                { TranslatableElements.RemoveAll, "Eliminar todos los filtros" },
+                { TranslatableElements.Indeterminate, "Indeterminado" },
             });
 
         private static ILanguageDictionary TraditionalChinese { get; } = new LanguageDictionary("TraditionalChinese",
@@ -423,7 +441,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "經過時間{0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "已選中" },
                 { TranslatableElements.False, "未選中" },
-                { TranslatableElements.RemoveAll, "清除所有篩選" }
+                { TranslatableElements.RemoveAll, "清除所有篩選" },
+                { TranslatableElements.Indeterminate, "不定" },
             });
 
         private static ILanguageDictionary Turkish { get; } = new LanguageDictionary("Turkish", new CultureInfo("tr-TR"),
@@ -441,7 +460,8 @@ namespace FilterDataGrid
                 { TranslatableElements.ElapsedTime, "Geçen süre {0:dd}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Seçili" },
                 { TranslatableElements.False, "Seçili değil" },
-                { TranslatableElements.RemoveAll, "Tüm filtreleri kaldır" }
+                { TranslatableElements.RemoveAll, "Tüm filtreleri kaldır" },
+                { TranslatableElements.Indeterminate, "Belirsiz" },
             });
 
         private ILanguageDictionary SelectedLanguage { get; set; }

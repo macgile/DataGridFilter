@@ -12,6 +12,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Windows.Controls;
+
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
@@ -36,10 +39,11 @@ namespace FilterDataGrid
 
         #region Public Properties
 
+        public Button FilterButton { get; set; }
+        public HashSet<object> PreviouslyFilteredItems { get; set; }
+        public Loc Translate { get; set; }
         public string FieldName { get; set; }
         public Type FieldType { get; set; }
-
-        public PropertyInfo FieldProperty { get; set; }
 
         public bool IsFiltered
         {
@@ -47,13 +51,9 @@ namespace FilterDataGrid
             set
             {
                 isFiltered = value;
-                OnPropertyChanged("IsFiltered");
+                OnPropertyChanged(nameof(IsFiltered));
             }
         }
-
-        public HashSet<object> PreviouslyFilteredItems { get; set; }
-
-        public Loc Translate { get; set; }
 
         #endregion Public Properties
 
@@ -70,8 +70,8 @@ namespace FilterDataGrid
             bool Predicate(object o)
             {
                 var value = FieldType == typeof(DateTime)
-                   ? ((DateTime?)Extensions.GetPropValue(o, FieldName))?.Date
-                   : Extensions.GetPropValue(o, FieldName);
+                    ? ((DateTime?)o.GetPropertyValue(FieldName))?.Date
+                    : o.GetPropertyValue(FieldName);
 
                 return !PreviouslyFilteredItems.Contains(value);
             }

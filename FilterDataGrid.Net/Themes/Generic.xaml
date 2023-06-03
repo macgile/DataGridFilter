@@ -4,6 +4,7 @@
     xmlns:control="clr-namespace:FilterDataGrid"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
+    <!--  ICON  -->
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FilterDataGrid;component/Themes/Icons.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -206,13 +207,6 @@
     </Style>
 
     <!--  FILTERDATAGRID STYLE  -->
-
-
-
-
-
-
-
     <Style BasedOn="{StaticResource {x:Type DataGrid}}" TargetType="{x:Type control:FilterDataGrid}">
 
         <!--  DATAGRID TEMPLATE  -->
@@ -421,17 +415,17 @@
                 x:Name="PathFilterIcon"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Data="{DynamicResource Filter}"
+                Data="{StaticResource Filter}"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=Foreground}"
                 Stretch="Uniform" />
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="control:FilterState.IsFiltered" Value="True">
-                <Setter TargetName="PathFilterIcon" Property="Data" Value="{DynamicResource FilterSet}" />
+                <Setter TargetName="PathFilterIcon" Property="Data" Value="{StaticResource FilterSet}" />
                 <Setter Property="Opacity" Value="0.8" />
             </Trigger>
             <Trigger Property="control:FilterState.IsFiltered" Value="False">
-                <Setter TargetName="PathFilterIcon" Property="Data" Value="{DynamicResource Filter}" />
+                <Setter TargetName="PathFilterIcon" Property="Data" Value="{StaticResource Filter}" />
                 <Setter Property="Opacity" Value="0.5" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
