@@ -173,7 +173,6 @@ namespace FilterDataGrid
         private Popup popup;
 
         private string fieldName;
-        private string lastFilter;
         private string searchText;
         private TextBox searchTextBox;
         private Thumb thumb;
@@ -1147,30 +1146,38 @@ namespace FilterDataGrid
             if (textBox == null || textBox.Text == searchText) return;
 
             searchText = textBox.Text;
-
             searchLength = searchText.Length;
-
             search = !string.IsNullOrEmpty(searchText);
 
-            // apply filter
-            ItemCollectionView.Refresh();
-
-            if (CurrentFilter.FieldType != typeof(DateTime) || treeView == null) return;
-
-            // rebuild treeView rebuild treeView
-            if (string.IsNullOrEmpty(searchText))
+            if (CurrentFilter.FieldType == typeof(DateTime) || treeView == null)
             {
-                // fill the tree with the elements of the list of the original items
-                TreeViewItems = BuildTree(SourcePopupViewItems);
+                // rebuild treeView rebuild treeView
+                if (string.IsNullOrEmpty(searchText))
+                {
+                    // fill the tree with the elements of the list of the original items
+                    TreeViewItems = BuildTree(SourcePopupViewItems);
+                }
+                else
+                {
+                    // fill the tree only with the items found by the search
+                    var items = PopupViewItems.Where(i => i.IsChecked).ToList();
+
+                    // if at least one item is not null, fill in the tree structure otherwise the tree structure contains only the item (select all).
+                    TreeViewItems = BuildTree(items.Any() ? items : null);
+                }
             }
             else
             {
-                // fill the tree only with the items found by the search
-                var items = PopupViewItems.Where(i => i.IsChecked).ToList();
-
-                // if at least one item is not null, fill in the tree structure otherwise the tree structure contains only the item (select all).
-                TreeViewItems = BuildTree(items.Any() ? items : null);
+                //rebuild listboxitems
+                if (string.IsNullOrEmpty(searchText))
+                    ListBoxItems = SourcePopupViewItems.ToList();
+                else
+                    ListBoxItems = PopupViewItems.Where(i => i.IsChecked).ToList();
             }
+            
+
+            // apply filter
+            ItemCollectionView.Refresh();
         }
 
         /// <summary>
@@ -1303,8 +1310,8 @@ namespace FilterDataGrid
                 {
                     // gather all values that are in the column of a certain fieldName
                     List<object> sourceObjectList = null;
-
-                    if(fieldType == typeof(DateTime))
+                    
+                    if (fieldType == typeof(DateTime))
                     {
                         sourceObjectList = ItemsSource.Cast<object>()
                                 .Select(x => (object)FilterHelper.GetPropertyValue<DateTime?>(x, fieldName)?.Date)
@@ -1318,6 +1325,12 @@ namespace FilterDataGrid
                                 .Select(x => fieldProperty?.GetValue(x, null))
                                 .Where(x => x != null)
                                 .Distinct()
+                                .ToList();
+
+                        if (fieldType == typeof(string))
+                            //remove empty strings
+                            sourceObjectList = sourceObjectList
+                                .Where(s => !string.IsNullOrEmpty(s.ToString()))
                                 .ToList();
                     }
 
@@ -1366,7 +1379,9 @@ namespace FilterDataGrid
                             Content = null,
                             Label = Translate.Empty,
                             Level = -1,
-                            Initialize = sourceObjectList.Contains(null) || sourceObjectList.Contains(string.Empty)
+                            Initialize = ItemsSource.Cast<object>()
+                                                    .Select(x => fieldProperty?.GetValue(x, null))
+                                                    .Contains(null)
                         });
                     }
 
@@ -1440,22 +1455,12 @@ namespace FilterDataGrid
                 {
                     Task.Run(() =>
                     {
-                        
                         bool frontendFilterChanged = PopupViewItems.Any(c => c.IsChanged);
-                        if (frontendFilterChanged)
+                        if (frontendFilterChanged || search)
                         {
-                            if (search)
-                            {
-                                CurrentFilter.FilteredItems = PopupViewItems.Where(c => c.IsChecked)
-                                                                       .Select(c => c.Content)
-                                                                       .ToHashSet();
-                            }
-                            else
-                            {
-                                CurrentFilter.FilteredItems = PopupViewItems.Where(c => c.IsChecked)
+                            CurrentFilter.FilteredItems = PopupViewItems.Where(c => c.IsChecked)
                                                                         .Select(c => c.Content)
                                                                         .ToHashSet();
-                            }
                         }
 
                         // add a filter if it is not already added previously
