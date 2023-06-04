@@ -173,6 +173,7 @@ namespace FilterDataGrid
         private Popup popup;
 
         private string fieldName;
+        private string lastFilter;
         private string searchText;
         private TextBox searchTextBox;
         private Thumb thumb;
@@ -1149,9 +1150,11 @@ namespace FilterDataGrid
             searchLength = searchText.Length;
             search = !string.IsNullOrEmpty(searchText);
 
-            if (CurrentFilter.FieldType == typeof(DateTime) || treeView == null)
+            // apply filter
+            ItemCollectionView.Refresh();
+
+            if (CurrentFilter.FieldType == typeof(DateTime))
             {
-                // rebuild treeView rebuild treeView
                 if (string.IsNullOrEmpty(searchText))
                 {
                     // fill the tree with the elements of the list of the original items
@@ -1161,23 +1164,22 @@ namespace FilterDataGrid
                 {
                     // fill the tree only with the items found by the search
                     var items = PopupViewItems.Where(i => i.IsChecked).ToList();
-
                     // if at least one item is not null, fill in the tree structure otherwise the tree structure contains only the item (select all).
                     TreeViewItems = BuildTree(items.Any() ? items : null);
                 }
             }
             else
             {
-                //rebuild listboxitems
+                // rebuild listboxitems
                 if (string.IsNullOrEmpty(searchText))
+                {
                     ListBoxItems = SourcePopupViewItems.ToList();
+                }
                 else
+                {
                     ListBoxItems = PopupViewItems.Where(i => i.IsChecked).ToList();
+                }
             }
-            
-
-            // apply filter
-            ItemCollectionView.Refresh();
         }
 
         /// <summary>
