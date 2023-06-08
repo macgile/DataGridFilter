@@ -992,38 +992,24 @@ namespace FilterDataGrid
         {
             try
             {
-                foreach (var col in Columns)
+                var columns = Columns
+                    .Where(c =>
+                        (c is DataGridTextColumn dtx && dtx.IsColumnFiltered)
+                        || c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered
+                        || c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered
+                    )
+                    .Select(c => c)
+                    .ToList();
+
+                foreach (var filterButton in columns.Select(col => VisualTreeHelpers.GetHeader(col, this)
+                             ?.FindVisualChild<Button>("FilterButton")).Where(filterButton => filterButton != null))
                 {
-                    // ReSharper disable MergeIntoPattern
-
-                    // .NET Framework all C# 7.3
-                    // 'recursive patterns' is not available on .NET Framework 4.8. Only in version C# 8.0 or greater.
-
-                    switch (col)
-                    {
-                        case DataGridTextColumn column:
-                            CurrentFilter =
-                                GlobalFilterList.FirstOrDefault(c => c.FieldName == column.FieldName && c.IsFiltered);
-                            break;
-
-                        case DataGridTemplateColumn column:
-                            CurrentFilter =
-                                GlobalFilterList.FirstOrDefault(c => c.FieldName == column.FieldName && c.IsFiltered);
-                            break;
-
-                        case DataGridCheckBoxColumn column:
-                            CurrentFilter =
-                                GlobalFilterList.FirstOrDefault(c => c.FieldName == column.FieldName && c.IsFiltered);
-                            break;
-
-                        case null:
-                            continue;
-                    }
-
-                    if (CurrentFilter == null) continue;
-
-                    RemoveCurrentFilter();
+                    FilterState.SetIsFiltered(filterButton, false);
                 }
+
+                criteria.Clear();
+                GlobalFilterList.Clear();
+                CollectionViewSource.Refresh();
             }
             catch (Exception ex)
             {
