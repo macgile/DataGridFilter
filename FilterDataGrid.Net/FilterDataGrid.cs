@@ -1148,10 +1148,9 @@ namespace FilterDataGrid
         private void RemoveAllFilterCommand(object sender, ExecutedRoutedEventArgs e)
         {
             ElapsedTime = new TimeSpan(0, 0, 0);
+            if (GlobalFilterList.Count == 0) return;
 
             // TODO : remove json file ??
-
-            if (GlobalFilterList.Count == 0) return;
 
             try
             {
