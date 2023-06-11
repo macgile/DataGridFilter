@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Controls;
+using System.Runtime.Serialization;
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 
@@ -20,6 +21,7 @@ using System.Windows.Controls;
 
 namespace FilterDataGrid
 {
+    [DataContract]
     public sealed class FilterCommon : NotifyProperty
     {
         #region Private Fields
@@ -39,12 +41,15 @@ namespace FilterDataGrid
 
         #region Public Properties
 
-        public Button FilterButton { get; set; }
+        [DataMember (Name = "FilteredItems")]
         public HashSet<object> PreviouslyFilteredItems { get; set; }
-        public Loc Translate { get; set; }
-        public string FieldName { get; set; }
-        public Type FieldType { get; set; }
 
+        [DataMember(Name = "FieldName")]
+        public string FieldName { get; set; }
+
+        public Button FilterButton { get; set; }
+        public Loc Translate { get; set; }
+        public Type FieldType { get; set; }
         public bool IsFiltered
         {
             get => isFiltered;
