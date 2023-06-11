@@ -990,6 +990,12 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void RemoveAllFilterCommand(object sender, ExecutedRoutedEventArgs e)
         {
+
+            ElapsedTime = new TimeSpan(0, 0, 0);
+
+            if (GlobalFilterList.Count == 0) return;
+
+
             try
             {
                 var columns = Columns
@@ -1009,6 +1015,7 @@ namespace FilterDataGrid
 
                 criteria.Clear();
                 GlobalFilterList.Clear();
+                ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
                 CollectionViewSource.Refresh();
             }
             catch (Exception ex)
