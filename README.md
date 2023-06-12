@@ -65,6 +65,9 @@ TargetType="{x:Type control:FilterDataGrid}">
   - **ShowRowsCount** : *display the number of rows*, default : false  
   *- If the value passed to **RowHeaderWidth** is greater than the calculation of the width of the column, this is the one that is used.*  
   - **FilterLanguage** : *translation into available language*, default : English  
+  - **PersistentFilter** : *Enable/Disable filter persistence* , default : false  
+  [See below the detail of this feature](#persistence-of-filters)
+
   - **ExcludeFields** : *comma separated fields to exclude from filter, only works in AutoGenerateColumns mode*  
   - **DateFormatString** : *date display format*, default : "d"  
 
@@ -103,6 +106,20 @@ TargetType="{x:Type control:FilterDataGrid}">
             <Setter Property="RowHeaderWidth" Value="40" />
      ...
 </Style>
+```
+
+## Persistence of filters
+
+>Enabling the **PersistentFilter** property saves a json file in the application folder that contains the status of active filters, any modification of the filters is immediately saved until the closing of the application, it is this state of the filters which will be loaded during the new launch of the application.  
+Two methods (LoadPreset/SavePreset) are exposed to be able to manually manage loading and saving from the host application.  
+
+```csharp
+// Load Preset
+MyFilterDatagrid.LoadPreset();
+
+// Save Preset
+MyFilterDatagrid.SavePreset();
+
 ```
 
 ## Benchmark
