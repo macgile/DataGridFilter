@@ -1309,6 +1309,8 @@ namespace FilterDataGrid
             // fix TextChanged event fires twice I did not find another solution
             if (textBox == null || textBox.Text == searchText || ItemCollectionView == null) return;
 
+            e.Handled = true;
+
             searchText = textBox.Text;
 
             searchLength = searchText.Length;
