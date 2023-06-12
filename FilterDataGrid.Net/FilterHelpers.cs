@@ -216,6 +216,8 @@ namespace FilterDataGrid
 
         public static T Deserialize<T>(string filename)
         {
+            if (!File.Exists(filename)) return (T)default;
+
             // ReSharper disable once ConvertToUsingDeclaration
             using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {

@@ -25,6 +25,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
+// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UseNameofForDependencyProperty
 // ReSharper disable ConvertIfStatementToNullCoalescingAssignment
 
@@ -68,6 +69,14 @@ namespace FilterDataGrid
             CommandBindings.Add(new CommandBinding(IsChecked, CheckedAllCommand));
             CommandBindings.Add(new CommandBinding(ClearSearchBox, ClearSearchBoxClick));
             CommandBindings.Add(new CommandBinding(RemoveAllFilter, RemoveAllFilterCommand, CanRemoveAllFilter));
+        }
+
+        static FilterDataGrid()
+        {
+            // Register class handler to handle "LoadedEvent" event of "FrameworkContentElement"
+            // OnLoaded method is used to load the filter persistence json file
+            EventManager.RegisterClassHandler(typeof(FilterDataGrid),
+                FrameworkContentElement.LoadedEvent, new RoutedEventHandler(OnLoaded), true);
         }
 
         #endregion Constructors
@@ -161,7 +170,7 @@ namespace FilterDataGrid
 
         #region Private Fields
 
-        private const string FileName = "Employes.json";
+        private string fileName = "persistentFilter.json";
 
         private Stopwatch stopWatchFilter = new Stopwatch();
         private DataGridColumnHeadersPresenter columnHeadersPresenter;
@@ -396,6 +405,10 @@ namespace FilterDataGrid
 
                 // sorting event
                 Sorted += OnSorted;
+
+                // Loaded Event
+                Loaded += OnLoaded;
+
             }
             catch (Exception ex)
             {
@@ -525,6 +538,14 @@ namespace FilterDataGrid
                         ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
                         : ItemsSource?.GetType().GenericTypeArguments.FirstOrDefault();
 
+                // set name of persistent filter json file
+                // The name of the file is defined by the "Name" property of the FilterDatGrid, otherwise
+                // the name of the source collection type is used
+                if (PersistentFilter && collectionType != null)
+                {
+                    fileName = !string.IsNullOrEmpty(Name) ? $"{Name}.json" : $"{collectionType?.Name}.json";
+                }
+
                 // generating custom columns
                 if (!AutoGenerateColumns && collectionType != null) GeneratingCustomsColumn();
             }
@@ -581,6 +602,21 @@ namespace FilterDataGrid
         #endregion Public Methods
 
         #region Private Methods
+
+        /// <summary>
+        /// Loaded Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLineIf(DebugMode, "OnLoaded");
+
+            var filterDatagrid = (FilterDataGrid)sender;
+            if (filterDatagrid?.PersistentFilter == false) return;
+            e.Handled = true;
+            filterDatagrid?.LoadPreset();
+        }
 
         /// <summary>
         ///     Restore filters from json file
@@ -659,6 +695,14 @@ namespace FilterDataGrid
                 }
             }
 
+            // remove all predefined filters when there is no match with the source collection
+            if (Items.Count == 0)
+            {
+                RemoveAllFilterCommand(null, null);
+                // empty json file
+                SavePreset();
+            }
+            
             stopWatchFilter.Stop();
 
             // show elapsed time in UI
@@ -678,7 +722,7 @@ namespace FilterDataGrid
         {
             await Task.Run(() =>
             {
-                var result = JsonConvert.Serialize(FileName, GlobalFilterList);
+                var result = JsonConvert.Serialize(fileName, GlobalFilterList);
                 Debug.WriteLine($"Serialize : {result}");
             });
         }
@@ -690,7 +734,7 @@ namespace FilterDataGrid
         {
             await Task.Run(() =>
             {
-                var result = JsonConvert.Deserialize<List<FilterCommon>>(FileName);
+                var result = JsonConvert.Deserialize<List<FilterCommon>>(fileName);
                 Dispatcher.Invoke(() => { OnFilterPresetChanged(result); });
                 Debug.WriteLine($"DeSerialize : {result}");
             });
