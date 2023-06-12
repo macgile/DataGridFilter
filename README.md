@@ -111,7 +111,19 @@ TargetType="{x:Type control:FilterDataGrid}">
 ## Persistence of filters
 
 >Enabling the **PersistentFilter** property saves a json file in the application folder that contains the status of active filters, any modification of the filters is immediately saved until the closing of the application, it is this state of the filters which will be loaded during the new launch of the application.  
-Two methods (LoadPreset/SavePreset) are exposed to be able to manually manage loading and saving from the host application.  
+The name of the json file is inferred from the name you give to your FilterDataGrid control.
+
+```xml
+x:Name="MyFilterDatagrid"
+```
+
+>If it is not provided, the type name of the source collection is used, for example for a generic list of type Employees, **Employees** will be used  
+
+```csharp
+List<Employees>
+```
+
+>Two methods (LoadPreset/SavePreset) are exposed to be able to manually manage loading and saving from the host application.  
 
 ```csharp
 // Load Preset
