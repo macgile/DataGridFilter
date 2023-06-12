@@ -408,7 +408,6 @@ namespace FilterDataGrid
 
                 // Loaded Event
                 Loaded += OnLoaded;
-
             }
             catch (Exception ex)
             {
@@ -702,7 +701,7 @@ namespace FilterDataGrid
                 // empty json file
                 SavePreset();
             }
-            
+
             stopWatchFilter.Stop();
 
             // show elapsed time in UI
@@ -723,7 +722,7 @@ namespace FilterDataGrid
             await Task.Run(() =>
             {
                 var result = JsonConvert.Serialize(fileName, GlobalFilterList);
-                Debug.WriteLine($"Serialize : {result}");
+                Debug.WriteLineIf(DebugMode, $"Serialize : {result}");
             });
         }
 
@@ -735,11 +734,14 @@ namespace FilterDataGrid
             await Task.Run(() =>
             {
                 var result = JsonConvert.Deserialize<List<FilterCommon>>(fileName);
+
+                if (result == null) return;
                 Dispatcher.Invoke(() => { OnFilterPresetChanged(result); });
-                Debug.WriteLine($"DeSerialize : {result}");
+
+                Debug.WriteLineIf(DebugMode, $"DeSerialize : {result.Count}");
             });
         }
-        
+
         /// <summary>
         ///     Build the item tree
         /// </summary>
@@ -1673,9 +1675,8 @@ namespace FilterDataGrid
                 if (CurrentFilter != null && !CurrentFilter.PreviouslyFilteredItems.Any())
                     RemoveCurrentFilter();
 
-                if(PersistentFilter)
+                if (PersistentFilter)
                     Serialize();
-
             }
             catch (Exception ex)
             {
