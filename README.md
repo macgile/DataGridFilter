@@ -65,7 +65,7 @@ TargetType="{x:Type control:FilterDataGrid}">
   - **ShowRowsCount** : *display the number of rows*, default : false  
   *- If the value passed to **RowHeaderWidth** is greater than the calculation of the width of the column, this is the one that is used.*  
   - **FilterLanguage** : *translation into available language*, default : English  
-  - **PersistentFilter** : *Enable/Disable filter persistence* , default : false  
+  - **PersistentFilter** : *enable/disable filter persistence* , default : false  
   [See below the detail of this feature](#persistence-of-filters)
 
   - **ExcludeFields** : *comma separated fields to exclude from filter, only works in AutoGenerateColumns mode*  
