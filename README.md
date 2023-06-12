@@ -134,6 +134,9 @@ MyFilterDatagrid.SavePreset();
 
 ```
 
+>Be aware that the filters must remain in line with your source collection, for example if you filter on a "True" boolean field and when the application is launched your collection no longer contains the "True" value for this field, applying the filter will cause unexpected results.  
+This may be true for demo applications that use random data generation.
+
 ## Benchmark
 
 > Intel Core i7, 2.93 GHz, 16 GB, Windows 10, 64 bits.  
