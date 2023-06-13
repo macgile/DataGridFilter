@@ -620,8 +620,9 @@ namespace FilterDataGrid
 
         /// <summary>
         ///     Restore filters from json file
+        ///     contribution : ericvdberge
         /// </summary>
-        /// <param name="filterPreset">all the saved filters from a datagrid</param>
+        /// <param name="filterPreset">all the saved filters from a FilterDataGrid</param>
         private void OnFilterPresetChanged(List<FilterCommon> filterPreset)
         {
             Debug.WriteLineIf(DebugMode, "OnFilterPresetChanged");
