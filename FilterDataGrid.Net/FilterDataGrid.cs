@@ -738,7 +738,8 @@ namespace FilterDataGrid
                 var result = JsonConvert.Deserialize<List<FilterCommon>>(fileName);
 
                 if (result == null) return;
-                Dispatcher.Invoke(() => { OnFilterPresetChanged(result); });
+                Dispatcher.BeginInvoke((Action)(() => { OnFilterPresetChanged(result); }),
+                    DispatcherPriority.Normal);
 
                 Debug.WriteLineIf(DebugMode, $"DeSerialize : {result.Count}");
             });
