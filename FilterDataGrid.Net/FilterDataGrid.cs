@@ -1681,8 +1681,8 @@ namespace FilterDataGrid
 
                 // remove the current filter if there is no items to filter
                 if (CurrentFilter != null && !CurrentFilter.PreviouslyFilteredItems.Any())
-                    RemoveCurrentFilter(); // call serialize
-                else if (PersistentFilter) // call serialize
+                    RemoveCurrentFilter(); // call serialize (if persistent filter)
+                else if (PersistentFilter) // call serialize (if persistent filter)
                     Serialize(); 
             }
             catch (Exception ex)

@@ -11,12 +11,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Windows.Controls;
 using System.Runtime.Serialization;
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
-
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace FilterDataGrid
