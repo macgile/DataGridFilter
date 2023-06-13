@@ -25,6 +25,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
+// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UseNameofForDependencyProperty
 // ReSharper disable ConvertIfStatementToNullCoalescingAssignment
 
@@ -68,6 +69,14 @@ namespace FilterDataGrid
             CommandBindings.Add(new CommandBinding(IsChecked, CheckedAllCommand));
             CommandBindings.Add(new CommandBinding(ClearSearchBox, ClearSearchBoxClick));
             CommandBindings.Add(new CommandBinding(RemoveAllFilter, RemoveAllFilterCommand, CanRemoveAllFilter));
+        }
+
+        static FilterDataGrid()
+        {
+            // Register class handler to handle "LoadedEvent" event of "FrameworkContentElement"
+            // OnLoaded method is used to load the filter persistence json file
+            EventManager.RegisterClassHandler(typeof(FilterDataGrid),
+                FrameworkContentElement.LoadedEvent, new RoutedEventHandler(OnLoaded), true);
         }
 
         #endregion Constructors
@@ -140,6 +149,15 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata(false));
 
+        /// <summary>
+        ///     Persistent filter
+        /// </summary>
+        public static readonly DependencyProperty PersistentFilterProperty =
+            DependencyProperty.Register("PersistentFilter",
+                typeof(bool),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(false));
+
         #endregion Public DependencyProperty
 
         #region Public Event
@@ -152,12 +170,15 @@ namespace FilterDataGrid
 
         #region Private Fields
 
+        private const bool DebugMode = false;
+
+        private string fileName = "persistentFilter.json";
         private Stopwatch stopWatchFilter = new Stopwatch();
         private DataGridColumnHeadersPresenter columnHeadersPresenter;
         private bool pending;
         private bool search;
         private Button button;
-        private const bool DebugMode = false;
+
         private Cursor cursor;
         private int searchLength;
         private double minHeight;
@@ -311,6 +332,9 @@ namespace FilterDataGrid
             }
         }
 
+        /// <summary>
+        /// Field Type
+        /// </summary>
         public Type FieldType
         {
             get => fieldType;
@@ -319,6 +343,15 @@ namespace FilterDataGrid
                 fieldType = value;
                 OnPropertyChanged();
             }
+        }
+
+        /// <summary>
+        ///     Persistent filter
+        /// </summary>
+        public bool PersistentFilter
+        {
+            get => (bool)GetValue(PersistentFilterProperty);
+            set => SetValue(PersistentFilterProperty, value);
         }
 
         #endregion Public Properties
@@ -373,6 +406,9 @@ namespace FilterDataGrid
 
                 // sorting event
                 Sorted += OnSorted;
+
+                // Loaded Event
+                Loaded += OnLoaded;
             }
             catch (Exception ex)
             {
@@ -502,6 +538,14 @@ namespace FilterDataGrid
                         ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
                         : ItemsSource?.GetType().GenericTypeArguments.FirstOrDefault();
 
+                // set name of persistent filter json file
+                // The name of the file is defined by the "Name" property of the FilterDatGrid, otherwise
+                // the name of the source collection type is used
+                if (PersistentFilter && collectionType != null)
+                {
+                    fileName = !string.IsNullOrEmpty(Name) ? $"{Name}.json" : $"{collectionType?.Name}.json";
+                }
+
                 // generating custom columns
                 if (!AutoGenerateColumns && collectionType != null) GeneratingCustomsColumn();
             }
@@ -537,7 +581,167 @@ namespace FilterDataGrid
 
         #endregion Protected Methods
 
+        #region Public Methods
+
+        /// <summary>
+        /// Access by the Host application to the method of loading active filters
+        /// </summary>
+        public void LoadPreset()
+        {
+            DeSerialize();
+        }
+
+        /// <summary>
+        /// Access by the Host application to the method of saving active filters
+        /// </summary>
+        public void SavePreset()
+        {
+            Serialize();
+        }
+
+        #endregion Public Methods
+
         #region Private Methods
+
+        /// <summary>
+        /// Loaded Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLineIf(DebugMode, "OnLoaded");
+
+            var filterDatagrid = (FilterDataGrid)sender;
+            if (filterDatagrid?.PersistentFilter == false) return;
+            e.Handled = true;
+            filterDatagrid?.LoadPreset();
+        }
+
+        /// <summary>
+        ///     Restore filters from json file
+        /// </summary>
+        /// <param name="filterPreset">all the saved filters from a datagrid</param>
+        private void OnFilterPresetChanged(List<FilterCommon> filterPreset)
+        {
+            Debug.WriteLineIf(DebugMode, "OnFilterPresetChanged");
+
+            if (filterPreset == null || filterPreset.Count == 0) return;
+
+            // set cursor
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            if (GlobalFilterList.Count > 0)
+                RemoveAllFilterCommand(null, null);
+
+            // reset previous elapsed time
+            ElapsedTime = new TimeSpan(0, 0, 0);
+            stopWatchFilter = Stopwatch.StartNew();
+
+            foreach (var preset in filterPreset)
+            {
+                var columns = Columns
+                    .Where(c =>
+                        (c is DataGridTextColumn dtx && dtx.IsColumnFiltered & dtx.FieldName == preset.FieldName)
+                        || c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered & dtp.FieldName == preset.FieldName
+                        || c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered & dcb.FieldName == preset.FieldName
+                    )
+                    .Select(c => c)
+                    .ToList();
+
+                foreach (var col in columns)
+                {
+                    var filterButton = VisualTreeHelpers.GetHeader(col, this)
+                        ?.FindVisualChild<Button>("FilterButton");
+
+                    var fieldProperty = collectionType.GetPropertyInfo(preset.FieldName);
+
+                    if (fieldProperty != null)
+                        fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ??
+                                    fieldProperty.PropertyType;
+
+                    if (fieldType == typeof(DateTime))
+                    {
+                        object ConvertDateTime(object o)
+                        {
+                            var isSuccess = DateTime.TryParse(o?.ToString(), out var dateTime);
+                            // ReSharper disable once RedundantCast
+                            return isSuccess ? dateTime : (object)(DateTime?)null;
+                        }
+
+                        preset.PreviouslyFilteredItems = preset.PreviouslyFilteredItems
+                            .ToList()
+                            .ConvertAll(ConvertDateTime)
+                            .ToHashSet();
+                    }
+
+                    preset.FieldType = fieldType;
+                    preset.Translate = Translate;
+                    preset.FilterButton = filterButton;
+
+                    FilterState.SetIsFiltered(filterButton, true);
+
+                    preset.AddFilter(criteria);
+
+                    // add current filter to GlobalFilterList
+                    if (GlobalFilterList.All(f => f.FieldName != preset.FieldName))
+                        GlobalFilterList.Add(preset);
+
+                    // set the current field name as the last filter name
+                    lastFilter = preset.FieldName;
+
+                    // apply filter
+                    CollectionViewSource.Refresh();
+                }
+            }
+
+            // remove all predefined filters when there is no match with the source collection
+            if (Items.Count == 0)
+            {
+                RemoveAllFilterCommand(null, null);
+                // empty json file
+                SavePreset();
+            }
+
+            stopWatchFilter.Stop();
+
+            // show elapsed time in UI
+            ElapsedTime = stopWatchFilter.Elapsed;
+
+            // reset cursor
+            ResetCursor();
+
+            Debug.WriteLineIf(DebugMode,
+                $"FilterDataGrid.OnFilterPresetChanged Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
+        }
+
+        /// <summary>
+        /// Serialize filters list
+        /// </summary>
+        private async void Serialize()
+        {
+            await Task.Run(() =>
+            {
+                var result = JsonConvert.Serialize(fileName, GlobalFilterList);
+                Debug.WriteLineIf(DebugMode, $"Serialize : {result}");
+            });
+        }
+
+        /// <summary>
+        /// Deserialize json file
+        /// </summary>
+        private async void DeSerialize()
+        {
+            await Task.Run(() =>
+            {
+                var result = JsonConvert.Deserialize<List<FilterCommon>>(fileName);
+
+                if (result == null) return;
+                Dispatcher.Invoke(() => { OnFilterPresetChanged(result); });
+
+                Debug.WriteLineIf(DebugMode, $"DeSerialize : {result.Count}");
+            });
+        }
 
         /// <summary>
         ///     Build the item tree
@@ -990,11 +1194,8 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void RemoveAllFilterCommand(object sender, ExecutedRoutedEventArgs e)
         {
-
             ElapsedTime = new TimeSpan(0, 0, 0);
-
             if (GlobalFilterList.Count == 0) return;
-
 
             try
             {
@@ -1017,6 +1218,10 @@ namespace FilterDataGrid
                 GlobalFilterList.Clear();
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
                 CollectionViewSource.Refresh();
+
+                // empty json file
+                SavePreset();
+
             }
             catch (Exception ex)
             {
@@ -1056,6 +1261,9 @@ namespace FilterDataGrid
             CurrentFilter.IsFiltered = false;
             CurrentFilter = null;
             ResetCursor();
+
+            if(PersistentFilter)
+                SavePreset();
 
             stopWatchFilter.Stop();
             ElapsedTime = stopWatchFilter.Elapsed;
@@ -1106,6 +1314,8 @@ namespace FilterDataGrid
 
             // fix TextChanged event fires twice I did not find another solution
             if (textBox == null || textBox.Text == searchText || ItemCollectionView == null) return;
+
+            e.Handled = true;
 
             searchText = textBox.Text;
 
@@ -1471,7 +1681,9 @@ namespace FilterDataGrid
 
                 // remove the current filter if there is no items to filter
                 if (CurrentFilter != null && !CurrentFilter.PreviouslyFilteredItems.Any())
-                    RemoveCurrentFilter();
+                    RemoveCurrentFilter(); // call serialize (if persistent filter)
+                else if (PersistentFilter) // call serialize (if persistent filter)
+                    Serialize(); 
             }
             catch (Exception ex)
             {

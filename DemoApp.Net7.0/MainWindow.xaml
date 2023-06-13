@@ -90,6 +90,7 @@
             DateFormatString="d"
             FilterLanguage="English"
             ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
+            PersistentFilter="True"
             ShowElapsedTime="True"
             ShowRowsCount="True"
             ShowStatusBar="True"
