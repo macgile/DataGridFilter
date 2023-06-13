@@ -122,6 +122,7 @@ The name of the json file is inferred from the name you give to your FilterDataG
 >If it is not provided, the type name of the source collection is used, for example for a generic list of type Employees, **Employees** will be used  
 
 ```csharp
+// collection used as ItemsSource
 List<Employees>
 ```
 
