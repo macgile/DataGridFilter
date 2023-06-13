@@ -123,7 +123,8 @@ The name of the json file is inferred from the name you give to your FilterDataG
 List<Employees>
 ```
 
->Two methods (LoadPreset/SavePreset) are exposed to be able to manually manage loading and saving from the host application.
+>Two methods (LoadPreset/SavePreset) are exposed to be able to manually manage loading and saving from the host application.  
+These methods are independent of the **PersistentFilter** property whatever its state.
 
 ```csharp
 // Load Preset
