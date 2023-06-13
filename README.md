@@ -114,7 +114,7 @@ TargetType="{x:Type control:FilterDataGrid}">
 The name of the json file is inferred from the name you give to your FilterDataGrid control.
 
 ```xml
-x:Name="MyFilterDatagrid"
+ <control:FilterDataGrid x:Name="MyFilterDatagrid"
 ```
 
 >If it is not provided, the type name of the source collection is used, for example for a generic list of type Employees, **Employees** will be used  
@@ -123,7 +123,7 @@ x:Name="MyFilterDatagrid"
 List<Employees>
 ```
 
->Two methods (LoadPreset/SavePreset) are exposed to be able to manually manage loading and saving from the host application.  
+>Two methods (LoadPreset/SavePreset) are exposed to be able to manually manage loading and saving from the host application.
 
 ```csharp
 // Load Preset
@@ -131,11 +131,10 @@ MyFilterDatagrid.LoadPreset();
 
 // Save Preset
 MyFilterDatagrid.SavePreset();
-
 ```
 
->Be aware that the filters must remain in line with your source collection, for example if you filter on a "True" boolean field and when the application is launched your collection no longer contains the "True" value for this field, applying the filter will cause unexpected results.  
-This may be true for demo applications that use random data generation.
+>Be aware that the filters must remain consistent with your source collection, for example if you filter on a "True" Boolean field and when the application is launched your collection no longer contains the "True" value for this field, the filter application may cause unexpected results.  
+This is especially true for demo applications that use random data generation.
 
 ## Benchmark
 
