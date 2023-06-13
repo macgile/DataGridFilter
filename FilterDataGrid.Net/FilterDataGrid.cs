@@ -170,14 +170,15 @@ namespace FilterDataGrid
 
         #region Private Fields
 
-        private string fileName = "persistentFilter.json";
+        private const bool DebugMode = false;
 
+        private string fileName = "persistentFilter.json";
         private Stopwatch stopWatchFilter = new Stopwatch();
         private DataGridColumnHeadersPresenter columnHeadersPresenter;
         private bool pending;
         private bool search;
         private Button button;
-        private const bool DebugMode = false;
+
         private Cursor cursor;
         private int searchLength;
         private double minHeight;
@@ -1196,8 +1197,6 @@ namespace FilterDataGrid
             ElapsedTime = new TimeSpan(0, 0, 0);
             if (GlobalFilterList.Count == 0) return;
 
-            // TODO : remove json file ??
-
             try
             {
                 var columns = Columns
@@ -1219,6 +1218,10 @@ namespace FilterDataGrid
                 GlobalFilterList.Clear();
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
                 CollectionViewSource.Refresh();
+
+                // empty json file
+                SavePreset();
+
             }
             catch (Exception ex)
             {
@@ -1258,6 +1261,9 @@ namespace FilterDataGrid
             CurrentFilter.IsFiltered = false;
             CurrentFilter = null;
             ResetCursor();
+
+            if(PersistentFilter)
+                SavePreset();
 
             stopWatchFilter.Stop();
             ElapsedTime = stopWatchFilter.Elapsed;
@@ -1675,10 +1681,9 @@ namespace FilterDataGrid
 
                 // remove the current filter if there is no items to filter
                 if (CurrentFilter != null && !CurrentFilter.PreviouslyFilteredItems.Any())
-                    RemoveCurrentFilter();
-
-                if (PersistentFilter)
-                    Serialize();
+                    RemoveCurrentFilter(); // call serialize
+                else if (PersistentFilter) // call serialize
+                    Serialize(); 
             }
             catch (Exception ex)
             {

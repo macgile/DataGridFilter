@@ -216,28 +216,44 @@ namespace FilterDataGrid
 
         public static T Deserialize<T>(string filename)
         {
-            if (!File.Exists(filename)) return (T)default;
-
-            // ReSharper disable once ConvertToUsingDeclaration
-            using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            try
             {
-                var ser = new DataContractJsonSerializer(typeof(T), GetSettings());
-                return (T)ser.ReadObject(fs);
+                if (!File.Exists(filename)) return (T)default;
+
+                // ReSharper disable once ConvertToUsingDeclaration
+                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    var ser = new DataContractJsonSerializer(typeof(T), GetSettings());
+                    return (T)ser.ReadObject(fs);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"JsonConvert.Deserialize error : {ex.Message}");
+                throw;
             }
         }
 
         public static long Serialize<T>(string filename, T data)
         {
-            // ReSharper disable once ConvertToUsingDeclaration
-            using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read))
+            try
             {
-                using (var writer = JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, false, "  "))
+                // ReSharper disable once ConvertToUsingDeclaration
+                using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read))
                 {
-                    var ser = new DataContractJsonSerializer(typeof(T), GetSettings());
-                    ser.WriteObject(writer, data);
-                    writer.Flush();
-                    return fs.Length;
+                    using (var writer = JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, false, "  "))
+                    {
+                        var ser = new DataContractJsonSerializer(typeof(T), GetSettings());
+                        ser.WriteObject(writer, data);
+                        writer.Flush();
+                        return fs.Length;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"JsonConvert.Serialize error : {ex.Message}");
+                throw;
             }
         }
     }
@@ -563,6 +579,7 @@ namespace FilterDataGrid
         /// <summary>
         ///     Raised when a property on this object has a new value.
         /// </summary>
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion Public Events
