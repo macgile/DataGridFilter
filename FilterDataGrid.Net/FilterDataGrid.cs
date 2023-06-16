@@ -1222,8 +1222,8 @@ namespace FilterDataGrid
                 CollectionViewSource.Refresh();
 
                 // empty json file
-                SavePreset();
-
+                if (PersistentFilter)
+                    SavePreset();
             }
             catch (Exception ex)
             {
@@ -1264,7 +1264,7 @@ namespace FilterDataGrid
             CurrentFilter = null;
             ResetCursor();
 
-            if(PersistentFilter)
+            if (PersistentFilter)
                 SavePreset();
 
             stopWatchFilter.Stop();
@@ -1685,7 +1685,7 @@ namespace FilterDataGrid
                 if (CurrentFilter != null && !CurrentFilter.PreviouslyFilteredItems.Any())
                     RemoveCurrentFilter(); // call serialize (if persistent filter)
                 else if (PersistentFilter) // call serialize (if persistent filter)
-                    Serialize(); 
+                    Serialize();
             }
             catch (Exception ex)
             {
