@@ -107,7 +107,7 @@ TargetType="{x:Type control:FilterDataGrid}">
             x:Key="FilterDatagridStyle" TargetType="{x:Type control:FilterDataGrid}">
             <Setter Property="Margin" Value="10" />
             <Setter Property="RowHeaderWidth" Value="40" />
-  ...
+            ...
   </Style>
  </Application.Resources>
 
