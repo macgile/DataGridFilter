@@ -102,12 +102,17 @@ TargetType="{x:Type control:FilterDataGrid}">
         ResourceId=FilterDataGridStyle}}"~~
 
 ```xml
-<Style
+ <Application.Resources>
+  <Style
             x:Key="FilterDatagridStyle" TargetType="{x:Type control:FilterDataGrid}">
             <Setter Property="Margin" Value="10" />
             <Setter Property="RowHeaderWidth" Value="40" />
-     ...
-</Style>
+  ...
+  </Style>
+ </Application.Resources>
+
+  <!-- usage -->
+  <control:FilterDataGrid Style="{StaticResource FilterDatagridStyle}" ...
 ```
 
 ## Persistence of filters
