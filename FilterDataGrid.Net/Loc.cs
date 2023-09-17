@@ -371,18 +371,18 @@ namespace FilterDataGrid
             new Dictionary<TranslatableElements, string>
             {
                 { TranslatableElements.All, "(Выбрать все)" },
-                { TranslatableElements.Empty, "(Заготовки)" },
+                { TranslatableElements.Empty, "(Пусто)" },
                 { TranslatableElements.Clear, "Очистить фильтр \"{0}\"" },
                 { TranslatableElements.Contains, "Искать (содержит)" },
-                { TranslatableElements.StartsWith, "Искать (hачни с)" },
-                { TranslatableElements.Toggle, "Переключить содержит/начинается с" },
+                { TranslatableElements.StartsWith, "Искать (начинается)" },
+                { TranslatableElements.Toggle, "Переключить содержит/начинается" },
                 { TranslatableElements.Ok, "Ok" },
-                { TranslatableElements.Cancel, "Отмена" },
-                { TranslatableElements.Status, "{0:n0} записей найдено на {1:n0}" },
-                { TranslatableElements.ElapsedTime, "Пройденное время {0:mm}:{0:ss}.{0:ff}" },
+                { TranslatableElements.Cancel, "Отменить" },
+                { TranslatableElements.Status, "{0:n0} записей найдено из {1:n0}" },
+                { TranslatableElements.ElapsedTime, "Затрачено времени {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Проверено" },
-                { TranslatableElements.False, "непроверено" },
-                { TranslatableElements.RemoveAll, "Удалить все фильтры" },
+                { TranslatableElements.False, "Не проверено" },
+                { TranslatableElements.RemoveAll, "Сбросить все фильтры" },
                 { TranslatableElements.Indeterminate, "Неопределенный" },
             });
 
