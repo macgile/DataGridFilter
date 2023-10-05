@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -157,6 +158,17 @@ namespace FilterDataGrid
                 typeof(bool),
                 typeof(FilterDataGrid),
                 new PropertyMetadata(false));
+
+        /// <summary>
+        ///     Filter popup background property.
+        ///     Allows the user to set a custom background color for the filter popup. When nothing is set, the default value is "Transparent".
+        ///     Preferably this should be white, but to avoid problems with other users, it set to transparent due to the fact that this was the default before.
+        /// </summary>
+        public static readonly DependencyProperty FilterPopupBackgroundProperty =
+            DependencyProperty.Register("FilterPopupBackground",
+                typeof(Brush),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(Brushes.Transparent));
 
         #endregion Public DependencyProperty
 
@@ -352,6 +364,15 @@ namespace FilterDataGrid
         {
             get => (bool)GetValue(PersistentFilterProperty);
             set => SetValue(PersistentFilterProperty, value);
+        }
+
+        /// <summary>
+        ///     Filter pop-up background
+        /// </summary>
+        public Brush FilterPopupBackground
+        {
+            get => (Brush)GetValue(FilterPopupBackgroundProperty);
+            set => SetValue(FilterPopupBackgroundProperty, value);
         }
 
         #endregion Public Properties
