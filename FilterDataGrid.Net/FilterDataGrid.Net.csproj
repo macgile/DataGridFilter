@@ -54,7 +54,7 @@
     </PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Users\GILLES\source\repos\macgile\FilterDataGrid.Production\NuGet\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
-   
+
   </PropertyGroup>
 
   <!-- Additional Package Items -->
