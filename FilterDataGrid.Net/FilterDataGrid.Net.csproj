@@ -52,6 +52,8 @@
       Removed pure Net Framework 4.7.2 version of FilterDataGrid.
       Removed ComponentResourceKey from FilterDataGrid style.
     </PackageReleaseNotes>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>C:\Users\GILLES\source\repos\macgile\FilterDataGrid.Production\NuGet\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
 
   </PropertyGroup>
 
