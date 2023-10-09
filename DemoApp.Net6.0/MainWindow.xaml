@@ -93,6 +93,7 @@
             ShowElapsedTime="True"
             ShowRowsCount="True"
             ShowStatusBar="True"
+            FilterPopupBackground="White"
             Style="{StaticResource FilterDatagridStyle}">
             <control:FilterDataGrid.Columns>
                 <control:DataGridTemplateColumn
