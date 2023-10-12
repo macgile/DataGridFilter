@@ -1818,6 +1818,15 @@ namespace FilterDataGrid
         {
             ItemsSourceCount = Items.Count;
             OnPropertyChanged(nameof(ItemsSourceCount));
+
+            // Renumber all rows
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow row)
+                {
+                    row.Header = $"{i + 1}";
+                }
+            }
         }
         #endregion Private Methods
     }
