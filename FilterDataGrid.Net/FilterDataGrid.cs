@@ -12,6 +12,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -515,6 +516,9 @@ namespace FilterDataGrid
                     // reset criteria List
                     criteria.Clear();
 
+                    if (oldValue is INotifyCollectionChanged)
+                        ((INotifyCollectionChanged)oldValue).CollectionChanged -= ItemSource_CollectionChanged;
+
                     // free previous resource
                     CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
 
@@ -522,6 +526,9 @@ namespace FilterDataGrid
                     var scrollViewer = GetTemplateChild("DG_ScrollViewer") as ScrollViewer;
                     scrollViewer?.ScrollToTop();
                 }
+
+                if (newValue is INotifyCollectionChanged)
+                    ((INotifyCollectionChanged)newValue).CollectionChanged += ItemSource_CollectionChanged;
 
                 CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(ItemsSource);
 
@@ -553,11 +560,11 @@ namespace FilterDataGrid
                 }
 
                 // get collection type
-                if (ItemsSourceCount > 0)
-                    // contribution : APFLKUACHA
-                    collectionType = ItemsSource is ICollectionView collectionView
-                        ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
-                        : ItemsSource?.GetType().GenericTypeArguments.FirstOrDefault();
+                //if (ItemsSourceCount > 0) // commented out as this caused a NPE if the ItemSource is empty when attempting to show the filter
+                // contribution : APFLKUACHA
+                collectionType = ItemsSource is ICollectionView collectionView
+                    ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
+                    : ItemsSource?.GetType().GenericTypeArguments.FirstOrDefault();
 
                 // set name of persistent filter json file
                 // The name of the file is defined by the "Name" property of the FilterDatGrid, otherwise
@@ -1807,6 +1814,20 @@ namespace FilterDataGrid
             }
         }
 
+        private void ItemSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            ItemsSourceCount = Items.Count;
+            OnPropertyChanged(nameof(ItemsSourceCount));
+
+            // Renumber all rows
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow row)
+                {
+                    row.Header = $"{i + 1}";
+                }
+            }
+        }
         #endregion Private Methods
     }
 }
