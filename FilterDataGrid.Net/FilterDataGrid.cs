@@ -169,7 +169,7 @@ namespace FilterDataGrid
             DependencyProperty.Register("FilterPopupBackground",
                 typeof(Brush),
                 typeof(FilterDataGrid),
-                new PropertyMetadata(Brushes.Transparent));
+                new PropertyMetadata(null));
 
         #endregion Public DependencyProperty
 
