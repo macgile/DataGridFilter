@@ -483,6 +483,8 @@
                 PlacementTarget="{Binding ElementName=ContainerFilterGrid}"
                 StaysOpen="{StaticResource StayOpen}">
                 <Popup.Resources>
+
+                    <!--  default background color when the value is not provided by the "FilterPopupBackground" DependencyProperty  -->
                     <SolidColorBrush
                         x:Key="BackgroundColor"
                         Opacity="1"
@@ -493,13 +495,6 @@
                         Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Foreground, Converter={StaticResource SolidBrushToColorConverter}}" />
                 </Popup.Resources>
 
-                <!--
-                Fix default background color of border when value is not provided
-                Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=FilterPopupBackground}"
-                    <Border.BorderBrush>
-                        <SolidColorBrush Opacity="0.4" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Foreground, Converter={StaticResource SolidBrushToColorConverter}}" />
-                    </Border.BorderBrush>
-                -->
                 <Border
                     x:Name="PopUpBorder"
                     Padding="0"

@@ -45,9 +45,9 @@ namespace FilterDataGrid
         /// </summary>
         public FilterDataGrid()
         {
+            Debug.WriteLineIf(DebugMode, "FilterDataGrid.Constructor");    
+            
             DefaultStyleKey = typeof(FilterDataGrid);
-
-            Debug.WriteLineIf(DebugMode, "FilterDataGrid.Constructor");
 
             // load resources
             var resourceDictionary = new ResourceDictionary
@@ -162,8 +162,9 @@ namespace FilterDataGrid
 
         /// <summary>
         ///     Filter popup background property.
-        ///     Allows the user to set a custom background color for the filter popup. When nothing is set, the default value is "Transparent".
-        ///     Preferably this should be white, but to avoid problems with other users, it set to transparent due to the fact that this was the default before.
+        ///     Allows the user to set a custom background color for the filter popup.
+        ///     When nothing is set, the default value is null, which tells TargetNullValue
+        ///     to bind the default host window background color.
         /// </summary>
         public static readonly DependencyProperty FilterPopupBackgroundProperty =
             DependencyProperty.Register("FilterPopupBackground",
