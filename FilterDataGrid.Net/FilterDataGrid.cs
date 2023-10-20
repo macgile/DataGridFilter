@@ -45,9 +45,9 @@ namespace FilterDataGrid
         /// </summary>
         public FilterDataGrid()
         {
+            Debug.WriteLineIf(DebugMode, "FilterDataGrid.Constructor");    
+            
             DefaultStyleKey = typeof(FilterDataGrid);
-
-            Debug.WriteLineIf(DebugMode, "FilterDataGrid.Constructor");
 
             // load resources
             var resourceDictionary = new ResourceDictionary
