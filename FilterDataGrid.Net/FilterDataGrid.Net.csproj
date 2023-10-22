@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>FilterDataGrid</RootNamespace>
     <AssemblyName>FilterDataGrid</AssemblyName>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <PropertyGroup>

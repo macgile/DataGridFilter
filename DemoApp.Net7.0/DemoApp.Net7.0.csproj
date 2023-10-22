@@ -5,6 +5,7 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <RootNamespace>DemoApp.Net7._0</RootNamespace>
     <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <!--<RestoreAdditionalProjectSources>././FilterDataGrid.Net/bin/Debug</RestoreAdditionalProjectSources>-->
     <!--<PackageReference Include="FilterDataGrid" Version="1.2.7" />-->
   </PropertyGroup>
