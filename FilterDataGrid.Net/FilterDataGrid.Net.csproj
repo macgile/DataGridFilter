@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48-windows;netcoreapp3.1;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48-windows;netcoreapp3.1;net6.0-windows;net7.0-windows</TargetFrameworks>
     <OutputType>Library</OutputType>
     <UseWPF>true</UseWPF>
     <RootNamespace>FilterDataGrid</RootNamespace>
@@ -21,7 +21,7 @@
     <PackageOutputPath>..\NuGet</PackageOutputPath>
 
     <!-- Package version -->
-    <Version>1.2.7</Version>
+    <Version>1.2.8</Version>
 
     <IsPublishable>False</IsPublishable>
     <NeutralLanguage />
@@ -36,8 +36,6 @@
     <RepositoryType>GitHub</RepositoryType>
     <RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
 
-
-
     <Title>A DataGrid control that implements filters for each column like Excel, automatically or custom generated.</Title>
     <Description>
       A DataGrid control that inherits from the base DataGrid control class and override some methods to
@@ -47,11 +45,11 @@
     </Description>
     <PackageTags>DataGrid Excel Filter WPF C# Control .Net .NetCore Free</PackageTags>
     <PackageReleaseNotes>
-      Net6.0 and Net7.0 support.
-      Added Japanese, Hungarian, Turkish and Traditional Chinese languages.
-      Translation improvement.
-      Removed pure Net Framework 4.7.2 version of FilterDataGrid.
-      Removed ComponentResourceKey from FilterDataGrid style.
+      Support for nested objects by @RaceX58
+      Support for persistent filters in collaboration with @ericvdberge
+      Support indeterminate state for boolean values.
+      Fix null or empty value filtering.
+      Removing net.5.0 support
     </PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>C:\Users\GILLES\source\repos\macgile\FilterDataGrid.Production\NuGet\FilterDataGrid.snk</AssemblyOriginatorKeyFile>

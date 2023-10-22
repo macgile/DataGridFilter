@@ -142,7 +142,8 @@ MyFilterDatagrid.LoadPreset();
 MyFilterDatagrid.SavePreset();
 ```
 
->Be aware that the filters must remain consistent with your source collection, for example if you filter on a "True" Boolean field and when the application is launched your collection no longer contains the "True" value for this field, the filter application may cause unexpected results.  
+>Be aware that filters must remain consistent with your source collection.  
+For example, if you filter the year 2020 and exclude all other years and when you launch the application your collection has changed, years have been added, the filtering can cause unexpected results.  
 This is especially true for demo applications that use random data generation.
 
 ## Benchmark
