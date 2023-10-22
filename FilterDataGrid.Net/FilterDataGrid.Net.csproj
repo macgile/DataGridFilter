@@ -16,11 +16,11 @@
     <!-- Do not remove this line -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageOutputPath>..\NuGet</PackageOutputPath>
 
     <!-- Package version -->
-    <Version>1.2.7</Version>
+    <Version>1.2.9</Version>
 
     <IsPublishable>False</IsPublishable>
     <NeutralLanguage />
