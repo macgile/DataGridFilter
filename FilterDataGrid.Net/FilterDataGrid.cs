@@ -1132,7 +1132,7 @@ namespace FilterDataGrid
             var combinedFilters = CustomFilters == null
                                     ? criteria
                                     : criteria.Concat(CustomFilters).ToLookup(x => x.Key, x => x.Value).ToDictionary(grp => grp.Key, grp => grp.First());
-            return criteria.Values
+            return combinedFilters.Values
                 .Aggregate(true, (prevValue, predicate) => prevValue && predicate(o));
         }
 
