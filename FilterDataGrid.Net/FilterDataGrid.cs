@@ -45,8 +45,8 @@ namespace FilterDataGrid
         /// </summary>
         public FilterDataGrid()
         {
-            Debug.WriteLineIf(DebugMode, "FilterDataGrid.Constructor");    
-            
+            Debug.WriteLineIf(DebugMode, "FilterDataGrid.Constructor");
+
             DefaultStyleKey = typeof(FilterDataGrid);
 
             // load resources
@@ -172,6 +172,15 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata(null));
 
+        /// <summary>
+        ///     Apply Custom Filters to the collection
+        ///     Allows the user to add additional custom filters to be applied on collection.
+        /// </summary>        
+        public static readonly DependencyProperty CustomFiltersProperty =
+         DependencyProperty.Register("CustomFilters",
+             typeof(Dictionary<string, Predicate<object>>),
+             typeof(FilterDataGrid),
+             new PropertyMetadata(null, new PropertyChangedCallback(CustomFiltersValueChanged)));
         #endregion Public DependencyProperty
 
         #region Public Event
@@ -377,6 +386,14 @@ namespace FilterDataGrid
             set => SetValue(FilterPopupBackgroundProperty, value);
         }
 
+        /// <summary>
+        ///     Filter custom filters
+        /// </summary>
+        public Dictionary<string, Predicate<object>> CustomFilters
+        {
+            get => (Dictionary<string, Predicate<object>>)GetValue(CustomFiltersProperty);
+            set => SetValue(CustomFiltersProperty, value);
+        }
         #endregion Public Properties
 
         #region Private Properties
@@ -1112,6 +1129,9 @@ namespace FilterDataGrid
         /// <returns></returns>
         private bool Filter(object o)
         {
+            var combinedFilters = CustomFilters == null
+                                    ? criteria
+                                    : criteria.Concat(CustomFilters).ToLookup(x => x.Key, x => x.Value).ToDictionary(grp => grp.Key, grp => grp.First());
             return criteria.Values
                 .Aggregate(true, (prevValue, predicate) => prevValue && predicate(o));
         }
@@ -1830,5 +1850,33 @@ namespace FilterDataGrid
             }
         }
         #endregion Private Methods
+
+        #region Private Events
+        private static void CustomFiltersValueChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            try
+            {
+                var filterDataGrid = dependencyObject as FilterDataGrid;
+                if (filterDataGrid == null) return;
+
+                if (filterDataGrid.CollectionViewSource == null) return;
+
+                filterDataGrid.CustomFilters = (Dictionary<string, Predicate<object>>)eventArgs.NewValue;
+                filterDataGrid.CustomFiltersValueChanged();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"FilterDataGrid.CustomFiltersValueChanged error : {ex.Message}");
+                throw;
+            }
+        }
+        private void CustomFiltersValueChanged()
+        {
+            if (this.CollectionViewSource != null)
+            {
+                this.CollectionViewSource.Filter = Filter;
+            }
+        }
+        #endregion
     }
 }
