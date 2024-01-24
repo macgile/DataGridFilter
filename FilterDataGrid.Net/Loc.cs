@@ -1,4 +1,4 @@
-﻿#region (c) 2022 Gilles Macabies All right reserved
+#region (c) 2022 Gilles Macabies All right reserved
 
 // Solution   : FilterDataGrid
 // Projet     : FilterDataGrid
@@ -17,6 +17,7 @@
 // Traditional Chinese  : BeCare4
 // Russian              : anyousib
 // Hugarian             : dankovics.jozsef
+// Hebrew               : abaye123
 
 // The simplification of the translation is achieved by dankovics.jozsef
 // TranslatableElements, ILanguageDictionary, LanguageDictionary
@@ -44,6 +45,7 @@ namespace FilterDataGrid
         English,
         French,
         German,
+        Hebrew,
         Hungarian,
         Italian,
         Japanese,
@@ -287,6 +289,25 @@ namespace FilterDataGrid
                 { TranslatableElements.False, "Nicht ausgewählt" },
                 { TranslatableElements.RemoveAll, "Alle Filter entfernen" },
                 { TranslatableElements.Indeterminate, "Unbestimmt" },
+            });
+
+        private static ILanguageDictionary Hebrew { get; } = new LanguageDictionary("Hebrew", new CultureInfo("he-IL"),
+            new Dictionary<TranslatableElements, string>
+            {
+                { TranslatableElements.All, "(בחר הכל)" },
+                { TranslatableElements.Empty, "(ריק)" },
+                { TranslatableElements.Clear, "נקה מסנן \"{0}\"" },
+                { TranslatableElements.Contains, "חיפוש (מכיל)" },
+                { TranslatableElements.StartsWith, "חיפוש (מתחיל ב)" },
+                { TranslatableElements.Toggle, "החלף מכיל/מתחיל ב" },
+                { TranslatableElements.Ok, "אישור" },
+                { TranslatableElements.Cancel, "בטל" },
+                { TranslatableElements.Status, "{0:n0} רשומות נמצאו ב {1:n0}" },
+                { TranslatableElements.ElapsedTime, "הזמן שחלף {0:mm}:{0:ss}.{0:ff}" },
+                { TranslatableElements.True, "נבחר" },
+                { TranslatableElements.False, "לא נבחר" },
+                { TranslatableElements.RemoveAll, "הסר את כל המסננים" },
+                { TranslatableElements.Indeterminate, "לא מוגדר" },
             });
 
         private static ILanguageDictionary Hungarian { get; } = new LanguageDictionary("Hungarian",
