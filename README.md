@@ -16,7 +16,7 @@ for each column like Excel, in automatic or custom generation.
 
 Support for nested objects and filter persistence.  
 
-Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Hungarian, Italian, Japanese, Polish, Russian, Spanish, Turkish.**
+Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Hebrew, Hungarian, Italian, Japanese, Polish, Russian, Spanish, Turkish.**
 
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
