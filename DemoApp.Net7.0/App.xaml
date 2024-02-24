@@ -17,7 +17,7 @@
             <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
             <Setter Property="BorderBrush" Value="LightSlateGray" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="IsReadOnly" Value="True" />
+            <!--<Setter Property="IsReadOnly" Value="True" />-->
         </Style>
     </Application.Resources>
 </Application>

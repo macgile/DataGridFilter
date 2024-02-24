@@ -451,37 +451,83 @@ namespace FilterDataGrid
 
             try
             {
-                if (e.Column.GetType() != typeof(System.Windows.Controls.DataGridTextColumn)) return;
 
-                var column = new DataGridTextColumn
+
+                var type = e.Column.GetType();
+                //var con = type == typeof(DataGridTextColumn)
+                //    ? (DataGridTextColumn) new DataGridTextColumn()
+                //    : (DataGridComboBoxColumn)new DataGridComboBoxColumn();
+
+
+
+                if (e.Column.GetType() != typeof(System.Windows.Controls.DataGridTextColumn) &&
+                    !e.PropertyType.IsEnum) return;
+                //{
+                //    // type of column is DataGridComboBoxColumn
+                //    if (!e.PropertyType.IsEnum) 
+
+                //    var  column = new DataGridComboBoxColumn()
+                //    {
+                //        ItemsSource= ((System.Windows.Controls.DataGridComboBoxColumn)e.Column).ItemsSource,
+                //        SelectedItemBinding = new Binding(e.PropertyName),
+                //        FieldName = e.PropertyName,
+                //        Header = e.Column.Header.ToString(),
+                //        HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate"),
+                //        IsColumnFiltered = true
+                //    };
+                //    e.Column = column;
+                //}
+                else
                 {
-                    Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture /* StringFormat */ },
-                    FieldName = e.PropertyName,
-                    Header = e.Column.Header.ToString(),
-                    IsColumnFiltered = false
-                };
 
-                // get type
-                fieldType = Nullable.GetUnderlyingType(e.PropertyType) ?? e.PropertyType;
+                    if (e.PropertyType.IsEnum)
+                    {
+                        var column = new DataGridComboBoxColumn()
+                        {
+                            ItemsSource = ((System.Windows.Controls.DataGridComboBoxColumn)e.Column).ItemsSource,
+                            SelectedItemBinding = new Binding(e.PropertyName),
+                            FieldName = e.PropertyName,
+                            Header = e.Column.Header.ToString(),
+                            HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate"),
+                            IsColumnFiltered = true
+                        };
 
-                // apply the format string provided
-                if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
-                    column.Binding.StringFormat = DateFormatString;
+                        e.Column = column;
+                    }
+                    else
+                    {
+                        var column = new DataGridTextColumn
+                        {
+                            Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture /* StringFormat */ },
+                            FieldName = e.PropertyName,
+                            Header = e.Column.Header.ToString(),
+                            IsColumnFiltered = false
+                        };
 
-                // if the type does not belong to the "System" namespace, disable sorting (excludes nested objects)
-                if (!fieldType.IsSystemType())
-                {
-                    column.CanUserSort = false;
+                        // get type
+                        fieldType = Nullable.GetUnderlyingType(e.PropertyType) ?? e.PropertyType;
+
+                        // apply the format string provided
+                        if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
+                            column.Binding.StringFormat = DateFormatString;
+
+                        // if the type does not belong to the "System" namespace, disable sorting (excludes nested objects)
+                        if (!fieldType.IsSystemType())
+                        {
+                            column.CanUserSort = false;
+                        }
+                        // add the "DataGridHeaderTemplate" template if the field is not excluded 
+                        else if (fieldType.IsSystemType() && excludedFields?.FindIndex(c =>
+                                     string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
+                        {
+                            column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+                            column.IsColumnFiltered = true;
+                        }
+                        e.Column = column;
+
+                    }
+
                 }
-                // add the "DataGridHeaderTemplate" template if the field is not excluded 
-                else if (fieldType.IsSystemType() && excludedFields?.FindIndex(c =>
-                             string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
-                {
-                    column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
-                    column.IsColumnFiltered = true;
-                }
-
-                e.Column = column;
             }
             catch (Exception ex)
             {
@@ -916,6 +962,7 @@ namespace FilterDataGrid
                     .Where(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered)
                                 || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered)
                                 || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered)
+                                || (c is DataGridComboBoxColumn dbx && dbx.IsColumnFiltered)
                     )
                     .Select(c => c)
                     .ToList();
@@ -979,6 +1026,20 @@ namespace FilterDataGrid
                             // culture
                             if (((Binding)column.Binding).ConverterCulture == null)
                                 ((Binding)column.Binding).ConverterCulture = Translate.Culture;
+
+                            // template
+                            column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+                        }
+
+                        if (columnType == typeof(DataGridComboBoxColumn))
+                        {
+                            var column = (DataGridComboBoxColumn)col;
+
+                            column.FieldName = ((Binding)column.SelectedValueBinding).Path.Path;
+
+                            // culture
+                            if (((Binding)column.SelectedValueBinding).ConverterCulture == null)
+                                ((Binding)column.SelectedValueBinding).ConverterCulture = Translate.Culture;
 
                             // template
                             column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
@@ -1232,8 +1293,9 @@ namespace FilterDataGrid
                 var columns = Columns
                     .Where(c =>
                         (c is DataGridTextColumn dtx && dtx.IsColumnFiltered)
-                        || c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered
-                        || c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered
+                        || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered)
+                        || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered)
+                        || (c is DataGridComboBoxColumn dbx && dbx.IsColumnFiltered)
                     )
                     .Select(c => c)
                     .ToList();
@@ -1469,6 +1531,15 @@ namespace FilterDataGrid
                     fieldName = column.FieldName;
                 }
 
+                if (columnType == typeof(DataGridComboBoxColumn))
+                {
+                    var column = (DataGridComboBoxColumn)header.Column;
+                    fieldName = column.FieldName;
+
+                    // DisplayMemberPath = column.DisplayMemberPath; 
+                    // SelectedValuePath = column.SelectedValuePath; 
+                }
+                
                 // invalid fieldName
                 if (string.IsNullOrEmpty(fieldName)) return;
 

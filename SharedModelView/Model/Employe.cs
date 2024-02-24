@@ -2,13 +2,12 @@
 
 // Author     : Gilles Macabies
 // Solution   : FilterDataGrid
-// Projet     : DemoApp.Net6.0
+// Projet     : DemoApp.Net7.0
 // File       : Employe.cs
-// Created    : 13/11/2022
+// Created    : 20/05/2023
 // 
 
 #endregion
-
 
 using System;
 
@@ -28,7 +27,7 @@ namespace SharedModelView
         #region Public Constructors
 
         public Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate,
-            bool? manager = false)
+            bool? manager = false, Departments department = Departments.None)
         {
             LastName = lastName;
             FirstName = firstName;
@@ -36,6 +35,7 @@ namespace SharedModelView
             Age = age;
             StartDate = startDate;
             Manager = manager;
+            Department = department;
         }
 
         #endregion Public Constructors
@@ -48,7 +48,21 @@ namespace SharedModelView
         public double? Salary { get; set; }
         public int? Age { get; set; }
         public DateTime? StartDate { get; set; }
+        public Departments Department { get; set; }
 
         #endregion Public Properties
     }
+
+    public enum Departments
+    {
+        None,
+        Administration,
+        Finance,
+        HumanResources,
+        Logistics,
+        Marketing,
+        Production,
+        Sales
+    }
+
 }

@@ -12,6 +12,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Windows.Controls;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable CheckNamespace
@@ -136,7 +137,10 @@ namespace SharedModelView.ModelView
 
                 // is manager (three states)
                 // ReSharper disable once RedundantCast
-                (Rnd.Next() % 3 == 2) ? (bool?)null : Rnd.Next() % 2 == 1
+                (Rnd.Next() % 3 == 2) ? (bool?)null : Rnd.Next() % 2 == 1,
+
+                (Departments)Rnd.Next(0, Enum.GetNames(typeof(Departments)).Length)
+
             );
             return emp;
         }
