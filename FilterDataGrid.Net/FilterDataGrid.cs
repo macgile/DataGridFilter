@@ -452,80 +452,55 @@ namespace FilterDataGrid
             try
             {
 
-
-                var type = e.Column.GetType();
-                //var con = type == typeof(DataGridTextColumn)
-                //    ? (DataGridTextColumn) new DataGridTextColumn()
-                //    : (DataGridComboBoxColumn)new DataGridComboBoxColumn();
-
-
+                // TODO : refactoring OnAutoGeneratingColumn, add exclude enum field
 
                 if (e.Column.GetType() != typeof(System.Windows.Controls.DataGridTextColumn) &&
                     !e.PropertyType.IsEnum) return;
-                //{
-                //    // type of column is DataGridComboBoxColumn
-                //    if (!e.PropertyType.IsEnum) 
 
-                //    var  column = new DataGridComboBoxColumn()
-                //    {
-                //        ItemsSource= ((System.Windows.Controls.DataGridComboBoxColumn)e.Column).ItemsSource,
-                //        SelectedItemBinding = new Binding(e.PropertyName),
-                //        FieldName = e.PropertyName,
-                //        Header = e.Column.Header.ToString(),
-                //        HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate"),
-                //        IsColumnFiltered = true
-                //    };
-                //    e.Column = column;
-                //}
+                if (e.PropertyType.IsEnum)
+                {
+                    var column = new DataGridComboBoxColumn()
+                    {
+                        ItemsSource = ((System.Windows.Controls.DataGridComboBoxColumn)e.Column).ItemsSource,
+                        SelectedItemBinding = new Binding(e.PropertyName),
+                        FieldName = e.PropertyName,
+                        Header = e.Column.Header.ToString(),
+                        HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate"),
+                        IsColumnFiltered = true
+                    };
+
+                    e.Column = column;
+                }
                 else
                 {
-
-                    if (e.PropertyType.IsEnum)
+                    var column = new DataGridTextColumn
                     {
-                        var column = new DataGridComboBoxColumn()
-                        {
-                            ItemsSource = ((System.Windows.Controls.DataGridComboBoxColumn)e.Column).ItemsSource,
-                            SelectedItemBinding = new Binding(e.PropertyName),
-                            FieldName = e.PropertyName,
-                            Header = e.Column.Header.ToString(),
-                            HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate"),
-                            IsColumnFiltered = true
-                        };
+                        Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture /* StringFormat */ },
+                        FieldName = e.PropertyName,
+                        Header = e.Column.Header.ToString(),
+                        IsColumnFiltered = false
+                    };
 
-                        e.Column = column;
-                    }
-                    else
+                    // get type
+                    fieldType = Nullable.GetUnderlyingType(e.PropertyType) ?? e.PropertyType;
+
+                    // apply the format string provided
+                    if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
+                        column.Binding.StringFormat = DateFormatString;
+
+                    // if the type does not belong to the "System" namespace, disable sorting (excludes nested objects)
+                    if (!fieldType.IsSystemType())
                     {
-                        var column = new DataGridTextColumn
-                        {
-                            Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture /* StringFormat */ },
-                            FieldName = e.PropertyName,
-                            Header = e.Column.Header.ToString(),
-                            IsColumnFiltered = false
-                        };
-
-                        // get type
-                        fieldType = Nullable.GetUnderlyingType(e.PropertyType) ?? e.PropertyType;
-
-                        // apply the format string provided
-                        if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
-                            column.Binding.StringFormat = DateFormatString;
-
-                        // if the type does not belong to the "System" namespace, disable sorting (excludes nested objects)
-                        if (!fieldType.IsSystemType())
-                        {
-                            column.CanUserSort = false;
-                        }
-                        // add the "DataGridHeaderTemplate" template if the field is not excluded 
-                        else if (fieldType.IsSystemType() && excludedFields?.FindIndex(c =>
-                                     string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
-                        {
-                            column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
-                            column.IsColumnFiltered = true;
-                        }
-                        e.Column = column;
-
+                        column.CanUserSort = false;
                     }
+                    // add the "DataGridHeaderTemplate" template if the field is not excluded 
+                    else if (fieldType.IsSystemType() && excludedFields?.FindIndex(c =>
+                                 string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
+                    {
+                        column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+                        column.IsColumnFiltered = true;
+                    }
+                    e.Column = column;
 
                 }
             }
