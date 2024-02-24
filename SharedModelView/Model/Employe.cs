@@ -22,6 +22,18 @@ using System;
 
 namespace SharedModelView
 {
+    public enum Departments
+    {
+        None,
+        Administration,
+        Finance,
+        HumanResources,
+        Logistics,
+        Marketing,
+        Production,
+        Sales
+    }
+
     public class Employe
     {
         #region Public Constructors
@@ -42,27 +54,13 @@ namespace SharedModelView
 
         #region Public Properties
 
+        public int? Age { get; set; }
+        public Departments Department { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool? Manager { get; set; }
         public double? Salary { get; set; }
-        public int? Age { get; set; }
         public DateTime? StartDate { get; set; }
-        public Departments Department { get; set; }
-
         #endregion Public Properties
     }
-
-    public enum Departments
-    {
-        None,
-        Administration,
-        Finance,
-        HumanResources,
-        Logistics,
-        Marketing,
-        Production,
-        Sales
-    }
-
 }
