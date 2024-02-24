@@ -229,7 +229,6 @@
                             <ScrollViewer
                                 x:Name="DG_ScrollViewer"
                                 Grid.Row="0"
-                                CanContentScroll="True"
                                 Focusable="false">
                                 <ScrollViewer.Template>
                                     <ControlTemplate TargetType="{x:Type ScrollViewer}">
