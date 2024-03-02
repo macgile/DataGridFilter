@@ -98,8 +98,8 @@ TargetType="{x:Type control:FilterDataGrid}">
                                       FieldName="LastName" ... />  
   ```
   
-- **DataGridComboBoxColumn**  
-    > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required*
+  - **DataGridComboBoxColumn**  
+      > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required*
 
   ```xml
   <control:FilterDataGrid.Columns>   
