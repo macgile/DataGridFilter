@@ -2,6 +2,7 @@
 
 <!--
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
+https://github.com/ikatyang/emoji-cheat-sheet/tree/master?tab=readme-ov-file#other-symbol
 -->
 
 ![Nuget package](https://img.shields.io/nuget/v/FilterDataGrid)
@@ -71,7 +72,7 @@ TargetType="{x:Type control:FilterDataGrid}">
   [See below the detail of this feature](#persistence-of-filters)
 
   - **ExcludeFields** : *name of fields separated by commas to exclude from the filter, only works in AutoGenerateColumns mode*  
-  - **ExcludeColumns** : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
+  - :new: **ExcludeColumns** : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
   - **DateFormatString** : *date display format*, default : "d"  
 
   > warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise
@@ -88,7 +89,7 @@ TargetType="{x:Type control:FilterDataGrid}">
   ```
 
 - **Custom TemplateColumn**  
-     > warning: ***FieldName** property of **DataGridTemplateColumn** is required*
+     > :warning: ***FieldName** property of **DataGridTemplateColumn** is required*
 
   ```xml
   <control:FilterDataGrid.Columns>   
@@ -96,8 +97,8 @@ TargetType="{x:Type control:FilterDataGrid}">
                                       FieldName="LastName" ... />  
   ```
   
-- **Custom ComboBoxColumn**  
-    > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required.    
+- :new: **Custom ComboBoxColumn**  
+    > :warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required.    
     The **SelectedValuePath** property is not required in case **ItemsSource** is an enumeration.  
     In the case where the field is a nested object, enter the entire path of this field, e.g: **Country.Name***
     >
