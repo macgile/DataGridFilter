@@ -338,7 +338,7 @@ namespace FilterDataGrid
                 { TranslatableElements.Contains, "検索 (含む)" },
                 { TranslatableElements.StartsWith, "検索 (で始まる)" },
                 { TranslatableElements.Toggle, "含む/で始まるの切り替え" },
-                { TranslatableElements.Ok, "确定" },
+                { TranslatableElements.Ok, "確定" },
                 { TranslatableElements.Cancel, "取り消し" },
                 { TranslatableElements.Status, "{1:n0} レコード中 {0:n0}個が見つかりました " },
                 { TranslatableElements.ElapsedTime, "経過時間{0:mm}:{0:ss}.{0:ff}" },
