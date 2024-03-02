@@ -86,12 +86,20 @@ TargetType="{x:Type control:FilterDataGrid}">
   ```
 
 - **Custom TemplateColumn**  
-     > :warning: ***FieldName** property of **DataGridTemplateColumn** is required*
+     > warning: ***FieldName** property of **DataGridTemplateColumn** is required*
 
   ```xml
   <control:FilterDataGrid.Columns>   
       <control:DataGridTemplateColumn IsColumnFiltered="True"
-                               FieldName="LastName" ... />
+                                      FieldName="LastName" ... />  
+  ```
+  
+  - **DataGridComboBoxColumn**  
+      > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required*
+
+  ```xml
+  <control:FilterDataGrid.Columns>   
+      <control:DataGridComboBoxColumn     IsColumnFiltered="True" ... />  
   ```
 
 ## Global Style

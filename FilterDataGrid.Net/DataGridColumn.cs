@@ -8,13 +8,26 @@
 
 #endregion (c) 2019 Gilles Macabies
 
+using System.Collections.Generic;
 using System.Windows;
 
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable CheckNamespace
 
 namespace FilterDataGrid
 {
+
+    public class ItemsSourceMembers
+    {
+        #region Public Properties
+
+        public string DisplayMember { get; set; }
+        public string SelectedValue { get; set; }
+
+        #endregion Public Properties
+    }
+
     public sealed class DataGridCheckBoxColumn : System.Windows.Controls.DataGridCheckBoxColumn
     {
         #region Public Fields
@@ -54,6 +67,13 @@ namespace FilterDataGrid
 
     public sealed class DataGridComboBoxColumn : System.Windows.Controls.DataGridComboBoxColumn
     {
+        #region Public Properties
+
+        public List<ItemsSourceMembers> ComboBoxItemsSource { get; set; }
+        public bool IsSingle { get; set; }
+
+        #endregion Public Properties
+
         #region Public Fields
 
         /// <summary>
@@ -92,7 +112,7 @@ namespace FilterDataGrid
     public sealed class DataGridTemplateColumn : System.Windows.Controls.DataGridTemplateColumn
     {
         #region Public Fields
-
+      
         /// <summary>
         /// FieldName Dependency Property.
         /// </summary>

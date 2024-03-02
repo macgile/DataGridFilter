@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net48-windows;netcoreapp3.1;net6.0-windows;net7.0-windows</TargetFrameworks>
     <OutputType>Library</OutputType>
@@ -7,6 +6,11 @@
     <RootNamespace>FilterDataGrid</RootNamespace>
     <AssemblyName>FilterDataGrid</AssemblyName>
   </PropertyGroup>
+
+  <!--
+net48-windows;netcoreapp3.1;net6.0-windows;
+-->
+
 
   <PropertyGroup>
 
@@ -34,7 +38,6 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>GitHub</RepositoryType>
     <RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
-
 
 
     <Title>A DataGrid control that implements filters for each column like Excel, automatically or custom generated.</Title>

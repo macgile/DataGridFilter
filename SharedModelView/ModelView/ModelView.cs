@@ -59,7 +59,7 @@ namespace SharedModelView.ModelView
 
         public int[] NumberItems { get; } =
         {
-            /*10, 100, 1000,*/ 10_000, 100_000, 500_000, 1_000_000
+            10, 100, 1000, 10_000, 100_000, 500_000, 1_000_000
         };
 
         /// <summary>

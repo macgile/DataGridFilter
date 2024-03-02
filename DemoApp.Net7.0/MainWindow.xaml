@@ -8,17 +8,27 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sharedModelView="clr-namespace:SharedModelView"
     Title="Net7.0 Demo App"
-    Width="1024"
+    Width="1280"
     Height="900"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.Resources>
+        <SolidColorBrush x:Key="ClBr" Color="#FFE3E4E3" />
+        <sharedModelView:Countries x:Key="Countries" />
+
         <ObjectDataProvider
             x:Key="EnumDepartments"
             MethodName="GetValues"
             ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type Type="sharedModelView:Departments" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <!--<sharedModelView:Countries x:Key="Countries" />-->
+        <ObjectDataProvider x:Key="CountriesList" ObjectType="{x:Type sharedModelView:Countries}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="sharedModelView:Countries" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>
@@ -108,6 +118,7 @@
             ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}">
             <control:FilterDataGrid.Columns>
+
                 <control:DataGridTemplateColumn
                     FieldName="FirstName"
                     Header="First name"
@@ -140,17 +151,41 @@
                     Header="Manager"
                     IsColumnFiltered="True" />
 
-                <!--
-                    DisplayMemberPath="Department"
-                    SelectedValuePath
-                -->
+                <!--  Nested object  -->
+                <!--<control:DataGridTextColumn
+                    Binding="{Binding Country.Name}"
+                    Header="Country.Name Nested"
+                    IsColumnFiltered="True"
+                    IsReadOnly="True" />-->
+
+                <!--  ComboBoxColumn enum  -->
                 <control:DataGridComboBoxColumn
                     Header="Department"
                     IsColumnFiltered="True"
                     IsReadOnly="False"
                     ItemsSource="{Binding Source={StaticResource EnumDepartments}}"
-                    SelectedItemBinding="{Binding Department}"
-                    SelectedValueBinding="{Binding Department}" />
+                    SelectedItemBinding="{Binding Department}" />
+
+
+                <!--  ComboBoxColumn unique ID  -->
+                <!--<control:DataGridComboBoxColumn
+                    DisplayMemberPath="Name"
+                    Header="Cbc Country Single"
+                    IsColumnFiltered="True"
+                    IsReadOnly="False"
+                    ItemsSource="{Binding Source={StaticResource Countries}}"
+                    SelectedValueBinding="{Binding IdCountry}"
+                    SelectedValuePath="Id" />-->
+
+                <!--  ComboBoxColumn nested object  -->
+                <control:DataGridComboBoxColumn
+                    DisplayMemberPath="Name"
+                    Header="Country"
+                    IsColumnFiltered="True"
+                    IsReadOnly="False"
+                    ItemsSource="{Binding Source={StaticResource CountriesList}}"
+                    SelectedValueBinding="{Binding Country.Id}"
+                    SelectedValuePath="Id" />
 
                 <control:DataGridTextColumn
                     Binding="{Binding StartDate}"
@@ -183,9 +218,11 @@
             x:Name="FilterDataGridAuto"
             Grid.Row="4"
             AutoGenerateColumns="True"
-            ExcludeFields="lastname, age"
-            FilterLanguage="Hungarian"
+            ExcludeColumns="age, salary, manager, country"
+            ExcludeFields="idcountry"
+            FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource FilterDatagridStyle}" />
+
     </Grid>
 </Window>

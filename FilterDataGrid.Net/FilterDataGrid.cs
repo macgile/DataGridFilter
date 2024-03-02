@@ -27,9 +27,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
+
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UseNameofForDependencyProperty
 // ReSharper disable ConvertIfStatementToNullCoalescingAssignment
+// ReSharper disable PropertyCanBeMadeInitOnly.Local
 
 namespace FilterDataGrid
 {
@@ -45,8 +47,8 @@ namespace FilterDataGrid
         /// </summary>
         public FilterDataGrid()
         {
-            Debug.WriteLineIf(DebugMode, "FilterDataGrid.Constructor");    
-            
+            Debug.WriteLineIf(DebugMode, "FilterDataGrid.Constructor");
+
             DefaultStyleKey = typeof(FilterDataGrid);
 
             // load resources
@@ -98,10 +100,19 @@ namespace FilterDataGrid
         #region Public DependencyProperty
 
         /// <summary>
-        ///     Excluded Fields only AutoGeneratingColumn
+        ///     Excluded Fields (only AutoGeneratingColumn)
         /// </summary>
         public static readonly DependencyProperty ExcludeFieldsProperty =
             DependencyProperty.Register("ExcludeFields",
+                typeof(string),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(""));
+
+        /// <summary>
+        ///     Excluded Column (only AutoGeneratingColumn)
+        /// </summary>
+        public static readonly DependencyProperty ExcludeColumnsProperty =
+            DependencyProperty.Register("ExcludeColumns",
                 typeof(string),
                 typeof(FilterDataGrid),
                 new PropertyMetadata(""));
@@ -201,6 +212,7 @@ namespace FilterDataGrid
         private Grid sizableContentGrid;
 
         private List<string> excludedFields;
+        private List<string> excludedColumns;
         private List<FilterItemDate> treeView;
         private List<FilterItem> listBoxItems;
 
@@ -234,6 +246,16 @@ namespace FilterDataGrid
             get => (string)GetValue(ExcludeFieldsProperty);
             set => SetValue(ExcludeFieldsProperty, value);
         }
+
+        /// <summary>
+        ///     Excluded Columns (AutoGeneratingColumn)
+        /// </summary>
+        public string ExcludeColumns
+        {
+            get => (string)GetValue(ExcludeColumnsProperty);
+            set => SetValue(ExcludeColumnsProperty, value);
+        }
+
 
         /// <summary>
         ///     The string begins with the specific character. Used in pop-up search box
@@ -424,7 +446,10 @@ namespace FilterDataGrid
 
                 // fill excluded Fields list with values
                 if (AutoGenerateColumns)
+                {
                     excludedFields = ExcludeFields.Split(',').Select(p => p.Trim()).ToList();
+                    excludedColumns = ExcludeColumns.Split(',').Select(p => p.Trim()).ToList();
+                }
 
                 // sorting event
                 Sorted += OnSorted;
@@ -451,11 +476,12 @@ namespace FilterDataGrid
 
             try
             {
-
-                // TODO : refactoring OnAutoGeneratingColumn, add exclude enum field
-
-                if (e.Column.GetType() != typeof(System.Windows.Controls.DataGridTextColumn) &&
-                    !e.PropertyType.IsEnum) return;
+                if (excludedColumns.Any(
+                        x => string.Equals(x, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    e.Cancel = true;
+                    return;
+                }
 
                 if (e.PropertyType.IsEnum)
                 {
@@ -465,9 +491,15 @@ namespace FilterDataGrid
                         SelectedItemBinding = new Binding(e.PropertyName),
                         FieldName = e.PropertyName,
                         Header = e.Column.Header.ToString(),
-                        HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate"),
-                        IsColumnFiltered = true
+                        IsSingle = false,
                     };
+
+                    if (excludedFields.All(c =>
+                            !string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+                        column.IsColumnFiltered = true;
+                    }
 
                     e.Column = column;
                 }
@@ -475,7 +507,8 @@ namespace FilterDataGrid
                 {
                     var column = new DataGridTextColumn
                     {
-                        Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture /* StringFormat */ },
+                        Binding = new Binding(e.PropertyName)
+                            { ConverterCulture = Translate.Culture /* StringFormat */ },
                         FieldName = e.PropertyName,
                         Header = e.Column.Header.ToString(),
                         IsColumnFiltered = false
@@ -488,20 +521,24 @@ namespace FilterDataGrid
                     if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
                         column.Binding.StringFormat = DateFormatString;
 
-                    // if the type does not belong to the "System" namespace, disable sorting (excludes nested objects)
+                    // if the type does not belong to the "System" namespace, disable sorting
                     if (!fieldType.IsSystemType())
                     {
                         column.CanUserSort = false;
+
+                        // if the type is a nested object (class), disable cell editing
+                        column.IsReadOnly = fieldType.IsClass;
                     }
+
                     // add the "DataGridHeaderTemplate" template if the field is not excluded 
-                    else if (fieldType.IsSystemType() && excludedFields?.FindIndex(c =>
-                                 string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)) == -1)
+                    else if (fieldType.IsSystemType() && excludedFields.All(c =>
+                                 !string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
                     {
                         column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
                         column.IsColumnFiltered = true;
                     }
-                    e.Column = column;
 
+                    e.Column = column;
                 }
             }
             catch (Exception ex)
@@ -661,9 +698,9 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "OnLoaded");
 
+            e.Handled = true;
             var filterDatagrid = (FilterDataGrid)sender;
             if (filterDatagrid?.PersistentFilter == false) return;
-            e.Handled = true;
             filterDatagrid?.LoadPreset();
         }
 
@@ -956,14 +993,35 @@ namespace FilterDataGrid
                     }
                     else
                     {
+                        fieldType = null;
+                        var template = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+
+                        if (columnType == typeof(DataGridTemplateColumn))
+                        {
+                            // DataGridTemplateColumn has no culture property
+                            var column = (DataGridTemplateColumn)col;
+
+                            if (string.IsNullOrEmpty(column.FieldName))
+                            {
+                                throw new ArgumentException("Value of \"FieldName\" property cannot be null.",
+                                    nameof(DataGridTemplateColumn));
+                            }
+                            else
+                            {
+                                // template
+                                column.HeaderTemplate = template;
+                            }
+                        }
+
                         if (columnType == typeof(DataGridTextColumn))
                         {
                             var column = (DataGridTextColumn)col;
 
-                            // template
-                            column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+                            column.FieldName = ((Binding)column.Binding).Path.Path;
 
-                            fieldType = null;
+                            // template
+                            column.HeaderTemplate = template;
+
                             var fieldProperty = collectionType.GetProperty(((Binding)column.Binding).Path.Path);
 
                             // get type or underlying type if nullable
@@ -976,20 +1034,11 @@ namespace FilterDataGrid
                                 if (string.IsNullOrEmpty(column.Binding.StringFormat))
                                     column.Binding.StringFormat = DateFormatString;
 
+                            FieldType = fieldType;
+
                             // culture
                             if (((Binding)column.Binding).ConverterCulture == null)
                                 ((Binding)column.Binding).ConverterCulture = Translate.Culture;
-
-                            column.FieldName = ((Binding)column.Binding).Path.Path;
-                        }
-
-                        if (columnType == typeof(DataGridTemplateColumn))
-                        {
-                            // DataGridTemplateColumn has no culture property
-                            var column = (DataGridTemplateColumn)col;
-
-                            // template
-                            column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
                         }
 
                         if (columnType == typeof(DataGridCheckBoxColumn))
@@ -998,26 +1047,67 @@ namespace FilterDataGrid
 
                             column.FieldName = ((Binding)column.Binding).Path.Path;
 
+                            // template
+                            column.HeaderTemplate = template;
+
                             // culture
                             if (((Binding)column.Binding).ConverterCulture == null)
                                 ((Binding)column.Binding).ConverterCulture = Translate.Culture;
-
-                            // template
-                            column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
                         }
 
                         if (columnType == typeof(DataGridComboBoxColumn))
                         {
                             var column = (DataGridComboBoxColumn)col;
 
-                            column.FieldName = ((Binding)column.SelectedValueBinding).Path.Path;
+                            if (column.ItemsSource == null) return;
 
-                            // culture
-                            if (((Binding)column.SelectedValueBinding).ConverterCulture == null)
-                                ((Binding)column.SelectedValueBinding).ConverterCulture = Translate.Culture;
+                            var binding = (Binding)column.SelectedValueBinding ?? (Binding)column.SelectedItemBinding;
 
-                            // template
-                            column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
+                            // check if binding is missing
+                            if (binding != null)
+                            {
+                                column.FieldName = binding.Path.Path;
+
+                                // template
+                                column.HeaderTemplate = template;
+
+                                var fieldProperty = collectionType.GetPropertyInfo(column.FieldName);
+
+                                // get type or underlying type if nullable
+                                if (fieldProperty != null)
+                                    fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ??
+                                                fieldProperty.PropertyType;
+
+                                // check if it is a unique id type and not nested object
+                                /* !column.FieldName.Contains('.') && */
+                                column.IsSingle = fieldType.IsSystemType();
+
+                                // culture
+                                if (binding.ConverterCulture == null) binding.ConverterCulture = Translate.Culture;
+
+                                // Generates the list from "ItemsSource" of the combobox column, this will essentially be used to provide
+                                // the filter labels for this type of column.
+                                // Only for a column linked by an identifier(like ID) from any other collection (ItemsSource).
+                                if (column.IsSingle && column.ItemsSource != null)
+                                {
+                                    column.ComboBoxItemsSource = new List<ItemsSourceMembers>(column.ItemsSource
+                                        .Cast<object>()
+                                        .Select(x =>
+                                            new ItemsSourceMembers
+                                            {
+                                                SelectedValue = x.GetPropertyValue(column.SelectedValuePath)
+                                                    .ToString(),
+                                                DisplayMember = x.GetPropertyValue(column.DisplayMemberPath)
+                                                    .ToString()
+                                            })).ToList();
+                                }
+                            }
+                            else
+                            {
+                                throw new ArgumentException(
+                                    "Value of \"SelectedValueBinding\" property or \"SelectedItemBinding\" cannot be null.",
+                                    nameof(DataGridComboBoxColumn));
+                            }
                         }
                     }
                 }
@@ -1379,10 +1469,10 @@ namespace FilterDataGrid
         {
             var textBox = (TextBox)sender;
 
+            e.Handled = true;
+
             // fix TextChanged event fires twice I did not find another solution
             if (textBox == null || textBox.Text == searchText || ItemCollectionView == null) return;
-
-            e.Handled = true;
 
             searchText = textBox.Text;
 
@@ -1487,6 +1577,9 @@ namespace FilterDataGrid
                 thumb.DragDelta += OnResizeThumbDragDelta;
                 thumb.DragStarted += OnResizeThumbDragStarted;
 
+                List<FilterItem> filterItemList = null;
+                DataGridComboBoxColumn comboxColumn = null;
+
                 // get field name from binding Path
                 if (columnType == typeof(DataGridTextColumn))
                 {
@@ -1509,17 +1602,14 @@ namespace FilterDataGrid
                 if (columnType == typeof(DataGridComboBoxColumn))
                 {
                     var column = (DataGridComboBoxColumn)header.Column;
+                    comboxColumn = column;
                     fieldName = column.FieldName;
-
-                    // DisplayMemberPath = column.DisplayMemberPath; 
-                    // SelectedValuePath = column.SelectedValuePath; 
                 }
-                
+
                 // invalid fieldName
                 if (string.IsNullOrEmpty(fieldName)) return;
 
-                // get type of field
-                fieldType = null;
+                // see Extensions helper for GetPropertyInfo
                 var fieldProperty = collectionType.GetPropertyInfo(fieldName);
 
                 // get type or underlying type if nullable
@@ -1536,32 +1626,27 @@ namespace FilterDataGrid
                                     FilterButton = button
                                 };
 
-                // list of all item values, filtered and unfiltered (previous filtered items)
-                var sourceObjectList = new List<object>();
-
                 // set cursor
                 Mouse.OverrideCursor = Cursors.Wait;
 
-                List<FilterItem> filterItemList = null;
-
-                // get the list of values distinct from the list of raw values of the current column
-                await Task.Run(() =>
+                // contribution : STEFAN HEIMEL
+                await Dispatcher.InvokeAsync(() =>
                 {
-                    // contribution : STEFAN HEIMEL
-                    Dispatcher.Invoke(() =>
-                    {
-                        if (fieldType == typeof(DateTime))
-                            // possible distinct values because time part is removed
-                            sourceObjectList = Items.Cast<object>()
-                                .Select(x => (object)((DateTime?)x.GetPropertyValue(fieldName))?.Date)
-                                .Distinct()
-                                .ToList();
-                        else
-                            sourceObjectList = Items.Cast<object>()
-                                .Select(x => x.GetPropertyValue(fieldName))
-                                .Distinct()
-                                .ToList();
-                    });
+                    // list for all items values, filtered and unfiltered (previous filtered items)
+                    List<object> sourceObjectList;
+
+                    // get the list of raw values of the current column
+                    if (fieldType == typeof(DateTime))
+                        // possible distinct values because time part is removed
+                        sourceObjectList = Items.Cast<object>()
+                            .Select(x => (object)((DateTime?)x.GetPropertyValue(fieldName))?.Date)
+                            .Distinct()
+                            .ToList();
+                    else
+                        sourceObjectList = Items.Cast<object>()
+                            .Select(x => x.GetPropertyValue(fieldName))
+                            .Distinct()
+                            .ToList();
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
                     if (lastFilter == CurrentFilter.FieldName)
@@ -1586,8 +1671,30 @@ namespace FilterDataGrid
                         // add the first element (select all) at the top of list
                         filterItemList = new List<FilterItem>(sourceObjectList.Count + 2)
                         {
+                            // ReSharper disable once ArrangeObjectCreationWhenTypeEvident
                             new FilterItem { Label = Translate.All, IsChecked = true, Level = 0 }
                         };
+                    }
+
+                    string Getlabel(object o, Type type)
+                    {
+                        string label;
+
+                        // retrieve the label of the list previously reconstituted from "ItemsSource" of the combobox
+                        if (comboxColumn?.IsSingle == true)
+                        {
+                            label = comboxColumn.ComboBoxItemsSource
+                                ?.FirstOrDefault(x => x.SelectedValue == o.ToString())?.DisplayMember;
+                        }
+                        else
+                        {
+                            // label of other columns
+                            label = type != typeof(bool) ? o.ToString()
+                                    // translates boolean value label
+                                : o != null && (bool)o ? Translate.IsTrue : Translate.IsFalse;
+                        }
+
+                        return label;
                     }
 
                     // add all items (not null) to the filterItemList,
@@ -1597,16 +1704,10 @@ namespace FilterDataGrid
                         Content = item,
                         ContentLength = item?.ToString()?.Length ?? 0,
                         FieldType = fieldType,
-                        Label = item,
+                        Label = Getlabel(item, fieldType), //item,
                         Level = 1,
                         Initialize = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
                     }));
-
-                    if (fieldType == typeof(bool))
-                        filterItemList.ToList().ForEach(c =>
-                        {
-                            c.Label = (bool)c.Content ? Translate.IsTrue : Translate.IsFalse;
-                        });
 
                     // add a empty item(if exist) at the bottom of the list
                     if (!emptyItem) return;
@@ -1621,13 +1722,14 @@ namespace FilterDataGrid
                         Level = -1,
                         Initialize = CurrentFilter?.PreviouslyFilteredItems?.Contains(null) == false
                     });
-                });
+                }); // Task.Run
 
                 // ItemsSource (ListBow/TreeView)
                 if (fieldType == typeof(DateTime))
                     TreeViewItems = BuildTree(filterItemList);
                 else
                     ListBoxItems = filterItemList;
+
 
                 // Set ICollectionView for filtering in the pop-up window
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(filterItemList);
@@ -1874,6 +1976,7 @@ namespace FilterDataGrid
                 }
             }
         }
+
         #endregion Private Methods
     }
 }

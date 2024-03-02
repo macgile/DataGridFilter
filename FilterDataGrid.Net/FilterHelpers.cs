@@ -23,7 +23,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-
+// ReSharper disable RedundantCast
 // ReSharper disable UseNameofExpression
 // ReSharper disable UnusedMember.Global
 // ReSharper disable RedundantAssignment

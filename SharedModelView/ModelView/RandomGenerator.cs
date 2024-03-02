@@ -2,9 +2,9 @@
 
 // Author     : Gilles Macabies
 // Solution   : FilterDataGrid
-// Projet     : DemoApp.Net6.0
+// Projet     : DemoApp.Net7.0
 // File       : RandomGenerator.cs
-// Created    : 13/11/2022
+// Created    : 13/06/2023
 // 
 
 #endregion
@@ -12,7 +12,6 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Windows.Controls;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable CheckNamespace
@@ -137,10 +136,16 @@ namespace SharedModelView.ModelView
 
                 // is manager (three states)
                 // ReSharper disable once RedundantCast
-                (Rnd.Next() % 3 == 2) ? (bool?)null : Rnd.Next() % 2 == 1,
+                Rnd.Next() % 3 == 2 ? (bool?)null : Rnd.Next() % 2 == 1,
 
-                (Departments)Rnd.Next(0, Enum.GetNames(typeof(Departments)).Length)
+                // Department (enum)
+                (Departments)Rnd.Next(0, Enum.GetNames(typeof(Departments)).Length),
 
+                // Country (IdCountry)
+                new Countries()[Rnd.Next(0, new Countries().Count)].Id,
+
+                // Country (nested object)
+                new Countries()[Rnd.Next(0, new Countries().Count)]
             );
             return emp;
         }
