@@ -104,9 +104,9 @@ TargetType="{x:Type control:FilterDataGrid}">
   ```xml
   <control:FilterDataGrid.Columns>   
       <control:DataGridComboBoxColumn IsColumnFiltered="True"
-      DisplayMemberPath="<name of the field to display the value (datagrid field)>"
-      ItemsSource="{Binding <external list>}"
-      SelectedValueBinding="{Binding <external list or enum>}"  
+      DisplayMemberPath="<name of the field to display the value (from the data grid list)>"
+      ItemsSource="{Binding <external list or enum>}"
+      SelectedValueBinding="{Binding <unique identifier (from the data grid list)>}"  
       SelectedValuePath="<unique identifier of external list>"
       ... />  
   ```
