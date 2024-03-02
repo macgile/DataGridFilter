@@ -70,8 +70,12 @@ TargetType="{x:Type control:FilterDataGrid}">
   - **PersistentFilter** : *enable/disable filter persistence* , default : false  
   [See below the detail of this feature](#persistence-of-filters)
 
-  - **ExcludeFields** : *comma separated fields to exclude from filter, only works in AutoGenerateColumns mode*  
+  - **ExcludeFields** : *name of fields separated by commas to exclude from the filter, only works in AutoGenerateColumns mode*  
   - **DateFormatString** : *date display format*, default : "d"  
+
+  - **ExcludeColumns** : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
+  - **DateFormatString** : *date display format*, default : "d"  
+
 
   > :warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
 [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
@@ -94,8 +98,8 @@ TargetType="{x:Type control:FilterDataGrid}">
                                       FieldName="LastName" ... />  
   ```
   
-  - **DataGridComboBoxColumn**  
-      > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required*
+- **DataGridComboBoxColumn**  
+    > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required*
 
   ```xml
   <control:FilterDataGrid.Columns>   
