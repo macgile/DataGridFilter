@@ -71,13 +71,10 @@ TargetType="{x:Type control:FilterDataGrid}">
   [See below the detail of this feature](#persistence-of-filters)
 
   - **ExcludeFields** : *name of fields separated by commas to exclude from the filter, only works in AutoGenerateColumns mode*  
-  - **DateFormatString** : *date display format*, default : "d"  
-
   - **ExcludeColumns** : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
   - **DateFormatString** : *date display format*, default : "d"  
 
-
-  > :warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
+  > warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
 [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 
 - **Custom TextColumn / CheckBoxColumn**
@@ -98,12 +95,19 @@ TargetType="{x:Type control:FilterDataGrid}">
                                       FieldName="LastName" ... />  
   ```
   
-  - **DataGridComboBoxColumn**  
-      > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required*
+- **DataGridComboBoxColumn**  
+    > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required.    
+    The **SelectedValuePath** property is not needed in case **ItemsSource** is an enumeration.  
+    In the case where the field is a nested object, enter the entire path of this field, e.g: Country.Name*  
 
   ```xml
   <control:FilterDataGrid.Columns>   
-      <control:DataGridComboBoxColumn     IsColumnFiltered="True" ... />  
+      <control:DataGridComboBoxColumn IsColumnFiltered="True"
+      DisplayMemberPath="<name of the field to display the value (datagrid field)>"
+      ItemsSource="{Binding <external list>}"
+      SelectedValueBinding="{Binding <external list or enum>}"  
+      SelectedValuePath="<unique identifier of external list>"
+      ... />  
   ```
 
 ## Global Style
