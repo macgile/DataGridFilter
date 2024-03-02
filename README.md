@@ -96,7 +96,7 @@ TargetType="{x:Type control:FilterDataGrid}">
                                       FieldName="LastName" ... />  
   ```
   
-- **DataGridComboBoxColumn**  
+- **Custom ComboBoxColumn**  
     > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required.    
     The **SelectedValuePath** property is not needed in case **ItemsSource** is an enumeration.  
     In the case where the field is a nested object, enter the entire path of this field, e.g: Country.Name*  
