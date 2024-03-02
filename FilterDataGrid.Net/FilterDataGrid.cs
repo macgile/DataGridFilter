@@ -561,7 +561,22 @@ namespace FilterDataGrid
 
             try
             {
-                if (newValue == null) return;
+                // fix null collection, remove all filters set
+                if (newValue == null && oldValue != null)
+                {
+                    RemoveAllFilterCommand(null, null);
+
+                    // reset current filter, !important
+                    CurrentFilter = null;
+
+                    // reset GlobalFilterList list
+                    GlobalFilterList.Clear();
+
+                    // reset criteria List
+                    criteria.Clear();
+
+                    return;
+                };
 
                 if (oldValue != null)
                 {
