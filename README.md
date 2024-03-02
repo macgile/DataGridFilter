@@ -98,10 +98,12 @@ TargetType="{x:Type control:FilterDataGrid}">
   
 - **Custom ComboBoxColumn**  
     > warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required.    
-    The **SelectedValuePath** property is not needed in case **ItemsSource** is an enumeration.  
-    In the case where the field is a nested object, enter the entire path of this field, e.g: **Country.Name**  
-    Demo application contains several types of combo-box implementation, for greater clarity  
-    some are commented but completely operational*  
+    The **SelectedValuePath** property is not required in case **ItemsSource** is an enumeration.  
+    In the case where the field is a nested object, enter the entire path of this field, e.g: **Country.Name***
+    >
+    > 
+    **Demo application** contains several types of combo-box implementation, for greater clarity  
+    some are commented but completely operational.  
 
   ```xml
   <control:FilterDataGrid.Columns>   
