@@ -22,7 +22,9 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
+
 // ReSharper disable RedundantCast
 // ReSharper disable UseNameofExpression
 // ReSharper disable UnusedMember.Global
@@ -41,7 +43,8 @@ namespace FilterDataGrid
     {
         #region Public Fields
 
-        public static readonly DependencyProperty IsFilteredProperty = DependencyProperty.RegisterAttached("IsFiltered",
+        public static readonly DependencyProperty IsFilteredProperty = DependencyProperty.RegisterAttached(
+            "IsFiltered",
             typeof(bool), typeof(FilterState), new UIPropertyMetadata(false));
 
         #endregion Public Fields
@@ -122,7 +125,8 @@ namespace FilterDataGrid
             if (itemsControl != null)
             {
                 DependencyPropertyDescriptor dependencyPropertyDescriptor =
-                    DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, typeof(ItemsControl));
+                    DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty,
+                        typeof(ItemsControl));
 
                 if (dependencyPropertyDescriptor != null)
                 {
@@ -241,7 +245,8 @@ namespace FilterDataGrid
                 // ReSharper disable once ConvertToUsingDeclaration
                 using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read))
                 {
-                    using (var writer = JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, false, "  "))
+                    using (var writer =
+                           JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, false, "  "))
                     {
                         var ser = new DataContractJsonSerializer(typeof(T), GetSettings());
                         ser.WriteObject(writer, data);

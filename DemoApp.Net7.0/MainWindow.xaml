@@ -213,13 +213,13 @@
                 Content="{Binding ElementName=FilterDataGridAuto, Path=Translate.DisplayName}"
                 ContentStringFormat="Filter Language : {0}" />
         </UniformGrid>
-
         <control:FilterDataGrid
             x:Name="FilterDataGridAuto"
             Grid.Row="4"
             AutoGenerateColumns="True"
-            ExcludeColumns="age, salary, manager, country"
-            ExcludeFields="idcountry"
+            CanUserSortColumns="True"
+            ExcludeColumns="country, idcountry"
+            ExcludeFields="lastname, manager, age"
             FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource FilterDatagridStyle}" />

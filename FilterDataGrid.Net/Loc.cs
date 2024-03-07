@@ -9,14 +9,16 @@
 
 #region CONTRIBUTORS
 
-// Turkish              : BEDIRHANSAMSA
-// Japanese             : iBadaMorae
-// Italian              : aetasoul
 // Dutch                : Tenera
+// Hebrew               : abaye123
+// Hugarian             : dankovics.jozsef
+// Italian              : aetasoul
+// Japanese             : iBadaMorae
+// Polish               : mgaszynski
+// Russian              : anyousib
 // Simplified Chinese   : SWH998
 // Traditional Chinese  : BeCare4
-// Russian              : anyousib
-// Hugarian             : dankovics.jozsef
+// Turkish              : BEDIRHANSAMSA
 
 // The simplification of the translation is achieved by dankovics.jozsef
 // TranslatableElements, ILanguageDictionary, LanguageDictionary
@@ -29,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMember.Local

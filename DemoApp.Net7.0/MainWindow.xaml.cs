@@ -9,13 +9,10 @@
 
 #endregion
 
-using FilterDataGrid;
 using SharedModelView.ModelView;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
-using System.Windows.Data;
 
 namespace DemoApp.Net7._0
 {
@@ -38,8 +35,7 @@ namespace DemoApp.Net7._0
             };
 #endif
 
-            DataContext = new ModelView();
-           
+            DataContext = new ModelView(100);
         }
 
         #endregion Public Constructors

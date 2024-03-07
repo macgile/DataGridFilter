@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -476,12 +477,23 @@ namespace FilterDataGrid
 
             try
             {
+                // ignore excluded columns
                 if (excludedColumns.Any(
                         x => string.Equals(x, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
                 {
                     e.Cancel = true;
                     return;
                 }
+
+                // enable column sorting when user specified
+                e.Column.CanUserSort = CanUserSortColumns;
+
+                // return if the field is excluded 
+                if (excludedFields.Any(c =>
+                        string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase))) return;
+
+                // template 
+                var template = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
 
                 if (e.PropertyType.IsEnum)
                 {
@@ -491,15 +503,23 @@ namespace FilterDataGrid
                         SelectedItemBinding = new Binding(e.PropertyName),
                         FieldName = e.PropertyName,
                         Header = e.Column.Header.ToString(),
-                        IsSingle = false,
+                        HeaderTemplate = template,
+                        IsSingle = false, // eNum is not a unique value (unique identifier)
+                        IsColumnFiltered = true
                     };
 
-                    if (excludedFields.All(c =>
-                            !string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                    e.Column = column;
+                }
+                else if (e.PropertyType.GenericTypeArguments.FirstOrDefault() == typeof(bool))
+                {
+                    var column = new DataGridCheckBoxColumn()
                     {
-                        column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
-                        column.IsColumnFiltered = true;
-                    }
+                        Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
+                        FieldName = e.PropertyName,
+                        Header = e.Column.Header.ToString(),
+                        HeaderTemplate = template,
+                        IsColumnFiltered = true
+                    };
 
                     e.Column = column;
                 }
@@ -507,11 +527,10 @@ namespace FilterDataGrid
                 {
                     var column = new DataGridTextColumn
                     {
-                        Binding = new Binding(e.PropertyName)
-                            { ConverterCulture = Translate.Culture /* StringFormat */ },
+                        Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
                         FieldName = e.PropertyName,
                         Header = e.Column.Header.ToString(),
-                        IsColumnFiltered = false
+                        IsColumnFiltered = true
                     };
 
                     // get type
@@ -529,13 +548,9 @@ namespace FilterDataGrid
                         // if the type is a nested object (class), disable cell editing
                         column.IsReadOnly = fieldType.IsClass;
                     }
-
-                    // add the "DataGridHeaderTemplate" template if the field is not excluded 
-                    else if (fieldType.IsSystemType() && excludedFields.All(c =>
-                                 !string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                    else
                     {
-                        column.HeaderTemplate = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
-                        column.IsColumnFiltered = true;
+                        column.HeaderTemplate = template;
                     }
 
                     e.Column = column;
@@ -555,29 +570,13 @@ namespace FilterDataGrid
         /// <param name="newValue"></param>
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
-            Debug.WriteLineIf(DebugMode, "OnItemsSourceChanged");
+            Debug.WriteLineIf(DebugMode,
+                $"OnItemsSourceChanged : oldValue : {oldValue != null} | newValue : {newValue != null}");
 
             base.OnItemsSourceChanged(oldValue, newValue);
 
             try
             {
-                // fix null collection, remove all filters set
-                if (newValue == null && oldValue != null)
-                {
-                    RemoveAllFilterCommand(null, null);
-
-                    // reset current filter, !important
-                    CurrentFilter = null;
-
-                    // reset GlobalFilterList list
-                    GlobalFilterList.Clear();
-
-                    // reset criteria List
-                    criteria.Clear();
-
-                    return;
-                };
-
                 if (oldValue != null)
                 {
                     // reset current filter, !important
@@ -589,8 +588,9 @@ namespace FilterDataGrid
                     // reset criteria List
                     criteria.Clear();
 
-                    if (oldValue is INotifyCollectionChanged)
-                        ((INotifyCollectionChanged)oldValue).CollectionChanged -= ItemSource_CollectionChanged;
+                    // remove previous event
+                    if (oldValue is INotifyCollectionChanged collectionChanged)
+                        collectionChanged.CollectionChanged -= ItemSource_CollectionChanged;
 
                     // free previous resource
                     CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
@@ -600,8 +600,9 @@ namespace FilterDataGrid
                     scrollViewer?.ScrollToTop();
                 }
 
-                if (newValue is INotifyCollectionChanged)
-                    ((INotifyCollectionChanged)newValue).CollectionChanged += ItemSource_CollectionChanged;
+                // add new event
+                if (newValue is INotifyCollectionChanged changed)
+                    changed.CollectionChanged += ItemSource_CollectionChanged;
 
                 CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(ItemsSource);
 
@@ -610,7 +611,9 @@ namespace FilterDataGrid
 
                 ItemsSourceCount = Items.Count;
                 ElapsedTime = new TimeSpan(0, 0, 0);
+
                 OnPropertyChanged(nameof(ItemsSourceCount));
+                OnPropertyChanged(nameof(GlobalFilterList));
 
                 // Calculate row header width
                 if (ShowRowsCount)
@@ -633,7 +636,6 @@ namespace FilterDataGrid
                 }
 
                 // get collection type
-                //if (ItemsSourceCount > 0) // commented out as this caused a NPE if the ItemSource is empty when attempting to show the filter
                 // contribution : APFLKUACHA
                 collectionType = ItemsSource is ICollectionView collectionView
                     ? collectionView.SourceCollection?.GetType().GenericTypeArguments.FirstOrDefault()
@@ -649,6 +651,9 @@ namespace FilterDataGrid
 
                 // generating custom columns
                 if (!AutoGenerateColumns && collectionType != null) GeneratingCustomsColumn();
+
+                // force update trigger by OnPropertyChanged 
+                Focus();
             }
             catch (Exception ex)
             {
@@ -746,7 +751,7 @@ namespace FilterDataGrid
                     .Where(c =>
                         (c is DataGridTextColumn dtx && dtx.IsColumnFiltered & dtx.FieldName == preset.FieldName)
                         || c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered & dtp.FieldName == preset.FieldName
-                        || c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered & dcb.FieldName == preset.FieldName
+                        || c is DataGridCheckBoxColumn dck && dck.IsColumnFiltered & dck.FieldName == preset.FieldName
                     )
                     .Select(c => c)
                     .ToList();
@@ -801,6 +806,7 @@ namespace FilterDataGrid
             if (Items.Count == 0)
             {
                 RemoveAllFilterCommand(null, null);
+
                 // empty json file
                 SavePreset();
             }
@@ -1194,6 +1200,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void CanRemoveAllFilter(object sender, CanExecuteRoutedEventArgs e)
         {
+            Debug.WriteLineIf(DebugMode, $"CanRemoveAllFilter : {GlobalFilterList.Count > 0}");
             e.CanExecute = GlobalFilterList.Count > 0;
         }
 
@@ -1386,6 +1393,8 @@ namespace FilterDataGrid
                     FilterState.SetIsFiltered(filterButton, false);
                 }
 
+                // reset current filter, !important
+                CurrentFilter = null;
                 criteria.Clear();
                 GlobalFilterList.Clear();
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
@@ -1482,9 +1491,8 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private void SearchTextBoxOnTextChanged(object sender, TextChangedEventArgs e)
         {
-            var textBox = (TextBox)sender;
-
             e.Handled = true;
+            var textBox = (TextBox)sender;
 
             // fix TextChanged event fires twice I did not find another solution
             if (textBox == null || textBox.Text == searchText || ItemCollectionView == null) return;
@@ -1979,6 +1987,8 @@ namespace FilterDataGrid
 
         private void ItemSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Debug.WriteLineIf(DebugMode, "ItemSource_CollectionChanged");
+
             ItemsSourceCount = Items.Count;
             OnPropertyChanged(nameof(ItemsSourceCount));
 

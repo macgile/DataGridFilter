@@ -268,7 +268,7 @@
                                                                     <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=Foreground}" />
                                                                     <Setter Property="Opacity" Value="0.5" />
                                                                     <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding ElementName=ButtonRemoveAll, Path=IsEnabled}" Value="True">
+                                                                        <DataTrigger Binding="{Binding ElementName=ButtonRemoveAll, Path=IsEnabled, UpdateSourceTrigger=PropertyChanged}" Value="True">
                                                                             <Setter Property="Opacity" Value="1" />
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
