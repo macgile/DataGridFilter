@@ -1,16 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48-windows;netcoreapp3.1;net6.0-windows;net7.0-windows</TargetFrameworks>
     <OutputType>Library</OutputType>
     <UseWPF>true</UseWPF>
     <RootNamespace>FilterDataGrid</RootNamespace>
     <AssemblyName>FilterDataGrid</AssemblyName>
   </PropertyGroup>
-
-  <!--
-net48-windows;netcoreapp3.1;net6.0-windows;
--->
-
 
   <PropertyGroup>
 
@@ -20,11 +15,11 @@ net48-windows;netcoreapp3.1;net6.0-windows;
     <!-- Do not remove this line -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <PackageOutputPath>..\NuGet</PackageOutputPath>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageOutputPath>..\..\NuGet</PackageOutputPath>
 
     <!-- Package version -->
-    <Version>1.2.9</Version>
+    <Version>1.2.8</Version>
 
     <IsPublishable>False</IsPublishable>
     <NeutralLanguage />
@@ -41,28 +36,29 @@ net48-windows;netcoreapp3.1;net6.0-windows;
 
 
     <Title>A DataGrid control that implements filters for each column like Excel, automatically or custom generated.</Title>
-    <Description>
-      A DataGrid control that inherits from the base DataGrid control class and override some methods to
-      implement filters for each column like Excel, in automatic or custom generation.
-      Translation of labels and date formatting in the following languages :
-      Chinese(traditional and simplified), Dutch, English, French, German, Italian, Japanese, Polish, Russian, Spanish.
+    <Description>A DataGrid control that inherits from the base DataGrid control class and override some methods to
+implement filters for each column like Excel, in automatic or custom generation.
+Translation of labels and date formatting in the following languages :
+Chinese(traditional and simplified), Dutch, English, French, German, Hebrew, Hungarian, Italian, Japanese, Polish, Russian, Spanish, Turkish.
     </Description>
     <PackageTags>DataGrid Excel Filter WPF C# Control .Net .NetCore Free</PackageTags>
-    <PackageReleaseNotes>
-      Net6.0 and Net7.0 support.
-      Added Japanese, Hungarian, Turkish and Traditional Chinese languages.
-      Translation improvement.
-      Removed pure Net Framework 4.7.2 version of FilterDataGrid.
-      Removed ComponentResourceKey from FilterDataGrid style.
+    <PackageReleaseNotes>Support for nested objects by @RaceX58.
+Support for persistent filters in collaboration with @ericvdberge.
+Support indeterminate state for boolean values.
+Support for excluding columns (AutoGenerateColumns).
+Support for ComboBox columns in collaboration with @livep2000.
+Added Hebrew language by @abaye123.
+Fix null or empty value filtering.
+Removing demo apps : DemoApp.NET.Framework / DemoApp.Net5.0, /DemoApp.Net6.0
+Removing net.5.0 support.
     </PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>C:\Users\GILLES\source\repos\macgile\FilterDataGrid.Production\NuGet\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
-
+    <AssemblyOriginatorKeyFile>..\..\NuGet\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <!-- Additional Package Items -->
   <ItemGroup>
-    <None Include="..\icon.png">
+    <None Include="..\..\NuGet\icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
@@ -70,11 +66,11 @@ net48-windows;netcoreapp3.1;net6.0-windows;
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\NuGet\README.md">
+    <None Include="..\..\NuGet\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\NuGet\Readme.txt">
+    <None Include="..\..\NuGet\Readme.txt">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
