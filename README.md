@@ -67,7 +67,7 @@ TargetType="{x:Type control:FilterDataGrid}">
   - **DateFormatString** : *date display format*, default : "d"  
     > warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
   [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
-  - :new: **ExcludeColumns** : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
+  - **ExcludeColumns** :new: : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
   - **ExcludeFields** : *name of fields separated by commas to exclude from the filter, only works in AutoGenerateColumns mode*  
   - **FilterLanguage** : *translation into available language*, default : English  
   - **PersistentFilter** : *enable/disable filter persistence* , default : false  
@@ -95,7 +95,7 @@ TargetType="{x:Type control:FilterDataGrid}">
                                       FieldName="LastName" ... />  
   ```
   
-- :new: **Custom ComboBoxColumn**  
+- **Custom ComboBoxColumn**  :new:
     > :warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required.    
     The **SelectedValuePath** property is not required in case **ItemsSource** is an enumeration.  
     In the case where the field is a nested object, enter the entire path of this field, e.g: **Country.Name***
