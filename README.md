@@ -17,7 +17,7 @@ for each column like Excel, in automatic or custom generation.
 
 Support for nested objects and filter persistence.  
 
-Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Hungarian, Italian, Japanese, Polish, Russian, Spanish, Turkish.**
+Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Hebrew, Hungarian, Italian, Japanese, Polish, Russian, Spanish, Turkish.**
 
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
@@ -63,21 +63,19 @@ TargetType="{x:Type control:FilterDataGrid}">
 ```
 
 - Properties
-  - **ShowStatusBar** : *displays the status bar*, default : false  
-  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
-  - **ShowRowsCount** : *display the number of rows*, default : false  
-  *- If the value passed to **RowHeaderWidth** is greater than the calculation of the width of the column, this is the one that is used.*  
+
+  - **DateFormatString** : *date display format*, default : "d"  
+    > warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
+  [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
+  - :new: **ExcludeColumns** : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
+  - **ExcludeFields** : *name of fields separated by commas to exclude from the filter, only works in AutoGenerateColumns mode*  
   - **FilterLanguage** : *translation into available language*, default : English  
   - **PersistentFilter** : *enable/disable filter persistence* , default : false  
-  [See below the detail of this feature](#persistence-of-filters)
-
-  - **ExcludeFields** : *name of fields separated by commas to exclude from the filter, only works in AutoGenerateColumns mode*  
-  - :new: **ExcludeColumns** : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
-  - **DateFormatString** : *date display format*, default : "d"  
-
-  > warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise
-  > the filter doesn't work.  
-  > [see the documentation "Standard date and time format strings"](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
+    > [See below the detail of this feature](#persistence-of-filters)
+  *- If the value passed to **RowHeaderWidth** is greater than the calculation of the width of the column, this is the one that is used.*  
+  - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
+  - **ShowRowsCount** : *display the number of rows*, default : false  
+  - **ShowStatusBar** : *displays the status bar*, default : false  
 
 - **Custom TextColumn / CheckBoxColumn**
      > *If you add custom columns, you must set **AutoGenerateColumns="False"***
@@ -103,8 +101,8 @@ TargetType="{x:Type control:FilterDataGrid}">
     In the case where the field is a nested object, enter the entire path of this field, e.g: **Country.Name***
     >
     > 
-    **Demo application** contains several types of combo-box implementation, for greater clarity  
-    some are commented but completely operational.  
+    ***Demo application** contains several types of combo-box implementation, for greater clarity  
+    some are commented but completely operational.*  
 
   ```xml
   <control:FilterDataGrid.Columns>   
