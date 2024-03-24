@@ -76,6 +76,7 @@ TargetType="{x:Type control:FilterDataGrid}">
   - **ShowRowsCount** : *display the number of rows*, default : false  
     > *If the value passed to **RowHeaderWidth** is greater than the calculation of the width of the column, this is the one that is used.*  
   - **ShowStatusBar** : *displays the status bar*, default : false  
+  - **FilterPopupBackground** : set a custom background color for the filter popup : default "Transparent"  
 
 - **Custom TextColumn / CheckBoxColumn**
      > *If you add custom columns, you must set **AutoGenerateColumns="False"***

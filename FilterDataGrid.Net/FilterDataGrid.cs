@@ -173,8 +173,7 @@ namespace FilterDataGrid
 
         /// <summary>
         ///     Filter popup background property.
-        ///     Allows the user to set a custom background color for the filter popup. When nothing is set, the default value is "Transparent".
-        ///     Preferably this should be white, but to avoid problems with other users, it set to transparent due to the fact that this was the default before.
+        ///     Allows the user to set a custom background color for the filter popup. When nothing is set, the default value is background color of host windows.
         /// </summary>
         public static readonly DependencyProperty FilterPopupBackgroundProperty =
             DependencyProperty.Register("FilterPopupBackground",

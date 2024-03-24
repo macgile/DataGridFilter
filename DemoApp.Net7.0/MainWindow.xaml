@@ -13,7 +13,6 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.Resources>
-        <SolidColorBrush x:Key="ClBr" Color="#FFE3E4E3" />
         <sharedModelView:Countries x:Key="Countries" />
 
         <ObjectDataProvider
@@ -25,7 +24,6 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
-        <!--<sharedModelView:Countries x:Key="Countries" />-->
         <ObjectDataProvider x:Key="CountriesList" ObjectType="{x:Type sharedModelView:Countries}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type Type="sharedModelView:Countries" />
@@ -165,7 +163,6 @@
                     IsReadOnly="False"
                     ItemsSource="{Binding Source={StaticResource EnumDepartments}}"
                     SelectedItemBinding="{Binding Department}" />
-
 
                 <!--  ComboBoxColumn unique ID  -->
                 <!--<control:DataGridComboBoxColumn
