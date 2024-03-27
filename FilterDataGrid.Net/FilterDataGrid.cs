@@ -38,7 +38,7 @@ namespace FilterDataGrid
     /// <summary>
     ///     Implementation of Datagrid
     /// </summary>
-    public sealed class FilterDataGrid : DataGrid, INotifyPropertyChanged
+    public class FilterDataGrid : DataGrid, INotifyPropertyChanged
     {
         #region Constructors
 
@@ -1723,7 +1723,7 @@ namespace FilterDataGrid
                     filterItemList.AddRange(sourceObjectList.Select(item => new FilterItem
                     {
                         Content = item,
-                        ContentLength = item?.ToString()?.Length ?? 0,
+                        ContentLength = item?.ToString().Length ?? 0,
                         FieldType = fieldType,
                         Label = Getlabel(item, fieldType), //item,
                         Level = 1,
