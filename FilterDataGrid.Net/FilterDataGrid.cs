@@ -650,11 +650,6 @@ namespace FilterDataGrid
                 // generating custom columns
                 if (!AutoGenerateColumns && collectionType != null) GeneratingCustomsColumn();
 
-                // re-evalutate the command's CanExecute.
-                // when "IsReadOnly" is set to "False", "CanRemoveAllFilter" is not re-evaluated,
-                // the "Remove All Filters" icon remains active
-                CommandManager.InvalidateRequerySuggested();
-
             }
             catch (Exception ex)
             {
