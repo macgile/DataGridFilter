@@ -38,7 +38,7 @@ namespace FilterDataGrid
     /// <summary>
     ///     Implementation of Datagrid
     /// </summary>
-    public class FilterDataGrid : DataGrid, INotifyPropertyChanged
+    public sealed class FilterDataGrid : DataGrid, INotifyPropertyChanged
     {
         #region Constructors
 
@@ -650,8 +650,11 @@ namespace FilterDataGrid
                 // generating custom columns
                 if (!AutoGenerateColumns && collectionType != null) GeneratingCustomsColumn();
 
-                // force update trigger by OnPropertyChanged 
-                Focus();
+                // re-evalutate the command's CanExecute.
+                // when "IsReadOnly" is set to "False", "CanRemoveAllFilter" is not re-evaluated,
+                // the "Remove All Filters" icon remains active
+                CommandManager.InvalidateRequerySuggested();
+
             }
             catch (Exception ex)
             {
@@ -1098,28 +1101,10 @@ namespace FilterDataGrid
                                                 fieldProperty.PropertyType;
 
                                 // check if it is a unique id type and not nested object
-                                /* !column.FieldName.Contains('.') && */
                                 column.IsSingle = fieldType.IsSystemType();
 
                                 // culture
                                 if (binding.ConverterCulture == null) binding.ConverterCulture = Translate.Culture;
-
-                                // Generates the list from "ItemsSource" of the combobox column, this will essentially be used to provide
-                                // the filter labels for this type of column.
-                                // Only for a column linked by an identifier(like ID) from any other collection (ItemsSource).
-                                if (column.IsSingle && column.ItemsSource != null)
-                                {
-                                    column.ComboBoxItemsSource = new List<ItemsSourceMembers>(column.ItemsSource
-                                        .Cast<object>()
-                                        .Select(x =>
-                                            new ItemsSourceMembers
-                                            {
-                                                SelectedValue = x.GetPropertyValue(column.SelectedValuePath)
-                                                    .ToString(),
-                                                DisplayMember = x.GetPropertyValue(column.DisplayMemberPath)
-                                                    .ToString()
-                                            })).ToList();
-                                }
                             }
                             else
                             {
@@ -1625,6 +1610,21 @@ namespace FilterDataGrid
                     var column = (DataGridComboBoxColumn)header.Column;
                     comboxColumn = column;
                     fieldName = column.FieldName;
+
+                    // Generates the list from "ItemsSource" of the combobox column, this will essentially be used to provide
+                    // the filter labels for this type of column.
+                    // Only for a column linked by an identifier(like ID) from any other collection (ItemsSource).
+                    if (column.IsSingle && column.ComboBoxItemsSource == null)
+                    {
+                        column.ComboBoxItemsSource = new List<ItemsSourceMembers>(column.ItemsSource
+                            .Cast<object>()
+                            .Select(x =>
+                                new ItemsSourceMembers
+                                {
+                                    SelectedValue = x.GetPropertyValue(column.SelectedValuePath).ToString(),
+                                    DisplayMember = x.GetPropertyValue(column.DisplayMemberPath).ToString()
+                                })).ToList();
+                    }
                 }
 
                 // invalid fieldName
