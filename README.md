@@ -27,7 +27,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 <!--
 > **For operation closer to that of Excel, see the version available in the repository [FilterDataGrid-Beta](https://github.com/macgile/FilterDataGrid-Beta).  
 This version uses a new filtering method that is completely different from the current version or the one commonly used to filter data (as far as I know).**  
--->
+
 :warning: **Attention in version 1.2.6 you must add the global style so that the FilterDataGrid is displayed correctly, this is a bug fixed in the current version.**  
 
 ```xml
@@ -37,6 +37,7 @@ ResourceId=FilterDataGridStyle}}"
 TargetType="{x:Type control:FilterDataGrid}">
 </Style>
 ```
+-->
 
 ## How to use
 
@@ -49,8 +50,10 @@ TargetType="{x:Type control:FilterDataGrid}">
 - Add **Namespace** :
 
 ```xml
-    xmlns:control="http://filterdatagrid.control.com/2021"  
-    or
+    xmlns:control="http://filterdatagrid.control.com/2021"
+``` 
+or  
+```xml    
     xmlns:control="clr-namespace:FilterDataGrid;assembly=FilterDataGrid"  
 ```
 
@@ -117,11 +120,12 @@ TargetType="{x:Type control:FilterDataGrid}">
 
 ## Global Style
 
->You can define a global style which overrides the default style of "FilterDataGrid"  
+> You can define a global style which overrides the default style of "FilterDataGrid"
+<!-- 
 :warning: **The ComponentResourceKey is obsolete from version 1.2.7**
 ~~BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
         ResourceId=FilterDataGridStyle}}"~~
-
+-->
 ```xml
  <Application.Resources>
   <Style
