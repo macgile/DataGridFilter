@@ -18,6 +18,7 @@
 // Russian              : anyousib
 // Hugarian             : dankovics.jozsef
 // Hebrew               : abaye123
+// Portuguese           : eduardoghi
 
 // The simplification of the translation is achieved by dankovics.jozsef
 // TranslatableElements, ILanguageDictionary, LanguageDictionary
@@ -50,6 +51,7 @@ namespace FilterDataGrid
         Italian,
         Japanese,
         Polish,
+        Portuguese,
         Russian,
         Spanish,
         Turkish
@@ -386,6 +388,25 @@ namespace FilterDataGrid
                 { TranslatableElements.False, "Niezaznaczone" },
                 { TranslatableElements.RemoveAll, "Usuń wszystkie filtry" },
                 { TranslatableElements.Indeterminate, "Nieokreślony" },
+            });
+
+        private static ILanguageDictionary Portuguese { get; } = new LanguageDictionary("Portuguese", new CultureInfo("pt-BR"),
+            new Dictionary<TranslatableElements, string>
+            {
+                { TranslatableElements.All, "(Selecionar todos)" },
+                { TranslatableElements.Empty, "(Vazio)" },
+                { TranslatableElements.Clear, "Limpar filtro de \"{0}\"" },
+                { TranslatableElements.Contains, "Pesquisar (contém)" },
+                { TranslatableElements.StartsWith, "Pesquisar (começa com)" },
+                { TranslatableElements.Toggle, "Alternar contém/começa com" },
+                { TranslatableElements.Ok, "Ok" },
+                { TranslatableElements.Cancel, "Cancelar" },
+                { TranslatableElements.Status, "{0:n0} registro(s) encontrado(s) de {1:n0}" },
+                { TranslatableElements.ElapsedTime, "Tempo decorrido {0:mm}:{0:ss}.{0:ff}" },
+                { TranslatableElements.True, "Marcado" },
+                { TranslatableElements.False, "Desmarcado" },
+                { TranslatableElements.RemoveAll, "Remover todos os filtros" },
+                { TranslatableElements.Indeterminate, "Indeterminado" },
             });
 
         private static ILanguageDictionary Russian { get; } = new LanguageDictionary("Russian", new CultureInfo("ru-RU"),
