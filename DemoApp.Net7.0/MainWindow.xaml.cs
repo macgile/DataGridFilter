@@ -35,7 +35,7 @@ namespace DemoApp.Net7._0
             };
 #endif
 
-            DataContext = new ModelView(100);
+            DataContext = new ModelView();
         }
 
         #endregion Public Constructors

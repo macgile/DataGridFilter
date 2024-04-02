@@ -5,7 +5,7 @@
 // Projet     : DemoApp.Net7.0
 // File       : RandomGenerator.cs
 // Created    : 13/06/2023
-// 
+//
 
 #endregion
 
@@ -109,7 +109,7 @@ namespace SharedModelView.ModelView
         ///     Create random employee
         /// </summary>
         /// <returns></returns>
-        public static Employe CreateRandomEmployee(bool distinct = false)
+        public static Employe CreateRandomEmployee(bool distinct = false, Countries countries = null)
         {
             // distinct lastName or not
             var emp = new Employe(
@@ -126,7 +126,6 @@ namespace SharedModelView.ModelView
                 Rnd.Next(18, 75) * 1,
 
                 // do not remove cast (DateTime?/bool?) to ensure compatibility with the C# version of the 4.8 NetFramework
-
                 // start date + time
                 Rnd.Next(0, 10) != 1
                     ? new DateTime(2012 + Rnd.Next(10), Rnd.Next(12) + 1, Rnd.Next(28) + 1, Rnd.Next(23), Rnd.Next(59),
@@ -142,10 +141,10 @@ namespace SharedModelView.ModelView
                 (Departments)Rnd.Next(0, Enum.GetNames(typeof(Departments)).Length),
 
                 // Country (IdCountry)
-                new Countries()[Rnd.Next(0, new Countries().Count)].Id,
+                countries?[Rnd.Next(0, countries.Count)]?.Id ?? 0,
 
                 // Country (nested object)
-                new Countries()[Rnd.Next(0, new Countries().Count)]
+                countries?[Rnd.Next(0, countries.Count)]
             );
             return emp;
         }

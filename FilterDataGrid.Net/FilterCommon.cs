@@ -28,19 +28,10 @@ namespace FilterDataGrid
 
         #endregion Private Fields
 
-        #region Public Constructors
-
-        public FilterCommon()
-        {
-            PreviouslyFilteredItems = new HashSet<object>(EqualityComparer<object>.Default);
-        }
-
-        #endregion Public Constructors
-
         #region Public Properties
 
         [DataMember (Name = "FilteredItems")]
-        public HashSet<object> PreviouslyFilteredItems { get; set; }
+        public HashSet<object> PreviouslyFilteredItems { get; set; } = new HashSet<object>(EqualityComparer<object>.Default);
 
         [DataMember(Name = "FieldName")]
         public string FieldName { get; set; }

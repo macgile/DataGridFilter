@@ -119,12 +119,13 @@ namespace SharedModelView.ModelView
             search = "";
 
             var employe = new List<Employe>(count);
+            var countries = new Countries();
 
             // for distinct lastname set "true" at CreateRandomEmployee(true)
             await Task.Run(() =>
             {
                 for (var i = 0; i < count; i++)
-                    employe.Add(RandomGenerator.CreateRandomEmployee(true));
+                    employe.Add(RandomGenerator.CreateRandomEmployee(true, countries));
             });
 
             Employes = new ObservableCollection<Employe>(employe);

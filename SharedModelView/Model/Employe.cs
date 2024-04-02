@@ -45,6 +45,7 @@ namespace SharedModelView
             Add(new Country { Id = 6, Name = "Italian", Region = "Europe" });
             Add(new Country { Id = 7, Name = "Japanese", Region = "Asia & Pacific" });
             Add(new Country { Id = 8, Name = "Polish", Region = "Europe" });
+            Add(new Country { Id = 8, Name = "Portuguese", Region = "Europe" });
             Add(new Country { Id = 9, Name = "Russian", Region = "Europe" });
             Add(new Country { Id = 10, Name = "Spanish", Region = "Europe" });
             Add(new Country { Id = 11, Name = "Turkish", Region = "Europe" });

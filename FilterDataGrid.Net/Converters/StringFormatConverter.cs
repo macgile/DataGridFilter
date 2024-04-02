@@ -16,12 +16,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable AssignNullToNotNullAttribute
-// ReSharper disable CheckNamespace
-
-namespace FilterDataGrid
+namespace FilterDataGrid.Converters
 {
     public class StringFormatConverter : IValueConverter, IMultiValueConverter
     {
@@ -49,7 +44,7 @@ namespace FilterDataGrid
                 if (values[0] == DependencyProperty.UnsetValue || string.IsNullOrEmpty(values[0]?.ToString()))
                     return string.Empty;
 
-                var stringFormat = values[0].ToString();
+                var stringFormat = values[0].ToString() ?? string.Empty;
 
                 // the last item of values array is culture
                 if (parameter != null && parameter.Equals("Culture"))

@@ -17,7 +17,7 @@ for each column like Excel, in automatic or custom generation.
 
 Support for nested objects and filter persistence.  
 
-Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Hebrew, Hungarian, Italian, Japanese, Polish, Russian, Spanish, Turkish.**
+Translation of labels and formatting of dates in the following languages: **Chinese(traditional and simplified), Dutch, English, French, German, Hebrew, Hungarian, Italian, Japanese, Polish, Portuguese, Russian, Spanish, Turkish.**
 
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
@@ -197,6 +197,10 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 <a href="https://github.com/livep2000" target="_blank">
   <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/2779309?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d" />
 </a>
+<a href="https://github.com/mcboothy" target="_blank">
+  <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/7164916?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d" />
+</a>
+
 <!-- Made with [contributors-img](https://contrib.rocks). -->
 <a href="https://github.com/macgile/DataGridFilter/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=macgile/DataGridFilter" />

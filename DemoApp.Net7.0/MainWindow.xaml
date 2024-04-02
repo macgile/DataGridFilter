@@ -152,7 +152,7 @@
                 <!--  Nested object  -->
                 <!--<control:DataGridTextColumn
                     Binding="{Binding Country.Name}"
-                    Header="Country.Name Nested"
+                    Header="Country.Name"
                     IsColumnFiltered="True"
                     IsReadOnly="True" />-->
 
@@ -167,7 +167,7 @@
                 <!--  ComboBoxColumn unique ID  -->
                 <!--<control:DataGridComboBoxColumn
                     DisplayMemberPath="Name"
-                    Header="Cbc Country Single"
+                    Header="Country"
                     IsColumnFiltered="True"
                     IsReadOnly="False"
                     ItemsSource="{Binding Source={StaticResource Countries}}"

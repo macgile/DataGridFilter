@@ -15,6 +15,7 @@
 // Italian              : aetasoul
 // Japanese             : iBadaMorae
 // Polish               : mgaszynski
+// Portuguese           : eduardoghi
 // Russian              : anyousib
 // Simplified Chinese   : SWH998
 // Traditional Chinese  : BeCare4
@@ -51,14 +52,15 @@ namespace FilterDataGrid
         Italian,
         Japanese,
         Polish,
+        Portuguese,
         Russian,
         Spanish,
         Turkish
     }
 
     // Contributor : dankovics.jozsef
-    public enum TranslatableElements {
-
+    public enum TranslatableElements
+    {
         /// <summary>
         ///     (Select all)
         /// </summary>
@@ -146,19 +148,9 @@ namespace FilterDataGrid
     {
         #region Private Fields
 
-        private Local language;
+        private Local language = Local.English;
 
         #endregion Private Fields
-
-        #region Public Constructors
-
-        public Loc()
-        {
-            language = Local.English;
-            SelectedLanguage = English;
-        }
-
-        #endregion Public Constructors
 
         #region Public Properties
 
@@ -166,9 +158,11 @@ namespace FilterDataGrid
         public string DisplayName => SelectedLanguage.Culture.DisplayName;
         public string EnglishName => SelectedLanguage.Language;
 
-        public Local Language {
+        public Local Language
+        {
             get => language;
-            set {
+            set
+            {
                 language = value;
 
                 var type = typeof(Loc);
@@ -370,6 +364,25 @@ namespace FilterDataGrid
                 { TranslatableElements.Indeterminate, "Nieokreślony" },
             });
 
+        private static ILanguageDictionary Portuguese { get; } = new LanguageDictionary("Portuguese", new CultureInfo("pt-BR"),
+            new Dictionary<TranslatableElements, string>
+            {
+                { TranslatableElements.All, "(Selecionar todos)" },
+                { TranslatableElements.Empty, "(Vazio)" },
+                { TranslatableElements.Clear, "Limpar filtro de \"{0}\"" },
+                { TranslatableElements.Contains, "Pesquisar (contém)" },
+                { TranslatableElements.StartsWith, "Pesquisar (começa com)" },
+                { TranslatableElements.Toggle, "Alternar contém/começa com" },
+                { TranslatableElements.Ok, "Ok" },
+                { TranslatableElements.Cancel, "Cancelar" },
+                { TranslatableElements.Status, "{0:n0} registro(s) encontrado(s) de {1:n0}" },
+                { TranslatableElements.ElapsedTime, "Tempo decorrido {0:mm}:{0:ss}.{0:ff}" },
+                { TranslatableElements.True, "Marcado" },
+                { TranslatableElements.False, "Desmarcado" },
+                { TranslatableElements.RemoveAll, "Remover todos os filtros" },
+                { TranslatableElements.Indeterminate, "Indeterminado" },
+            });
+
         private static ILanguageDictionary Russian { get; } = new LanguageDictionary("Russian", new CultureInfo("ru-RU"),
             new Dictionary<TranslatableElements, string>
             {
@@ -467,18 +480,19 @@ namespace FilterDataGrid
                 { TranslatableElements.Indeterminate, "Belirsiz" },
             });
 
-        private ILanguageDictionary SelectedLanguage { get; set; }
+        private ILanguageDictionary SelectedLanguage { get; set; } = English;
 
         #endregion Private Properties
     }
 
     // Contributor : dankovics.jozsef
-    internal class LanguageDictionary : ILanguageDictionary {
-
+    internal class LanguageDictionary : ILanguageDictionary
+    {
         #region Public Constructors
 
         public LanguageDictionary(string language, CultureInfo culture,
-            Dictionary<TranslatableElements, string> dictionary) {
+            Dictionary<TranslatableElements, string> dictionary)
+        {
             Language = language;
             Culture = culture;
             Dictionary = dictionary;
