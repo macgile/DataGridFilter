@@ -24,19 +24,6 @@ Translation of labels and formatting of dates in the following languages: **Chin
 The **Nuget package** is available [here](https://www.nuget.org/packages/FilterDataGrid/).
 
 To understand how the filter works, you can consult the article posted on [CodeProject](https://www.codeproject.com/Articles/5292782/WPF-DataGrid-Filterable-multi-language).  
-<!--
-> **For operation closer to that of Excel, see the version available in the repository [FilterDataGrid-Beta](https://github.com/macgile/FilterDataGrid-Beta).  
-This version uses a new filtering method that is completely different from the current version or the one commonly used to filter data (as far as I know).**  
--->
-:warning: **Attention in version 1.2.6 you must add the global style so that the FilterDataGrid is displayed correctly, this is a bug fixed in the current version.**  
-
-```xml
-<Style x:Key="FilterDatagridStyle" 
-BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid, 
-ResourceId=FilterDataGridStyle}}" 
-TargetType="{x:Type control:FilterDataGrid}">
-</Style>
-```
 
 ## How to use
 
@@ -48,44 +35,51 @@ TargetType="{x:Type control:FilterDataGrid}">
 
 - Add **Namespace** :
 
-```xml
-    xmlns:control="http://filterdatagrid.control.com/2021"  
-    or
-    xmlns:control="clr-namespace:FilterDataGrid;assembly=FilterDataGrid"  
-```
-
+  ```xml
+      xmlns:control="http://filterdatagrid.control.com/2021"  
+  ```  
+  or  
+  ```xml
+      xmlns:control="clr-namespace:FilterDataGrid;assembly=FilterDataGrid"  
+  ```
 - **Control**  
 
-```xml
-  <control:FilterDataGrid 
-   FilterLanguage="English" DateFormatString="d" ShowStatusBar="True" ShowElapsedTime="False"
-   ExcludeFields="lastname,age,manager" ...
-```
-
-- Properties
+  ```xml
+    <control:FilterDataGrid 
+    FilterLanguage="English" DateFormatString="d" ShowStatusBar="True" ShowElapsedTime="False"
+    ExcludeFields="lastname,age,manager" ...
+  ```
+- **Properties**
 
   - **DateFormatString** : *date display format*, default : "d"  
-    > warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.  
+    > warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.
   [see the documentation](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
+
   - **ExcludeColumns** :new: : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
   - **ExcludeFields** : *name of fields separated by commas to exclude from the filter, only works in AutoGenerateColumns mode*  
+
   - **FilterLanguage** : *translation into available language*, default : English  
+
   - **PersistentFilter** : *enable/disable filter persistence* , default : false  
+
     > [See below the detail of this feature](#persistence-of-filters)
   - **ShowElapsedTime** : *displays the elapsed time of filtering in status bar*, default : false  
+
   - **ShowRowsCount** : *display the number of rows*, default : false  
     > *If the value passed to **RowHeaderWidth** is greater than the calculation of the width of the column, this is the one that is used.*  
+
   - **ShowStatusBar** : *displays the status bar*, default : false  
-  - **FilterPopupBackground** : set a custom background color for the filter popup, default : Background color of host window.    
+  - **FilterPopupBackground** : set a custom background color for the filter popup, default : Background color of host window.  
+
 
 - **Custom TextColumn / CheckBoxColumn**
      > *If you add custom columns, you must set **AutoGenerateColumns="False"***
 
-  ```xml
-  <control:FilterDataGrid.Columns>   
-      <control:DataGridTextColumn     IsColumnFiltered="True" ... />
-      <control:DataGridCheckBoxColumn IsColumnFiltered="True" ... />
-  ```
+    ```xml
+    <control:FilterDataGrid.Columns>   
+        <control:DataGridTextColumn     IsColumnFiltered="True" ... />
+        <control:DataGridCheckBoxColumn IsColumnFiltered="True" ... />
+    ```
 
 - **Custom TemplateColumn**  
      > :warning: ***FieldName** property of **DataGridTemplateColumn** is required*
@@ -117,7 +111,7 @@ TargetType="{x:Type control:FilterDataGrid}">
 
 ## Global Style
 
->You can define a global style which overrides the default style of "FilterDataGrid"  
+> You can define a global style which overrides the default style of "FilterDataGrid"  
 :warning: **The ComponentResourceKey is obsolete from version 1.2.7**
 ~~BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly=control:FilterDataGrid,
         ResourceId=FilterDataGridStyle}}"~~
@@ -135,7 +129,6 @@ TargetType="{x:Type control:FilterDataGrid}">
   <!-- usage -->
   <control:FilterDataGrid Style="{StaticResource FilterDatagridStyle}" ...
 ```
-
 ## Persistence of filters
 
 >Enabling the **PersistentFilter** property saves a json file in the application folder that contains the status of active filters, any modification of the filters is immediately saved until the closing of the application, it is this state of the filters which will be loaded during the new launch of the application.  
