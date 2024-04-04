@@ -137,7 +137,7 @@ namespace SharedModelView.ModelView
             OnPropertyChanged("FilteredList");
         }
 
-        private void OnPropertyChanged(string propertyname)
+        public void OnPropertyChanged(string propertyname)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }

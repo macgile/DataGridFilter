@@ -567,27 +567,31 @@ namespace FilterDataGrid
         /// <param name="newValue"></param>
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
-            Debug.WriteLineIf(DebugMode, $"\nOnItemsSourceChanged");
+            Debug.WriteLineIf(DebugMode, $"\nOnItemsSourceChanged Auto : {AutoGenerateColumns}");
 
             base.OnItemsSourceChanged(oldValue, newValue);
 
             try
             {
+                // remove previous event : Contribution mcboothy
+                if (oldValue is INotifyCollectionChanged collectionChanged)
+                    collectionChanged.CollectionChanged -= ItemSourceCollectionChanged;
+
+                if (newValue == null)
+                {
+                    RemoveFilters();
+
+                    // remove custom HeaderTemplate
+                    foreach (var col in Columns)
+                    {
+                        col.HeaderTemplate = null;
+                    }
+                    return;
+                }
+
                 if (oldValue != null)
                 {
-                    // reset current filter, !important
-                    CurrentFilter = null;
-
-                    // reset GlobalFilterList list
-                    GlobalFilterList.Clear();
-
-                    // reset criteria List
-                    criteria.Clear();
-
-                    // Contribution : mcboothy
-                    // remove previous event
-                    if (oldValue is INotifyCollectionChanged collectionChanged)
-                        collectionChanged.CollectionChanged -= ItemSourceCollectionChanged;
+                    RemoveFilters();
 
                     // free previous resource
                     CollectionViewSource = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
@@ -597,7 +601,7 @@ namespace FilterDataGrid
                     scrollViewer?.ScrollToTop();
                 }
 
-                // add new event
+                // add new event : Contribution mcboothy
                 if (newValue is INotifyCollectionChanged changed)
                     changed.CollectionChanged += ItemSourceCollectionChanged;
 
@@ -709,8 +713,6 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "RemoveFilters");
 
-            if (CollectionViewSource == null) return;
-
             ElapsedTime = new TimeSpan(0, 0, 0);
 
             try
@@ -724,8 +726,7 @@ namespace FilterDataGrid
                 CurrentFilter = null;
                 criteria.Clear();
                 GlobalFilterList.Clear();
-                ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(new object());
-                CollectionViewSource.Refresh();
+                CollectionViewSource?.Refresh();
 
                 // empty json file
                 if (PersistentFilter) SavePreset();
@@ -1693,7 +1694,7 @@ namespace FilterDataGrid
                     filterItemList.AddRange(sourceObjectList.Select(item => new FilterItem
                     {
                         Content = item,
-                        ContentLength = item?.ToString()?.Length ?? 0,
+                        ContentLength = item?.ToString().Length ?? 0,
                         FieldType = fieldType,
                         Label = Getlabel(item, fieldType),
                         Level = 1,
