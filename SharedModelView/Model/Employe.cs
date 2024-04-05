@@ -41,14 +41,14 @@ namespace SharedModelView
             Add(new Country { Id = 3, Name = "French", Region = "Europe" });
             Add(new Country { Id = 4, Name = "German", Region = "Europe" });
             Add(new Country { Id = 5, Name = "Hebrew", Region = "Middle east" });
-            Add(new Country { Id = 5, Name = "Hungarian", Region = "Europe" });
-            Add(new Country { Id = 6, Name = "Italian", Region = "Europe" });
-            Add(new Country { Id = 7, Name = "Japanese", Region = "Asia & Pacific" });
-            Add(new Country { Id = 8, Name = "Polish", Region = "Europe" });
-            Add(new Country { Id = 8, Name = "Portuguese", Region = "Europe" });
-            Add(new Country { Id = 9, Name = "Russian", Region = "Europe" });
-            Add(new Country { Id = 10, Name = "Spanish", Region = "Europe" });
-            Add(new Country { Id = 11, Name = "Turkish", Region = "Europe" });
+            Add(new Country { Id = 6, Name = "Hungarian", Region = "Europe" });
+            Add(new Country { Id = 7, Name = "Italian", Region = "Europe" });
+            Add(new Country { Id = 8, Name = "Japanese", Region = "Asia & Pacific" });
+            Add(new Country { Id = 9, Name = "Polish", Region = "Europe" });
+            Add(new Country { Id = 10, Name = "Portuguese", Region = "Europe" });
+            Add(new Country { Id = 11, Name = "Russian", Region = "Europe" });
+            Add(new Country { Id = 12, Name = "Spanish", Region = "Europe" });
+            Add(new Country { Id = 13, Name = "Turkish", Region = "Europe" });
         }
 
         #endregion Public Constructors
