@@ -216,7 +216,7 @@
             AutoGenerateColumns="True"
             CanUserSortColumns="True"
             ExcludeColumns="country, idcountry"
-            ExcludeFields="lastname, manager, age"
+            ExcludeFields="lastname, age"
             FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource FilterDatagridStyle}" />

@@ -492,7 +492,10 @@ namespace FilterDataGrid
                 // template
                 var template = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
 
-                if (e.PropertyType.IsEnum)
+                // get type
+                fieldType = Nullable.GetUnderlyingType(e.PropertyType) ?? e.PropertyType;
+
+                if (fieldType.IsEnum)
                 {
                     var column = new DataGridComboBoxColumn
                     {
@@ -507,7 +510,7 @@ namespace FilterDataGrid
 
                     e.Column = column;
                 }
-                else if (e.PropertyType == typeof(bool) || e.PropertyType.GenericTypeArguments.FirstOrDefault() == typeof(bool))
+                else if (fieldType == typeof(bool))
                 {
                     var column = new DataGridCheckBoxColumn
                     {
@@ -529,9 +532,6 @@ namespace FilterDataGrid
                         Header = e.Column.Header.ToString(),
                         IsColumnFiltered = true
                     };
-
-                    // get type
-                    fieldType = Nullable.GetUnderlyingType(e.PropertyType) ?? e.PropertyType;
 
                     // apply the format string provided
                     if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
