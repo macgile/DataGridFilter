@@ -507,7 +507,7 @@ namespace FilterDataGrid
 
                     e.Column = column;
                 }
-                else if (e.PropertyType.GenericTypeArguments.FirstOrDefault() == typeof(bool))
+                else if (e.PropertyType == typeof(bool) || e.PropertyType.GenericTypeArguments.FirstOrDefault() == typeof(bool))
                 {
                     var column = new DataGridCheckBoxColumn
                     {
