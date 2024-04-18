@@ -403,6 +403,7 @@ namespace FilterDataGrid
         private ICollectionView CollectionViewSource { get; set; }
         private ICollectionView ItemCollectionView { get; set; }
         private List<FilterCommon> GlobalFilterList { get; } = new List<FilterCommon>();
+        private bool PresetLoaded { get; set; }
 
         /// <summary>
         /// Popup filtered items (ListBox/TreeView)
@@ -750,11 +751,12 @@ namespace FilterDataGrid
         private static void OnLoaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLineIf(DebugMode, "OnLoaded");
-
-            e.Handled = true;
+            
             var filterDatagrid = (FilterDataGrid)sender;
-            if (filterDatagrid?.PersistentFilter == false) return;
-            filterDatagrid?.LoadPreset();
+            
+            if (filterDatagrid == null || filterDatagrid.PersistentFilter == false || filterDatagrid.PresetLoaded) return;
+            filterDatagrid.PresetLoaded = true;
+            filterDatagrid.LoadPreset();
         }
 
         /// <summary>
