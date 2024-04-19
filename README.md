@@ -134,7 +134,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 >Enabling the **PersistentFilter** property saves a json file in the application folder that contains the status of active filters, any modification of the filters is immediately saved until the closing of the application, it is this state of the filters which will be loaded during the new launch of the application.  
 The name of the json file is inferred from the name you give to your FilterDataGrid control.
 
->:warning: This feature don't work with ComboBox Column.
+<!-- >:warning: This feature don't work with ComboBox Column. -->
 
 ```xml
  <control:FilterDataGrid x:Name="MyFilterDatagrid"
