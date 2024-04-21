@@ -12,23 +12,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
+
 namespace FilterDataGrid
 {
-    public interface IFilter
+    public abstract class FilterBase : NotifyProperty
     {
         #region Public Properties
 
-        object Content { get; set; }
-        int ContentLength { get; set; }
-        Type FieldType { get; set; }
-        bool IsChanged { get; set; }
-        object Label { get; set; }
-        int Level { get; set; }
+        /// <summary>
+        ///     Raw value of the item (not displayed, see Label property)
+        /// </summary>
+        public object Content { get; set; }
+
+        /// <summary>
+        ///     Content length
+        /// </summary>
+        public int ContentLength { get; set; }
+
+        /// <summary>
+        ///     Field type
+        /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public Type FieldType { get; set; }
+
+        /// <summary>
+        ///     State change flag
+        /// </summary>
+        public bool IsChanged { get; set; }
+
+        /// <summary>
+        ///     Content displayed
+        /// </summary>
+        public object Label { get; set; }
+
+        /// <summary>
+        ///     Hierarchical level
+        /// </summary>
+        public int Level { get; set; }
 
         #endregion Public Properties
     }
 
-    public class FilterItem : NotifyProperty, IFilter
+    public class FilterItem : FilterBase
     {
         #region Private Fields
 
@@ -38,21 +64,6 @@ namespace FilterDataGrid
         #endregion Private Fields
 
         #region Public Properties
-
-        /// <summary>
-        ///     Raw value of the item (not displayed, see Label property)
-        /// </summary>
-        public object Content { get; set; }
-
-        /// <summary>
-        /// Content length
-        /// </summary>
-        public int ContentLength { get; set; }
-
-        /// <summary>
-        ///     Field type
-        /// </summary>
-        public Type FieldType { get; set; }
 
         /// <summary>
         /// Initial state
@@ -65,8 +76,6 @@ namespace FilterDataGrid
                 isChecked = value;
             }
         }
-
-        public bool IsChanged { get; set; }
 
         /// <summary>
         /// State of checkbox
@@ -82,20 +91,10 @@ namespace FilterDataGrid
             }
         }
 
-        /// <summary>
-        /// Content displayed
-        /// </summary>
-        public object Label { get; set; }
-
-        /// <summary>
-        /// Hierarchical level for the date
-        /// </summary>
-        public int Level { get; set; }
-
         #endregion Public Properties
     }
 
-    public class FilterItemDate : NotifyProperty, IFilter
+    public class FilterItemDate : FilterBase
     {
         #region Private Fields
 
@@ -108,12 +107,9 @@ namespace FilterDataGrid
 
         public List<FilterItemDate> Children { get; set; }
 
-        public object Content { get; set; }
-
-        public int ContentLength { get; set; }
-
-        public Type FieldType { get; set; }
-
+        /// <summary>
+        /// Initial state
+        /// </summary>
         public bool? Initialize
         {
             set
@@ -123,8 +119,9 @@ namespace FilterDataGrid
             }
         }
 
-        public bool IsChanged { get; set; }
-
+        /// <summary>
+        /// State of checkbox
+        /// </summary>
         public bool? IsChecked
         {
             get => isChecked;
@@ -132,13 +129,7 @@ namespace FilterDataGrid
         }
 
         public FilterItem Item { get; set; }
-
-        public object Label { get; set; }
-
-        public int Level { get; set; }
-
         public FilterItemDate Parent { get; set; }
-
         public List<FilterItemDate> Tree { get; set; }
 
         #endregion Public Properties
