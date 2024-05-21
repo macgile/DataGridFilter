@@ -167,7 +167,7 @@ namespace FilterDataGrid
 
                 var type = typeof(Loc);
                 var propertyInfo =
-                    type.GetProperty(Enum.GetName(typeof(Local), language) ?? throw new InvalidOperationException("Language is required"),
+                    type.GetProperty(Enum.GetName(typeof(Local), language) ?? throw new ArgumentException("Language is required", nameof(Local)),
                         BindingFlags.Static | BindingFlags.NonPublic);
 
                 if (propertyInfo == null) return;
