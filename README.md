@@ -10,7 +10,8 @@ https://github.com/ikatyang/emoji-cheat-sheet/tree/master?tab=readme-ov-file#oth
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![Net Version](https://img.shields.io/badge/net%20version-net4.8%20netcore3.1%20net5.0%20net6.0%20net7.0-blue)](https://shields.io)
 
-![datagrid image demo](https://raw.githubusercontent.com/macgile/DataGridFilter/master/FilterDataGrid.png)  
+<!-- FilterDataGrid.png -->
+![datagrid image demo](https://raw.githubusercontent.com/macgile/DataGridFilter/master/filterdatagrid.png)  
 
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
 for each column like Excel, in automatic or custom generation.  
