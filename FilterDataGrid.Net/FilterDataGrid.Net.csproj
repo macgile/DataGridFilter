@@ -19,7 +19,7 @@
     <PackageOutputPath>..\..\NuGet</PackageOutputPath>
 
     <!-- Package version -->
-    <Version>1.2.8</Version>
+    <Version>1.2.9</Version>
 
     <IsPublishable>False</IsPublishable>
     <NeutralLanguage />
