@@ -26,6 +26,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+// ReSharper disable All
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UseNameofForDependencyProperty
@@ -646,7 +647,7 @@ namespace FilterDataGrid
                 // set name of persistent filter json file
                 // The name of the file is defined by the "Name" property of the FilterDatGrid, otherwise
                 // the name of the source collection type is used
-                if (PersistentFilter && collectionType != null)
+                if (collectionType != null)
                     fileName = !string.IsNullOrEmpty(Name) ? $"{Name}.json" : $"{collectionType?.Name}.json";
 
                 // generating custom columns

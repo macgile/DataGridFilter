@@ -53,7 +53,7 @@ Removing demo apps : DemoApp.NET.Framework / DemoApp.Net5.0, /DemoApp.Net6.0
 Removing net.5.0 support.
     </PackageReleaseNotes>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\NuGet\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <!-- Additional Package Items -->

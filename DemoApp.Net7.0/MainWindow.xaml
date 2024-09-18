@@ -110,9 +110,10 @@
             DateFormatString="d"
             FilterLanguage="English"
             ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
-            PersistentFilter="False"
+            PersistentFilter="True"
             ShowElapsedTime="True"
             ShowRowsCount="True"
+            
             ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}">
             <control:FilterDataGrid.Columns>
