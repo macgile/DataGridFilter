@@ -100,8 +100,8 @@
         </UniformGrid>
 
         <!--
-            CUSTOM COLUMNS
-            See the global style "FilterDatagridStyle" in App.xaml
+            CUSTOM COLUMNS : See the global style "FilterDatagridStyle" in App.xaml
+            For clarity, some columns are commented but works perfectly
         -->
         <control:FilterDataGrid
             x:Name="FilterDataGrid"
@@ -110,10 +110,9 @@
             DateFormatString="d"
             FilterLanguage="English"
             ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
-            PersistentFilter="True"
+            PersistentFilter="False"
             ShowElapsedTime="True"
             ShowRowsCount="True"
-            
             ShowStatusBar="True"
             Style="{StaticResource FilterDatagridStyle}">
             <control:FilterDataGrid.Columns>
@@ -221,6 +220,5 @@
             FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource FilterDatagridStyle}" />
-
     </Grid>
 </Window>

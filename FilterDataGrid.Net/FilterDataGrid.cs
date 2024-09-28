@@ -26,6 +26,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+
 // ReSharper disable All
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -435,7 +436,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         protected override void OnInitialized(EventArgs e)
         {
-            Debug.WriteLineIf(DebugMode, "OnInitialized");
+            Debug.WriteLineIf(DebugMode, $"OnInitialized | Name:{this.Name}");
 
             base.OnInitialized(e);
 
@@ -738,6 +739,28 @@ namespace FilterDataGrid
                 Debug.WriteLineIf(DebugMode, $"RemoveFilters error : {ex.Message}");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Set the pop-up the background color of the parent if this color is not defined by the user.
+        /// </summary>
+        public override void OnApplyTemplate()
+        {
+            Debug.WriteLineIf(DebugMode, "OnApplyTemplate");
+
+            base.OnApplyTemplate();
+
+            var wnd = VisualTreeHelpers.FindAncestor<Window>(this);
+            var pg = VisualTreeHelpers.FindAncestor<Page>(this);
+            var uc = VisualTreeHelpers.FindAncestor<UserControl>(this);
+
+            if (FilterPopupBackground == null) FilterPopupBackground = wnd != null
+                ? wnd.Background
+                : uc != null
+                    ? uc.Background
+                    : pg != null
+                        ? pg.Background
+                        : new SolidColorBrush(Colors.White); ;
         }
 
         #endregion Public Methods
@@ -1067,7 +1090,7 @@ namespace FilterDataGrid
 
                     if (col.HeaderTemplate != null)
                     {
-                       // Debug.WriteLineIf(DebugMode, "\tReset filter Button");
+                        // Debug.WriteLineIf(DebugMode, "\tReset filter Button");
 
                         // reset filter Button
                         var buttonFilter = VisualTreeHelpers.GetHeader(col, this)
