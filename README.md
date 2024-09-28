@@ -71,7 +71,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 
   - **ShowStatusBar** : *displays the status bar*, default : false  
   - **FilterPopupBackground** : set a custom background color for the filter popup, default : Background color of host window.  
-
+    > *If **FilterPopupBackground** is not set, the background color of the main window is used.*  
 
 - **Custom TextColumn / CheckBoxColumn**
      > *If you add custom columns, you must set **AutoGenerateColumns="False"***
