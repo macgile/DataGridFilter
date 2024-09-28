@@ -52,7 +52,7 @@ Fix null or empty value filtering.
 Removing demo apps : DemoApp.NET.Framework / DemoApp.Net5.0, /DemoApp.Net6.0
 Removing net.5.0 support.
     </PackageReleaseNotes>
-    <SignAssembly>True</SignAssembly>
+    <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>..\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
