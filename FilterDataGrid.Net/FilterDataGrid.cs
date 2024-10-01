@@ -751,15 +751,15 @@ namespace FilterDataGrid
             base.OnApplyTemplate();
 
             var wnd = VisualTreeHelpers.FindAncestor<Window>(this);
-            var pg = VisualTreeHelpers.FindAncestor<Page>(this);
+            var fr = VisualTreeHelpers.FindAncestor<Frame>(this);
             var uc = VisualTreeHelpers.FindAncestor<UserControl>(this);
 
             if (FilterPopupBackground == null) FilterPopupBackground = wnd != null
                 ? wnd.Background
                 : uc != null
                     ? uc.Background
-                    : pg != null
-                        ? pg.Background
+                    : fr != null
+                        ? fr.Background
                         : new SolidColorBrush(Colors.White); ;
         }
 
