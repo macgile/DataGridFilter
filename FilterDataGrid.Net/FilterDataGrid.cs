@@ -338,7 +338,7 @@ namespace FilterDataGrid
         /// <summary>
         ///     Instance of Loc
         /// </summary>
-        public Loc Translate { get; private set; }
+        public Loc Translate { get; set; }
 
         /// <summary>
         /// Tree View ItemsSource
