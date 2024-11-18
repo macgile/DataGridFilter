@@ -505,7 +505,7 @@ namespace FilterDataGrid
                         ItemsSource = ((System.Windows.Controls.DataGridComboBoxColumn)e.Column).ItemsSource,
                         SelectedItemBinding = new Binding(e.PropertyName),
                         FieldName = e.PropertyName,
-                        Header = e.Column.Header.ToString(),
+                        Header = e.Column.Header,
                         HeaderTemplate = template,
                         IsSingle = false, // eNum is not a unique value (unique identifier)
                         IsColumnFiltered = true
@@ -519,7 +519,7 @@ namespace FilterDataGrid
                     {
                         Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
                         FieldName = e.PropertyName,
-                        Header = e.Column.Header.ToString(),
+                        Header = e.Column.Header,
                         HeaderTemplate = template,
                         IsColumnFiltered = true
                     };
@@ -532,7 +532,7 @@ namespace FilterDataGrid
                     {
                         Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
                         FieldName = e.PropertyName,
-                        Header = e.Column.Header.ToString(),
+                        Header = e.Column.Header,
                         IsColumnFiltered = true
                     };
 
