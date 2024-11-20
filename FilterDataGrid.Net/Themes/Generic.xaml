@@ -450,8 +450,8 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!--  RENDER THE HEADER TEXT  -->
-                <TextBlock Grid.Column="0" Text="{Binding}" />
+                <!--  RENDER THE HEADER CONTENT -->
+                <ContentPresenter Grid.Column="0" Content="{Binding}"/>
 
                 <!--
                     FILTER BUTTON
