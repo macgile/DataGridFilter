@@ -23,6 +23,7 @@
 // Simplified Chinese   : SWH998
 // Traditional Chinese  : BeCare4
 // Turkish              : BEDIRHANSAMSA
+// Ukrainian            : oleluo
 
 // The simplification of the translation is achieved by dankovics.jozsef
 // TranslatableElements, ILanguageDictionary, LanguageDictionary
@@ -59,7 +60,8 @@ namespace FilterDataGrid
         SimplifiedChinese,
         Spanish,
         TraditionalChinese,
-        Turkish
+        Turkish,
+        Ukrainian
     }
 
     // Contributor : dankovics.jozsef
@@ -513,6 +515,26 @@ namespace FilterDataGrid
                 { TranslatableElements.False, "Seçili değil" },
                 { TranslatableElements.RemoveAll, "Tüm filtreleri kaldır" },
                 { TranslatableElements.Indeterminate, "Belirsiz" },
+            });
+
+        private static ILanguageDictionary Ukrainian { get; } = new LanguageDictionary("Ukrainian",
+            new CultureInfo("uk-UA"),
+            new Dictionary<TranslatableElements, string>
+            {
+                { TranslatableElements.All, "(Вибрати все)" },
+                { TranslatableElements.Empty, "(Порожньо)" },
+                { TranslatableElements.Clear, "Очистити фільтр \"{0}\"" },
+                { TranslatableElements.Contains, "Пошук (містить)" },
+                { TranslatableElements.StartsWith, "Пошук (починається з)" },
+                { TranslatableElements.Toggle, "Перемкнути містить/починається з" },
+                { TranslatableElements.Ok, "Ok" },
+                { TranslatableElements.Cancel, "Скасувати" },
+                { TranslatableElements.Status, "{0:n0} запис(ів) знайдено з {1:n0}" },
+                { TranslatableElements.ElapsedTime, "Витрачений час {0:mm}:{0:ss}.{0:ff}" },
+                { TranslatableElements.True, "Вибрано" },
+                { TranslatableElements.False, "Не вибрано" },
+                { TranslatableElements.RemoveAll, "Очистити всі фільтри" },
+                { TranslatableElements.Indeterminate, "Невизначений" },
             });
 
         private ILanguageDictionary SelectedLanguage { get; set; } = English;
