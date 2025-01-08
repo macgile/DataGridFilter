@@ -28,7 +28,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 // ReSharper disable All
-
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UseNameofForDependencyProperty
 // ReSharper disable ConvertIfStatementToNullCoalescingAssignment

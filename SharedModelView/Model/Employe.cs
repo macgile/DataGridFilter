@@ -49,6 +49,7 @@ namespace SharedModelView
             Add(new Country { Id = 11, Name = "Russian", Region = "Europe" });
             Add(new Country { Id = 12, Name = "Spanish", Region = "Europe" });
             Add(new Country { Id = 13, Name = "Turkish", Region = "Europe" });
+            Add(new Country { Id = 14, Name = "Ukrainian", Region = "Europe" });
         }
 
         #endregion Public Constructors
