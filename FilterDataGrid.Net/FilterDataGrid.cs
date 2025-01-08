@@ -450,6 +450,8 @@ namespace FilterDataGrid
                     excludedFields = ExcludeFields.Split(',').Select(p => p.Trim()).ToList();
                     excludedColumns = ExcludeColumns.Split(',').Select(p => p.Trim()).ToList();
                 }
+                // generating custom columns
+                else if (collectionType != null) GeneratingCustomsColumn();
 
                 // sorting event
                 Sorted += OnSorted;
