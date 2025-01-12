@@ -648,7 +648,6 @@
                                         DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}}"
                                         Focusable="True"
                                         FontSize="13"
-                                        MaxLength="20"
                                         Style="{StaticResource PlaceHolder}"
                                         TabIndex="1"
                                         Tag="{Binding Translate.Contains}">
