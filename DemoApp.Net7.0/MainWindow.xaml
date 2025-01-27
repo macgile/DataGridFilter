@@ -134,13 +134,13 @@
                     Header="Last name"
                     IsColumnFiltered="True" />
 
-                <control:DataGridTextColumn
-                    Binding="{Binding Age}"
+                <control:DataGridNumericColumn
+                    Binding="{Binding Age, StringFormat=d}"
                     Header="Age"
                     IsColumnFiltered="True" />
 
-                <control:DataGridTextColumn
-                    Binding="{Binding Salary}"
+                <control:DataGridNumericColumn
+                    Binding="{Binding Salary, StringFormat=c}"
                     Header="Salary"
                     IsColumnFiltered="True" />
 

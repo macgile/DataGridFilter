@@ -1079,6 +1079,7 @@ namespace FilterDataGrid
                     .Where(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered)
                                 || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered)
                                 || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered)
+                                || (c is DataGridNumericColumn dnm && dnm.IsColumnFiltered)
                                 || (c is DataGridComboBoxColumn dbx && dbx.IsColumnFiltered)
                     )
                     .Select(c => c)
@@ -1201,6 +1202,22 @@ namespace FilterDataGrid
                                     nameof(DataGridComboBoxColumn));
                             }
                         }
+
+
+                        if (columnType == typeof(DataGridNumericColumn))
+                        {
+                            var column = (DataGridNumericColumn)col;
+
+                            column.FieldName = ((Binding)column.Binding).Path.Path;
+
+                            // template
+                            column.HeaderTemplate = template;
+
+                            // culture
+                            if (((Binding)column.Binding).ConverterCulture == null)
+                                ((Binding)column.Binding).ConverterCulture = Translate.Culture;
+                        }
+
                     }
                 }
             }
@@ -1648,6 +1665,10 @@ namespace FilterDataGrid
                 {
                     fieldName = checkBoxColumn.FieldName;
                 }
+                if (headerColumn is DataGridNumericColumn numericColumn)
+                {
+                    fieldName = numericColumn.FieldName;
+                }
                 if (headerColumn is DataGridComboBoxColumn comboBoxColumn)
                 {
                     fieldName = comboBoxColumn.FieldName;
@@ -1699,20 +1720,26 @@ namespace FilterDataGrid
 
                     // get the list of raw values of the current column
                     if (fieldType == typeof(DateTime))
+                    {
                         // possible distinct values because time part is removed
                         sourceObjectList = Items.Cast<object>()
                             .Select(x => (object)((DateTime?)x.GetPropertyValue(fieldName))?.Date)
                             .Distinct()
                             .ToList();
+                    }
                     else
+                    {
                         sourceObjectList = Items.Cast<object>()
                             .Select(x => x.GetPropertyValue(fieldName))
                             .Distinct()
                             .ToList();
+                    }
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
                     if (lastFilter == CurrentFilter.FieldName)
+                    {
                         sourceObjectList.AddRange(CurrentFilter?.PreviouslyFilteredItems ?? new HashSet<object>());
+                    }
 
                     // empty item flag
                     // if they exist, remove all null or empty string values from the list.
@@ -1725,14 +1752,17 @@ namespace FilterDataGrid
                     sourceObjectList = sourceObjectList.AsParallel().OrderBy(x => x).ToList();
 
                     if (fieldType == typeof(bool))
+                    {
                         filterItemList = new List<FilterItem>(sourceObjectList.Count + 1);
+                    }
                     else
+                    {
                         // add the first element (select all) at the top of list
                         filterItemList = new List<FilterItem>(sourceObjectList.Count + 2)
                         {
-                            // ReSharper disable once ArrangeObjectCreationWhenTypeEvident (compatibility with Net4.8)
                             new FilterItem { Label = Translate.All, IsChecked = true, Level = 0 }
                         };
+                    }
 
                     // add all items (not null) to the filterItemList,
                     // the list of dates is calculated by BuildTree from this list
@@ -1741,41 +1771,39 @@ namespace FilterDataGrid
                         Content = item,
                         ContentLength = item?.ToString().Length ?? 0,
                         FieldType = fieldType,
-                        Label = Getlabel(item, fieldType),
+                        Label = GetLabel(item, fieldType),
                         Level = 1,
                         Initialize = CurrentFilter.PreviouslyFilteredItems?.Contains(item) == false
                     }));
 
                     // add a empty item(if exist) at the bottom of the list
-                    if (!emptyItem) return;
-
-                    sourceObjectList.Insert(sourceObjectList.Count, null);
-
-                    filterItemList.Add(new FilterItem
+                    if (emptyItem)
                     {
-                        FieldType = fieldType,
-                        Content = null,
-                        Label = fieldType == typeof(bool) ? Translate.Indeterminate : Translate.Empty,
-                        Level = -1,
-                        Initialize = CurrentFilter?.PreviouslyFilteredItems?.Contains(null) == false
-                    });
-                    return;
+                        sourceObjectList.Insert(sourceObjectList.Count, null);
 
-                    string Getlabel(object o, Type type)
+                        filterItemList.Add(new FilterItem
+                        {
+                            FieldType = fieldType,
+                            Content = null,
+                            Label = fieldType == typeof(bool) ? Translate.Indeterminate : Translate.Empty,
+                            Level = -1,
+                            Initialize = CurrentFilter?.PreviouslyFilteredItems?.Contains(null) == false
+                        });
+                    }
+
+                    string GetLabel(object o, Type type)
                     {
-                        string label;
-
                         // retrieve the label of the list previously reconstituted from "ItemsSource" of the combobox
                         if (comboxColumn?.IsSingle == true)
-                            label = comboxColumn.ComboBoxItemsSource
+                        {
+                            return comboxColumn.ComboBoxItemsSource
                                 ?.FirstOrDefault(x => x.SelectedValue == o.ToString())?.DisplayMember;
-                        else
-                            // label of other columns
-                            label = type != typeof(bool) ? o.ToString()
-                                // translates boolean value label
-                                : o != null && (bool)o ? Translate.IsTrue : Translate.IsFalse;
+                        }
 
-                        return label;
+                        // label of other columns
+                        return type != typeof(bool) ? o.ToString()
+                            // translates boolean value label
+                            : o != null && (bool)o ? Translate.IsTrue : Translate.IsFalse;
                     }
                 }); // Dispatcher
 

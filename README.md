@@ -73,13 +73,17 @@ To understand how the filter works, you can consult the article posted on [CodeP
   - **FilterPopupBackground** : set a custom background color for the filter popup, default : Background color of host window.  
     > *If **FilterPopupBackground** is not set, the background color of the host window is used.*  
 
-- **Custom TextColumn / CheckBoxColumn**
-     > *If you add custom columns, you must set **AutoGenerateColumns="False"***
+- **Custom TextColumn / CheckBoxColumn / NumericColumn**
+     > *If you add custom columns, you must set **AutoGenerateColumns="False"***  
+     > *You have the possibility to specify the numeric format in the ***StringFormat*** property of the ***NumericColumn*** type columns.
+     [see the documentation](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings)*
 
     ```xml
     <control:FilterDataGrid.Columns>   
         <control:DataGridTextColumn     IsColumnFiltered="True" ... />
         <control:DataGridCheckBoxColumn IsColumnFiltered="True" ... />
+        <control:DataGridNumericColumn  IsColumnFiltered="True" 
+                                        Binding="{Binding [name of field], StringFormat=[format]>}" ... />
     ```
 
 - **Custom TemplateColumn**  
