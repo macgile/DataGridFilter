@@ -3,7 +3,7 @@
 // Author     : Gilles Macabies
 // Solution   : DataGridFilter
 // Projet     : DataGridFilter
-// File       : DataGridTextColumn.cs
+// File       : DataGridColumn.cs
 // Created    : 09/11/2019
 
 #endregion (c) 2019 Gilles Macabies
@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
+// ReSharper disable ConvertTypeCheckPatternToNullCheck
 // ReSharper disable InvertIf
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -161,87 +162,96 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "PrepareCellForEdit");
 
-            // Determine the column type if not already determined
-            if (fieldType == null)
+            try
             {
-                var filterDataGrid = (FilterDataGrid)DataGridOwner;
-                var dataContext = editingElement.DataContext;
-                culture = filterDataGrid.Translate.Culture;
-                var propertyName = ((Binding)Binding).Path.Path;
-                stringFormat = string.IsNullOrEmpty(((Binding)Binding).StringFormat)
-                    ? ""
-                    : ((Binding)Binding).StringFormat.ToLower();
+                // Determine the column type if not already determined
+                if (fieldType == null)
+                {
+                    var filterDataGrid = (FilterDataGrid)DataGridOwner;
+                    var dataContext = editingElement.DataContext;
+                    culture = filterDataGrid.Translate.Culture;
+                    var propertyName = ((Binding)Binding).Path.Path;
+                    stringFormat = string.IsNullOrEmpty(((Binding)Binding).StringFormat)
+                        ? string.Empty
+                        : ((Binding)Binding).StringFormat.ToLower();
 
-                var fieldProperty = dataContext.GetType().GetProperty(propertyName);
-                if (fieldProperty != null)
-                {
-                    fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
-                    BuildRegex();
+                    var fieldProperty = dataContext.GetType().GetProperty(propertyName);
+                    if (fieldProperty != null)
+                    {
+                        fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
+                        BuildRegex();
+                    }
+                    else
+                    {
+                        Debug.WriteLineIf(DebugMode, "fieldProperty is null");
+                    }
                 }
-                else
+
+                // Subscribe to keyboard and paste events
+                if (editingElement is TextBox edit)
                 {
-                    Debug.WriteLineIf(DebugMode, "fieldProperty is null");
+                    originalValue = edit.Text;
+                    edit.PreviewTextInput += OnPreviewTextInput;
+                    DataObject.AddPastingHandler(edit, OnPaste);
+
+                    // Create a new binding with the desired StringFormat and culture
+                    var newBinding = new Binding(((Binding)Binding).Path.Path)
+                    {
+                        // removes formatting(symbol) for cell editing(TextBox)
+                        // original formatting remains active for display(TextBlock)
+                        StringFormat = string.Empty,
+                        ConverterCulture = culture
+                    };
+
+                    edit.SetBinding(TextBox.TextProperty, newBinding);
                 }
             }
-
-            // Subscribe to keyboard and paste events
-            if (editingElement is TextBox edit)
+            catch (Exception ex)
             {
-                originalValue = edit.Text;
-                edit.PreviewTextInput += OnPreviewTextInput;
-                DataObject.AddPastingHandler(edit, OnPaste);
-
-                // Create a new binding with the desired StringFormat and culture
-                var newBinding = new Binding(((Binding)Binding).Path.Path)
-                {
-                    StringFormat = "",
-                    ConverterCulture = culture
-                };
-
-                edit.SetBinding(TextBox.TextProperty, newBinding);
+                Debug.WriteLineIf(DebugMode, $"Exception in PrepareCellForEdit: {ex.Message}");
             }
 
             return base.PrepareCellForEdit(editingElement, e);
         }
 
-        #endregion Protected Methods
-
-        #region Private Methods
-
         /// <summary>
-        /// Builds the regex for keyboard input verification.
+        /// Determines if the field type is numeric and sets the appropriate regex pattern.
         /// </summary>
-        /// <param name="culture">The culture info.</param>
-        private void BuildRegex()
+        public void BuildRegex()
         {
             Debug.WriteLineIf(DebugMode, $"BuildRegex : {fieldType}");
             var nfi = culture.NumberFormat;
 
-            switch (fieldType)
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            switch (Type.GetTypeCode(fieldType))
             {
-                case Type _ when fieldType == typeof(double):
-                case Type _ when fieldType == typeof(decimal):
-                case Type _ when fieldType == typeof(float):
-                    var decimalSeparator = stringFormat.Contains("c")
-                        ? Regex.Escape(nfi.CurrencyDecimalSeparator)
-                        : Regex.Escape(nfi.NumberDecimalSeparator);
-                    regex = new Regex($@"^-?(\d+({decimalSeparator}\d*)?|{decimalSeparator}\d*)?$");
+                // signed integer types
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.SByte:
+                    regex = new Regex($@"^{nfi.NegativeSign}?\d+$");
                     break;
 
-                case Type _ when fieldType == typeof(sbyte):
-                case Type _ when fieldType == typeof(short):
-                case Type _ when fieldType == typeof(int):
-                case Type _ when fieldType == typeof(long):
-                    regex = new Regex(@"^-?\d+$");
-                    break;
-
-                case Type _ when fieldType == typeof(byte):
-                case Type _ when fieldType == typeof(ushort):
-                case Type _ when fieldType == typeof(uint):
-                case Type _ when fieldType == typeof(ulong):
+                // unsigned integer types
+                case TypeCode.Byte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
                     regex = new Regex(@"^\d+$");
                     break;
 
+                // floating point types
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    var decimalSeparator = stringFormat.Contains("c")
+                        ? Regex.Escape(nfi.CurrencyDecimalSeparator)
+                        : Regex.Escape(nfi.NumberDecimalSeparator);
+                    regex = new Regex($@"^{nfi.NegativeSign}?(\d+({decimalSeparator}\d*)?|{decimalSeparator}\d*)?$");
+                    break;
+
+                // non-numeric types
                 default:
                     Debug.WriteLineIf(DebugMode, "Unsupported fieldType");
                     regex = new Regex(@"[^\t\r\n]+");

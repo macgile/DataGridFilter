@@ -815,6 +815,7 @@ namespace FilterDataGrid
                             (c is DataGridTextColumn dtx && dtx.IsColumnFiltered & (dtx.FieldName == preset.FieldName))
                             || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered & (dtp.FieldName == preset.FieldName))
                             || (c is DataGridCheckBoxColumn dck && dck.IsColumnFiltered & (dck.FieldName == preset.FieldName))
+                            || (c is DataGridNumericColumn dnm && dnm.IsColumnFiltered & (dnm.FieldName == preset.FieldName))
                             || (c is DataGridComboBoxColumn cmb && cmb.IsColumnFiltered & (cmb.FieldName == preset.FieldName))
                         )
                         .Select(c => c)
