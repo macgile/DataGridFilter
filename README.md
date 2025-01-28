@@ -98,8 +98,9 @@ To understand how the filter works, you can consult the article posted on [CodeP
   ```
   
 - **Custom ComboBoxColumn**  :new:
-    > :warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required.    
-    The **SelectedValuePath** property is not required in case **ItemsSource** is an enumeration.  
+    > :warning: ***SelectedItemBinding** or ***SelectedValueBinding*** property is required.
+    
+    :point_right: The **SelectedValuePath** property is not required in case **ItemsSource** is an enumeration.  
     In the case where the field is a nested object, enter the entire path of this field, e.g: **Country.Name***
     >
     > 
