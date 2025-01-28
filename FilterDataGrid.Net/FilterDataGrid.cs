@@ -499,6 +499,9 @@ namespace FilterDataGrid
                 // get type
                 fieldType = Nullable.GetUnderlyingType(e.PropertyType) ?? e.PropertyType;
 
+                // get type code
+                var typeCode = Type.GetTypeCode(fieldType);
+
                 if (fieldType.IsEnum)
                 {
                     var column = new DataGridComboBoxColumn
@@ -514,9 +517,23 @@ namespace FilterDataGrid
 
                     e.Column = column;
                 }
-                else if (fieldType == typeof(bool))
+                else if (typeCode == TypeCode.Boolean)
                 {
                     var column = new DataGridCheckBoxColumn
+                    {
+                        Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
+                        FieldName = e.PropertyName,
+                        Header = e.Column.Header,
+                        HeaderTemplate = template,
+                        IsColumnFiltered = true
+                    };
+
+                    e.Column = column;
+                }
+                // TypeCode of numeric type, between 5 and 15
+                else if ((int)typeCode > 4 && (int)typeCode < 16)
+                {
+                    var column = new DataGridNumericColumn()
                     {
                         Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
                         FieldName = e.PropertyName,
@@ -538,7 +555,7 @@ namespace FilterDataGrid
                     };
 
                     // apply the format string provided
-                    if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
+                    if (typeCode == TypeCode.DateTime && !string.IsNullOrEmpty(DateFormatString))
                         column.Binding.StringFormat = DateFormatString;
 
                     // if the type does not belong to the "System" namespace, disable sorting
