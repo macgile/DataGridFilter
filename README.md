@@ -3,6 +3,7 @@
 <!--
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
 https://github.com/ikatyang/emoji-cheat-sheet/tree/master?tab=readme-ov-file#other-symbol
+https://github.com/ikatyang/emoji-cheat-sheet?tab=readme-ov-file#hand-single-finger
 -->
 
 ![Nuget package](https://img.shields.io/nuget/v/FilterDataGrid)
@@ -76,7 +77,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 - **Custom TextColumn / CheckBoxColumn / NumericColumn** :new:
      > *If you add custom columns, you must set **AutoGenerateColumns="False"***
      
-     > *You have the possibility to specify the **numeric format** in the **StringFormat** property of the **NumericColumn** type columns.
+     > :point_right: *You have the possibility to specify the **numeric format** in the **StringFormat** property of the **NumericColumn** type columns.
      [see the documentation](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings)*
 
     ```xml
