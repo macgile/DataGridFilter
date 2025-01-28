@@ -955,120 +955,99 @@ namespace FilterDataGrid
         }
 
         /// <summary>
-        ///     Build the item tree
+        /// Builds a tree structure from a collection of filter items.
         /// </summary>
-        /// <param name="dates"></param>
-        /// <returns></returns>
-        private List<FilterItemDate> BuildTree(IEnumerable<FilterItem> dates)
+        /// <param name="dates">The collection of filter items.</param>
+        /// <returns>A list of FilterItemDate representing the tree structure.</returns>
+        private async Task<List<FilterItemDate>> BuildTreeAsync(IEnumerable<FilterItem> dates)
         {
+            var tree = new List<FilterItemDate>
+            {
+                new FilterItemDate
+                {
+                    Label = Translate.All, Level = 0, Initialize = true, FieldType = fieldType
+                }
+            };
+
+            if (dates == null) return tree;
+
             try
             {
-                var tree = new List<FilterItemDate>
-                {
-                    new FilterItemDate
+                var dateTimes = dates.Where(x => x.Level > 0).ToList();
+
+                var years = dateTimes.GroupBy(
+                    x => ((DateTime)x.Content).Year,
+                    (key, group) => new FilterItemDate
                     {
-                        Label = Translate.All, Level = 0, Initialize = true, FieldType = fieldType
-                    }
-                };
+                        Level = 1,
+                        Content = key,
+                        Label = key.ToString(CultureInfo.CurrentCulture),
+                        Initialize = true,
+                        FieldType = fieldType,
+                        Children = group.GroupBy(
+                            x => ((DateTime)x.Content).Month,
+                            (monthKey, monthGroup) => new FilterItemDate
+                            {
+                                Level = 2,
+                                Content = monthKey,
+                                Label = new DateTime(key, monthKey, 1).ToString("MMMM", CultureInfo.CurrentCulture),
+                                Initialize = true,
+                                FieldType = fieldType,
+                                Children = monthGroup.Select(x => new FilterItemDate
+                                {
+                                    Level = 3,
+                                    Content = ((DateTime)x.Content).Day,
+                                    Label = ((DateTime)x.Content).ToString("dd", CultureInfo.CurrentCulture),
+                                    Initialize = true,
+                                    FieldType = fieldType,
+                                    Item = x
+                                }).ToList()
+                            }).ToList()
+                    }).ToList();
 
-                if (dates == null) return tree;
-
-                // iterate over all items that are not null
-                // INFO:
-                // Initialize   : does not call the SetIsChecked method
-                // IsChecked    : call the SetIsChecked method
-                // (see the FilterItem class for more information)
-
-                var dateTimes = dates.ToList();
-
-                foreach (var y in dateTimes.Where(c => c.Level == 1)
-                             .Select(filterItem => new
-                             {
-                                 ((DateTime)filterItem.Content).Date,
-                                 Item = filterItem
-                             })
-                             .GroupBy(g => g.Date.Year)
-                             .Select(year => new FilterItemDate
-                             {
-                                 Level = 1,
-                                 Content = year.Key,
-                                 Label = year.FirstOrDefault()?.Date.ToString("yyyy", Translate.Culture),
-                                 Initialize = true, // default state
-                                 FieldType = fieldType,
-
-                                 Children = year.GroupBy(date => date.Date.Month)
-                                     .Select(month => new FilterItemDate
-                                     {
-                                         Level = 2,
-                                         Content = month.Key,
-                                         Label = month.FirstOrDefault()?.Date.ToString("MMMM", Translate.Culture),
-                                         Initialize = true, // default state
-                                         FieldType = fieldType,
-
-                                         Children = month.GroupBy(date => date.Date.Day)
-                                             .Select(day => new FilterItemDate
-                                             {
-                                                 Level = 3,
-                                                 Content = day.Key,
-                                                 Label = day.FirstOrDefault()?.Date.ToString("dd", Translate.Culture),
-                                                 Initialize = true, // default state
-                                                 FieldType = fieldType,
-
-                                                 // filter Item linked to the day, it propagates the states changes
-                                                 Item = day.FirstOrDefault()?.Item,
-
-                                                 Children = new List<FilterItemDate>()
-                                             }).ToList()
-                                     }).ToList()
-                             }))
+                foreach (var year in years)
                 {
-                    // set parent and IsChecked property if uncheck Previous items
-                    y.Children.ForEach(m =>
+                    foreach (var month in year.Children)
                     {
-                        m.Parent = y;
-
-                        m.Children.ForEach(d =>
+                        month.Parent = year;
+                        foreach (var day in month.Children)
                         {
-                            d.Parent = m;
-
+                            day.Parent = month;
                             // set the state of the "IsChecked" property based on the items already filtered (unchecked)
-                            if (d.Item.IsChecked) return;
-
-                            // call the SetIsChecked method of the FilterItemDate class
-                            d.IsChecked = false;
-
-                            // reset with new state (isChanged == false)
-                            d.Initialize = d.IsChecked;
-                        });
+                            if (!day.Item.IsChecked)
+                            {
+                                // call the SetIsChecked method of the FilterItemDate class
+                                day.IsChecked = false;
+                                // reset with new state (isChanged == false)
+                                day.Initialize = day.IsChecked;
+                            }
+                        }
                         // reset with new state
-                        m.Initialize = m.IsChecked;
-                    });
+                        month.Initialize = month.IsChecked;
+                    }
                     // reset with new state
-                    y.Initialize = y.IsChecked;
-                    tree.Add(y);
+                    year.Initialize = year.IsChecked;
                 }
 
-                // last empty item if exist in collection
-                if (dateTimes.Any(d => d.Level == -1))
+                tree.AddRange(years);
+
+                if (dates.Any(x => x.Level == -1))
                 {
-                    var empty = dateTimes.FirstOrDefault(x => x.Level == -1);
-                    if (empty != null)
-                        tree.Add(
-                            new FilterItemDate
-                            {
-                                Label = Translate.Empty, // translation
-                                Content = null,
-                                Level = -1,
-                                FieldType = fieldType,
-                                Initialize = empty.IsChecked,
-                                Item = empty,
-                                Children = new List<FilterItemDate>()
-                            }
-                        );
+                    var emptyItem = dates.First(x => x.Level == -1);
+                    tree.Add(new FilterItemDate
+                    {
+                        Label = Translate.Empty,
+                        Content = null,
+                        Level = -1,
+                        FieldType = fieldType,
+                        Initialize = emptyItem.IsChecked,
+                        Item = emptyItem,
+                        Children = new List<FilterItemDate>()
+                    });
                 }
 
                 tree.First().Tree = tree;
-                return tree;
+                return await Task.FromResult(tree);
             }
             catch (Exception ex)
             {
@@ -1555,7 +1534,7 @@ namespace FilterDataGrid
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SearchTextBoxOnTextChanged(object sender, TextChangedEventArgs e)
+        private async void SearchTextBoxOnTextChanged(object sender, TextChangedEventArgs e)
         {
             e.Handled = true;
             var textBox = (TextBox)sender;
@@ -1578,7 +1557,7 @@ namespace FilterDataGrid
             if (string.IsNullOrEmpty(searchText))
             {
                 // populate the tree with items from the source list
-                TreeViewItems = BuildTree(SourcePopupViewItems);
+                TreeViewItems = await BuildTreeAsync(SourcePopupViewItems);
             }
             else
             {
@@ -1587,7 +1566,7 @@ namespace FilterDataGrid
                 var items = PopupViewItems.Where(i => i.IsChecked).ToList();
 
                 // if at least one element is not null, fill the tree, otherwise the tree contains only the element (select all).
-                TreeViewItems = BuildTree(items.Any() ? items : null);
+                TreeViewItems = await BuildTreeAsync(items.Any() ? items : null);
             }
         }
 
@@ -1827,9 +1806,13 @@ namespace FilterDataGrid
 
                 // ItemsSource (ListBow/TreeView)
                 if (fieldType == typeof(DateTime))
-                    TreeViewItems = BuildTree(filterItemList);
+                {
+                    TreeViewItems = await BuildTreeAsync(filterItemList);
+                }
                 else
+                {
                     ListBoxItems = filterItemList;
+                }
 
                 // Set ICollectionView for filtering in the pop-up window
                 ItemCollectionView = System.Windows.Data.CollectionViewSource.GetDefaultView(filterItemList);

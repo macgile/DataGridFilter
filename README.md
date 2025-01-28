@@ -54,7 +54,7 @@ To understand how the filter works, you can consult the article posted on [CodeP
 - **Properties**
 
   - **DateFormatString** : *date display format*, default : "d"  
-    > warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.
+    > :warning: **Before version 1.2.5.2**, you must set the "Time" part of the DateTime fields to zero, otherwise the filter doesn't work.
   [see the documentation](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings)
 
   - **ExcludeColumns** :new: : *name of fields to exclude from displayed columns, separated by commas, only works in AutoGenerateColumns mode*  
