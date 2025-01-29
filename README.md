@@ -1,5 +1,4 @@
 # WPF Filterable DataGrid, multi language
-
 <!--
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/macgile/DataGridFilter)
 https://github.com/ikatyang/emoji-cheat-sheet/tree/master?tab=readme-ov-file#other-symbol
