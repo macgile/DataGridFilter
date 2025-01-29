@@ -1073,11 +1073,11 @@ namespace FilterDataGrid
                 // get the columns that can be filtered
                 // ReSharper disable MergeIntoPattern
                 var columns = Columns
-                    .Where(c => (c is DataGridTextColumn dtx && dtx.IsColumnFiltered)
-                                || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered)
-                                || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered)
-                                || (c is DataGridNumericColumn dnm && dnm.IsColumnFiltered)
-                                || (c is DataGridComboBoxColumn dbx && dbx.IsColumnFiltered)
+                    .Where(c => ((c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered)
+                                  || (c is DataGridComboBoxColumn dbx && dbx.IsColumnFiltered)
+                                  || (c is DataGridNumericColumn dnm && dnm.IsColumnFiltered)
+                                  || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered)
+                                  || (c is DataGridTextColumn dtx && dtx.IsColumnFiltered))
                     )
                     .Select(c => c)
                     .ToList();
@@ -1097,14 +1097,20 @@ namespace FilterDataGrid
 
                         if (buttonFilter != null) FilterState.SetIsFiltered(buttonFilter, false);
 
-                        // reset the "ComboBoxItemsSource" custom property of "DataGridComboBoxColumn"
+                        // update the "ComboBoxItemsSource" custom property of "DataGridComboBoxColumn"
                         // this collection may change when loading a new source collection of the DataGrid.
                         if (columnType == typeof(DataGridComboBoxColumn))
-                            ((DataGridComboBoxColumn)col).ComboBoxItemsSource = null;
+                        {
+                            var comboBoxColumn = (DataGridComboBoxColumn)col;
+                            if (comboBoxColumn.IsSingle)
+                            {
+                                comboBoxColumn.UpdateItemsSource();
+                            }
+                        }
                     }
                     else
                     {
-                        Debug.WriteLineIf(DebugMode, "\tGenerate Columns");
+                        // Debug.WriteLineIf(DebugMode, "\tGenerate Columns");
 
                         fieldType = null;
                         var template = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
@@ -1200,7 +1206,6 @@ namespace FilterDataGrid
                             }
                         }
 
-
                         if (columnType == typeof(DataGridNumericColumn))
                         {
                             var column = (DataGridNumericColumn)col;
@@ -1214,7 +1219,6 @@ namespace FilterDataGrid
                             if (((Binding)column.Binding).ConverterCulture == null)
                                 ((Binding)column.Binding).ConverterCulture = Translate.Culture;
                         }
-
                     }
                 }
             }
@@ -1670,20 +1674,6 @@ namespace FilterDataGrid
                 {
                     fieldName = comboBoxColumn.FieldName;
                     comboxColumn = comboBoxColumn;
-
-                    // Generates the list from "ItemsSource" of the combobox column, this will essentially be used to provide
-                    // the filter labels for this type of column.
-                    // Only for a column linked by an identifier(like ID) from any other collection (ItemsSource).
-
-                    if (comboxColumn.IsSingle && comboxColumn.ComboBoxItemsSource == null)
-                        comboxColumn.ComboBoxItemsSource = new List<ItemsSourceMembers>(comboxColumn.ItemsSource
-                            .Cast<object>()
-                            .Select(x =>
-                                new ItemsSourceMembers
-                                {
-                                    SelectedValue = x.GetPropertyValue(comboxColumn.SelectedValuePath).ToString(),
-                                    DisplayMember = x.GetPropertyValue(comboxColumn.DisplayMemberPath).ToString()
-                                })).ToList();
                 }
 
                 // invalid fieldName

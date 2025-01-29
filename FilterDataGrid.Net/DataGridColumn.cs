@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -105,6 +106,36 @@ namespace FilterDataGrid
         }
 
         #endregion Public Properties
+
+        #region Protected Methods
+
+        protected override void OnSelectedValueBindingChanged(BindingBase oldBinding, BindingBase newBinding)
+        {
+            base.OnSelectedValueBindingChanged(oldBinding, newBinding);
+            UpdateItemsSource();
+        }
+
+        #endregion Protected Methods
+
+        /// <summary>
+        /// Updates the items source.
+        /// </summary>
+        public void UpdateItemsSource()
+        {
+            if (ItemsSource == null) return;
+
+            // Generates the list from "ItemsSource" of the combobox column, this will essentially be used to provide
+            // the filter labels for this type of column.
+            // Only for a column linked by an identifier(like ID) from any other collection (ItemsSource).
+
+            ComboBoxItemsSource = new List<ItemsSourceMembers>(
+                ItemsSource.Cast<object>().Select(x =>
+                new ItemsSourceMembers
+                {
+                    SelectedValue = x.GetPropertyValue(SelectedValuePath).ToString(),
+                    DisplayMember = x.GetPropertyValue(DisplayMemberPath).ToString()
+                })).ToList();
+        }
     }
 
     public class DataGridNumericColumn : DataGridTextColumn
