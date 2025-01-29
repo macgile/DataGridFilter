@@ -1,12 +1,8 @@
-﻿#region (c) 2019 Gilles Macabies
-
-// Author     : Gilles Macabies
+﻿// Author     : Gilles Macabies
 // Solution   : DataGridFilter
 // Projet     : DataGridFilter
 // File       : DataGridColumn.cs
 // Created    : 09/11/2019
-
-#endregion (c) 2019 Gilles Macabies
 
 using System;
 using System.Collections.Generic;
@@ -14,6 +10,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -66,13 +63,6 @@ namespace FilterDataGrid
 
     public sealed class DataGridComboBoxColumn : System.Windows.Controls.DataGridComboBoxColumn
     {
-        #region Public Properties
-
-        public List<ItemsSourceMembers> ComboBoxItemsSource { get; set; }
-        public bool IsSingle { get; set; }
-
-        #endregion Public Properties
-
         #region Public Fields
 
         /// <summary>
@@ -93,6 +83,8 @@ namespace FilterDataGrid
 
         #region Public Properties
 
+        public List<ItemsSourceMembers> ComboBoxItemsSource { get; set; }
+
         public string FieldName
         {
             get => (string)GetValue(FieldNameProperty);
@@ -105,37 +97,45 @@ namespace FilterDataGrid
             set => SetValue(IsColumnFilteredProperty, value);
         }
 
+        public bool IsSingle { get; set; }
+
         #endregion Public Properties
+
+        #region Public Methods
+
+        /// <summary>
+        /// Updates the items source.
+        /// </summary>
+        public async void UpdateItemsSourceAsync()
+        {
+            if (ItemsSource == null) return;
+
+            // Marshal the call back to the UI thread
+            await Dispatcher.InvokeAsync(() =>
+            {
+                var itemsSource = ItemsSource;
+                var itemsSourceMembers = itemsSource.Cast<object>().Select(x =>
+                    new ItemsSourceMembers
+                    {
+                        SelectedValue = x.GetPropertyValue(SelectedValuePath).ToString(),
+                        DisplayMember = x.GetPropertyValue(DisplayMemberPath).ToString()
+                    }).ToList();
+
+                ComboBoxItemsSource = itemsSourceMembers;
+            });
+        }
+
+        #endregion Public Methods
 
         #region Protected Methods
 
         protected override void OnSelectedValueBindingChanged(BindingBase oldBinding, BindingBase newBinding)
         {
             base.OnSelectedValueBindingChanged(oldBinding, newBinding);
-            UpdateItemsSource();
+            UpdateItemsSourceAsync();
         }
 
         #endregion Protected Methods
-
-        /// <summary>
-        /// Updates the items source.
-        /// </summary>
-        public void UpdateItemsSource()
-        {
-            if (ItemsSource == null) return;
-
-            // Generates the list from "ItemsSource" of the combobox column, this will essentially be used to provide
-            // the filter labels for this type of column.
-            // Only for a column linked by an identifier(like ID) from any other collection (ItemsSource).
-
-            ComboBoxItemsSource = new List<ItemsSourceMembers>(
-                ItemsSource.Cast<object>().Select(x =>
-                new ItemsSourceMembers
-                {
-                    SelectedValue = x.GetPropertyValue(SelectedValuePath).ToString(),
-                    DisplayMember = x.GetPropertyValue(DisplayMemberPath).ToString()
-                })).ToList();
-        }
     }
 
     public class DataGridNumericColumn : DataGridTextColumn
@@ -150,6 +150,55 @@ namespace FilterDataGrid
         private string stringFormat;
 
         #endregion Private Fields
+
+        #region Public Methods
+
+        /// <summary>
+        /// Determines if the field type is numeric and sets the appropriate regex pattern.
+        /// </summary>
+        public void BuildRegex()
+        {
+            Debug.WriteLineIf(DebugMode, $"BuildRegex : {fieldType}");
+            var nfi = culture.NumberFormat;
+
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            switch (Type.GetTypeCode(fieldType))
+            {
+                // signed integer types
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.SByte:
+                    regex = new Regex($@"^{nfi.NegativeSign}?\d+$");
+                    break;
+
+                // unsigned integer types
+                case TypeCode.Byte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                    regex = new Regex(@"^\d+$");
+                    break;
+
+                // floating point types
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    var decimalSeparator = stringFormat.Contains("c")
+                        ? Regex.Escape(nfi.CurrencyDecimalSeparator)
+                        : Regex.Escape(nfi.NumberDecimalSeparator);
+                    regex = new Regex($@"^{nfi.NegativeSign}?(\d+({decimalSeparator}\d*)?|{decimalSeparator}\d*)?$");
+                    break;
+
+                // non-numeric types
+                default:
+                    Debug.WriteLineIf(DebugMode, "Unsupported fieldType");
+                    regex = new Regex(@"[^\t\r\n]+");
+                    break;
+            }
+        }
+
+        #endregion Public Methods
 
         #region Protected Methods
 
@@ -245,50 +294,9 @@ namespace FilterDataGrid
             return base.PrepareCellForEdit(editingElement, e);
         }
 
-        /// <summary>
-        /// Determines if the field type is numeric and sets the appropriate regex pattern.
-        /// </summary>
-        public void BuildRegex()
-        {
-            Debug.WriteLineIf(DebugMode, $"BuildRegex : {fieldType}");
-            var nfi = culture.NumberFormat;
+        #endregion Protected Methods
 
-            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-            switch (Type.GetTypeCode(fieldType))
-            {
-                // signed integer types
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.SByte:
-                    regex = new Regex($@"^{nfi.NegativeSign}?\d+$");
-                    break;
-
-                // unsigned integer types
-                case TypeCode.Byte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                    regex = new Regex(@"^\d+$");
-                    break;
-
-                // floating point types
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Single:
-                    var decimalSeparator = stringFormat.Contains("c")
-                        ? Regex.Escape(nfi.CurrencyDecimalSeparator)
-                        : Regex.Escape(nfi.NumberDecimalSeparator);
-                    regex = new Regex($@"^{nfi.NegativeSign}?(\d+({decimalSeparator}\d*)?|{decimalSeparator}\d*)?$");
-                    break;
-
-                // non-numeric types
-                default:
-                    Debug.WriteLineIf(DebugMode, "Unsupported fieldType");
-                    regex = new Regex(@"[^\t\r\n]+");
-                    break;
-            }
-        }
+        #region Private Methods
 
         /// <summary>
         /// Handles the paste event.

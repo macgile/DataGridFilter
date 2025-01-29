@@ -1104,7 +1104,7 @@ namespace FilterDataGrid
                             var comboBoxColumn = (DataGridComboBoxColumn)col;
                             if (comboBoxColumn.IsSingle)
                             {
-                                comboBoxColumn.UpdateItemsSource();
+                                comboBoxColumn.UpdateItemsSourceAsync();
                             }
                         }
                     }
