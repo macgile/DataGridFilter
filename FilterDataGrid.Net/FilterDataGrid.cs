@@ -79,8 +79,8 @@ namespace FilterDataGrid
         {
             // Register class handler to handle "LoadedEvent" event of "FrameworkContentElement"
             // OnLoaded method is used to load the filter persistence json file
-            EventManager.RegisterClassHandler(typeof(FilterDataGrid),
-                FrameworkContentElement.LoadedEvent, new RoutedEventHandler(OnLoaded), true);
+            EventManager.RegisterClassHandler(typeof(FilterDataGrid), 
+                FrameworkElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
         }
 
         #endregion Constructors
@@ -193,7 +193,7 @@ namespace FilterDataGrid
 
         #region Private Fields
 
-        private const bool DebugMode = false;
+        private const bool DebugMode = true;
 
         private string fileName = "persistentFilter.json";
         private Stopwatch stopWatchFilter = new Stopwatch();
@@ -435,7 +435,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         protected override void OnInitialized(EventArgs e)
         {
-            Debug.WriteLineIf(DebugMode, $"OnInitialized | Name:{this.Name}");
+            Debug.WriteLineIf(DebugMode, $"OnInitialized :{Name}");
 
             base.OnInitialized(e);
 
@@ -472,7 +472,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         protected override void OnAutoGeneratingColumn(DataGridAutoGeneratingColumnEventArgs e)
         {
-            Debug.WriteLineIf(DebugMode, "OnAutoGeneratingColumn");
+            Debug.WriteLineIf(DebugMode, $"OnAutoGeneratingColumn : {e.PropertyName}");
 
             base.OnAutoGeneratingColumn(e);
 
@@ -792,9 +792,10 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         private static void OnLoaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLineIf(DebugMode, "OnLoaded");
-
             var filterDatagrid = (FilterDataGrid)sender;
+            Debug.WriteLineIf(DebugMode, $"OnLoaded : {filterDatagrid?.Name}");
+
+            e.Handled = true;
 
             if (filterDatagrid == null || filterDatagrid.PersistentFilter == false || filterDatagrid.PresetLoaded) return;
             filterDatagrid.PresetLoaded = true;

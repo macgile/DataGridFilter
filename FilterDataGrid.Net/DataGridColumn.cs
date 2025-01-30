@@ -63,6 +63,21 @@ namespace FilterDataGrid
 
     public sealed class DataGridComboBoxColumn : System.Windows.Controls.DataGridComboBoxColumn
     {
+
+        #region Public Classes
+
+        public class ItemsSourceMembers
+        {
+            #region Public Properties
+
+            public string DisplayMember { get; set; }
+            public string SelectedValue { get; set; }
+
+            #endregion Public Properties
+        }
+
+        #endregion Public Classes
+
         #region Public Fields
 
         /// <summary>
@@ -414,16 +429,6 @@ namespace FilterDataGrid
             get => (bool)GetValue(IsColumnFilteredProperty);
             set => SetValue(IsColumnFilteredProperty, value);
         }
-
-        #endregion Public Properties
-    }
-
-    public class ItemsSourceMembers
-    {
-        #region Public Properties
-
-        public string DisplayMember { get; set; }
-        public string SelectedValue { get; set; }
 
         #endregion Public Properties
     }
