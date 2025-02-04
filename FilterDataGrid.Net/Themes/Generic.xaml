@@ -280,7 +280,9 @@
                                                 </Button.Content>
                                             </Button>
 
+                                            <!--  SELECT ALL BUTTON  -->
                                             <Button
+                                                x:Name="SelectAllButton"
                                                 Grid.Row="0"
                                                 Grid.Column="0"
                                                 Width="{Binding CellsPanelHorizontalOffset, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"

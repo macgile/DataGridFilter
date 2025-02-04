@@ -654,7 +654,9 @@ namespace FilterDataGrid
                 }
                 else
                 {
-                    RowHeaderWidth = 0;
+                    // default value, if this value is set to 0, the row header is not displayed
+                    // and the exception occurs when the value is set to < 0
+                    RowHeaderWidth = 6;
                 }
 
                 // get collection type
@@ -704,6 +706,7 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         protected override void OnLoadingRow(DataGridRowEventArgs e)
         {
+            if(ShowRowsCount)
             e.Row.Header = (e.Row.GetIndex() + 1).ToString();
         }
 
@@ -2057,6 +2060,7 @@ namespace FilterDataGrid
             ItemsSourceCount = Items.Count;
             OnPropertyChanged(nameof(ItemsSourceCount));
 
+            if(!ShowRowsCount) return;
             // Renumber all rows
             for (var i = 0; i < Items.Count; i++)
                 if (ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow row)

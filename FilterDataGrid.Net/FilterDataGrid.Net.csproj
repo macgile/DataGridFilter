@@ -55,6 +55,10 @@
     <AssemblyOriginatorKeyFile>..\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Converters\NegativeValueConverter.cs" />
+  </ItemGroup>
+
   <!-- Additional Package Items -->
   <ItemGroup>
     <None Include="..\..\NuGet\icon.png">
