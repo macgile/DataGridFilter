@@ -1,10 +1,12 @@
 ﻿#region (c) 2022 Gilles Macabies All right reserved
+
 // Author     : Gilles Macabies
 // Solution   : FilterDataGrid
 // Projet     : FilterDataGrid.Net5.0
 // File       : SolidBrushToColorConverter.cs
 // Created    : 02/06/2022
-// 
+//
+
 #endregion
 
 using System;

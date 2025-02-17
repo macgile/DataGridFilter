@@ -5,7 +5,7 @@
 // Projet     : FilterDataGrid.Net
 // File       : Loc.cs
 // Created    : 03/04/2024
-// 
+//
 
 #endregion
 

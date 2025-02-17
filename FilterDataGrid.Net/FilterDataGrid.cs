@@ -79,7 +79,7 @@ namespace FilterDataGrid
         {
             // Register class handler to handle "LoadedEvent" event of "FrameworkContentElement"
             // OnLoaded method is used to load the filter persistence json file
-            EventManager.RegisterClassHandler(typeof(FilterDataGrid), 
+            EventManager.RegisterClassHandler(typeof(FilterDataGrid),
                 FrameworkElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
         }
 
@@ -706,8 +706,8 @@ namespace FilterDataGrid
         /// <param name="e"></param>
         protected override void OnLoadingRow(DataGridRowEventArgs e)
         {
-            if(ShowRowsCount)
-            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+            if (ShowRowsCount)
+                e.Row.Header = (e.Row.GetIndex() + 1).ToString();
         }
 
         #endregion Protected Methods
@@ -833,7 +833,8 @@ namespace FilterDataGrid
                 {
                     var columns = Columns
                         .Where(c =>
-                            (c is DataGridTextColumn dtx && dtx.IsColumnFiltered & (dtx.FieldName == preset.FieldName))
+                            (c is DataGridBoundColumn dbu && dbu.IsColumnFiltered & (dbu.FieldName == preset.FieldName))
+                            || (c is DataGridTextColumn dtx && dtx.IsColumnFiltered & (dtx.FieldName == preset.FieldName))
                             || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered & (dtp.FieldName == preset.FieldName))
                             || (c is DataGridCheckBoxColumn dck && dck.IsColumnFiltered & (dck.FieldName == preset.FieldName))
                             || (c is DataGridNumericColumn dnm && dnm.IsColumnFiltered & (dnm.FieldName == preset.FieldName))
@@ -1077,7 +1078,8 @@ namespace FilterDataGrid
                 // get the columns that can be filtered
                 // ReSharper disable MergeIntoPattern
                 var columns = Columns
-                    .Where(c => ((c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered)
+                    .Where(c => ((c is DataGridBoundColumn dbu && dbu.IsColumnFiltered)
+                                  || (c is DataGridCheckBoxColumn dcb && dcb.IsColumnFiltered)
                                   || (c is DataGridComboBoxColumn dbx && dbx.IsColumnFiltered)
                                   || (c is DataGridNumericColumn dnm && dnm.IsColumnFiltered)
                                   || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered)
@@ -1129,6 +1131,34 @@ namespace FilterDataGrid
                                     nameof(DataGridTemplateColumn));
                             // template
                             column.HeaderTemplate = template;
+                        }
+
+                        if (columnType == typeof(DataGridBoundColumn))
+                        {
+                            var column = (DataGridBoundColumn)col;
+
+                            column.FieldName = ((Binding)column.Binding).Path.Path;
+
+                            // template
+                            column.HeaderTemplate = template;
+
+                            var fieldProperty = collectionType.GetProperty(((Binding)column.Binding).Path.Path);
+
+                            // get type or underlying type if nullable
+                            if (fieldProperty != null)
+                                fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ??
+                                            fieldProperty.PropertyType;
+
+                            // apply DateFormatString when StringFormat for column is not provided or empty
+                            if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
+                                if (string.IsNullOrEmpty(column.Binding.StringFormat))
+                                    column.Binding.StringFormat = DateFormatString;
+
+                            FieldType = fieldType;
+
+                            // culture
+                            if (((Binding)column.Binding).ConverterCulture == null)
+                                ((Binding)column.Binding).ConverterCulture = Translate.Culture;
                         }
 
                         if (columnType == typeof(DataGridTextColumn))
@@ -1662,6 +1692,10 @@ namespace FilterDataGrid
                 {
                     fieldName = textColumn.FieldName;
                 }
+                if (headerColumn is DataGridBoundColumn templateBound)
+                {
+                    fieldName = templateBound.FieldName;
+                }
                 if (headerColumn is DataGridTemplateColumn templateColumn)
                 {
                     fieldName = templateColumn.FieldName;
@@ -2060,7 +2094,7 @@ namespace FilterDataGrid
             ItemsSourceCount = Items.Count;
             OnPropertyChanged(nameof(ItemsSourceCount));
 
-            if(!ShowRowsCount) return;
+            if (!ShowRowsCount) return;
             // Renumber all rows
             for (var i = 0; i < Items.Count; i++)
                 if (ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow row)

@@ -9,7 +9,6 @@ using System.Windows.Markup;
 [assembly: AssemblyCopyright("Copyright © 2021 Gilles Macabies")]
 [assembly: ComVisible(false)]
 
-
 #if NET48
 [assembly: AssemblyProduct("FilterDataGrid Net48-windows")]
 #elif NETCOREAPP3_1
@@ -26,14 +25,11 @@ using System.Windows.Markup;
 [assembly: AssemblyProduct("FilterDataGrid")]
 #endif
 
-
 [assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, 
-    ResourceDictionaryLocation.SourceAssembly 
+    ResourceDictionaryLocation.None,
+    ResourceDictionaryLocation.SourceAssembly
 )]
-
-[assembly: XmlnsDefinition("http://filterdatagrid.control.com/2021", "FilterDataGrid", AssemblyName="FilterDataGrid")]
-
+[assembly: XmlnsDefinition("http://filterdatagrid.control.com/2021", "FilterDataGrid", AssemblyName = "FilterDataGrid")]
 [assembly: Guid("20c6b7ba-9949-43a4-ada5-047c10ccd899")]
 [assembly: AssemblyVersion("1.2.9.0")]
 [assembly: AssemblyFileVersion("1.2.9.0")]

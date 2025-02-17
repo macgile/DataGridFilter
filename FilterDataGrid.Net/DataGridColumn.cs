@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -63,7 +62,6 @@ namespace FilterDataGrid
 
     public sealed class DataGridComboBoxColumn : System.Windows.Controls.DataGridComboBoxColumn
     {
-
         #region Public Classes
 
         public class ItemsSourceMembers
@@ -431,5 +429,76 @@ namespace FilterDataGrid
         }
 
         #endregion Public Properties
+    }
+
+    public sealed class DataGridBoundColumn : System.Windows.Controls.DataGridBoundColumn
+    {
+        #region Public Fields
+
+        /// <summary>
+        /// FieldName Dependency Property.
+        /// </summary>
+        public static readonly DependencyProperty FieldNameProperty =
+            DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridTextColumn),
+                new PropertyMetadata(""));
+
+        /// <summary>
+        /// IsColumnFiltered Dependency Property.
+        /// </summary>
+        public static readonly DependencyProperty IsColumnFilteredProperty =
+            DependencyProperty.Register(nameof(IsColumnFiltered), typeof(bool), typeof(DataGridTextColumn),
+                new PropertyMetadata(false));
+
+        #endregion Public Fields
+
+        #region Public Properties
+
+        public string FieldName
+        {
+            get => (string)GetValue(FieldNameProperty);
+            set => SetValue(FieldNameProperty, value);
+        }
+
+        public bool IsColumnFiltered
+        {
+            get => (bool)GetValue(IsColumnFilteredProperty);
+            set => SetValue(IsColumnFilteredProperty, value);
+        }
+
+        #endregion Public Properties
+
+        #region GenerateElement
+
+        public string TemplateName { get; set; }
+
+        protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
+        {
+            Binding binding;
+
+            ContentControl content = new ContentControl()
+            {
+                ContentTemplate = (DataTemplate)cell.FindResource(TemplateName)
+            };
+
+            if (Binding != null)
+            {
+                binding = new Binding(((Binding)Binding).Path.Path)
+                {
+                    Source = dataItem,
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnSourceUpdated = true,
+                    NotifyOnTargetUpdated = true,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                };
+
+                content.SetBinding(ContentControl.ContentProperty, binding);
+            }
+
+            return content;
+        }
+
+        protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem) => GenerateElement(cell, dataItem);
+
+        #endregion GenerateElement
     }
 }

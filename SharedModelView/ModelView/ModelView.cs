@@ -5,10 +5,9 @@
 // Projet     : SharedModelView
 // File       : ModelView.cs
 // Created    : 13/11/2022
-// 
+//
 
 #endregion
-
 
 using System;
 using System.Collections.Generic;

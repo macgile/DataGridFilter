@@ -5,7 +5,7 @@
 // Projet     : DemoApp.Net6.0
 // File       : DelegateCommand.cs
 // Created    : 13/11/2022
-// 
+//
 
 #endregion
 
