@@ -1751,7 +1751,8 @@ namespace FilterDataGrid
                         // add the first element (select all) at the top of list
                         filterItemList = new List<FilterItem>(sourceObjectList.Count + 2)
                         {
-                            new FilterItem { Label = Translate.All, IsChecked = true, Level = 0 }
+                            // contribution : damonpkuml
+                            new FilterItem { Label = Translate.All, IsChecked = CurrentFilter?.PreviouslyFilteredItems.Count==0, Level = 0 }
                         };
                     }
 
