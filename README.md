@@ -207,6 +207,9 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 <a href="https://github.com/Dlico23" target="_blank">
   <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/20924677?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d" />
 </a>
+<a href="https://github.com/damonpkuml" target="_blank">
+  <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/5675875?v=4&h=64&w=64&fit=cover&mask=circle&maxage=7d" />
+</a>
 
 
 <!-- Made with [contributors-img](https://contrib.rocks). -->
