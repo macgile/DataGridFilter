@@ -1357,11 +1357,20 @@ namespace FilterDataGrid
             var item = (FilterItem)e.Parameter;
 
             // only when the item[0] (select all) is checked or unchecked
-            if (item?.Level != 0 || ItemCollectionView == null) return;
+            if (ItemCollectionView == null) return;
 
-            foreach (var obj in PopupViewItems.ToList()
-                         .Where(f => f.IsChecked != item.IsChecked))
-                obj.IsChecked = item.IsChecked;
+            if (item.Level == 0)
+            {
+                foreach (var obj in PopupViewItems.Where(f => f.IsChecked != item.IsChecked))
+                {
+                    obj.IsChecked = item.IsChecked;
+                }
+            }
+            else
+            {
+                // update select all item status
+                ListBoxItems[0].IsChecked = PopupViewItems.All(i => i.IsChecked);
+            }
         }
 
         /// <summary>
