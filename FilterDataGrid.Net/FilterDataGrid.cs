@@ -73,14 +73,15 @@ namespace FilterDataGrid
             CommandBindings.Add(new CommandBinding(RemoveAllFilters, RemoveAllFilterCommand, CanRemoveAllFilter));
             CommandBindings.Add(new CommandBinding(RemoveFilter, RemoveFilterCommand, CanRemoveFilter));
             CommandBindings.Add(new CommandBinding(ShowFilter, ShowFilterCommand, CanShowFilter));
+
+            Loaded += (s, e) => OnLoadFilterDataGrid(this, new DependencyPropertyChangedEventArgs());
+
         }
 
         static FilterDataGrid()
         {
-            // Register class handler to handle "LoadedEvent" event of "FrameworkContentElement"
-            // OnLoaded method is used to load the filter persistence json file
-            EventManager.RegisterClassHandler(typeof(FilterDataGrid),
-                FrameworkElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(FilterDataGrid), new
+                FrameworkPropertyMetadata(typeof(FilterDataGrid)));
         }
 
         #endregion Constructors
@@ -404,7 +405,6 @@ namespace FilterDataGrid
         private ICollectionView CollectionViewSource { get; set; }
         private ICollectionView ItemCollectionView { get; set; }
         private List<FilterCommon> GlobalFilterList { get; } = new List<FilterCommon>();
-        private bool PresetLoaded { get; set; }
 
         /// <summary>
         /// Popup filtered items (ListBox/TreeView)
@@ -455,9 +455,6 @@ namespace FilterDataGrid
 
                 // sorting event
                 Sorted += OnSorted;
-
-                // Loaded Event
-                Loaded += OnLoaded;
             }
             catch (Exception ex)
             {
@@ -761,48 +758,33 @@ namespace FilterDataGrid
                 throw;
             }
         }
-
-        /// <summary>
-        /// Set the pop-up the background color of the parent if this color is not defined by the user.
-        /// </summary>
-        public override void OnApplyTemplate()
-        {
-            Debug.WriteLineIf(DebugMode, "OnApplyTemplate");
-
-            base.OnApplyTemplate();
-
-            var wnd = VisualTreeHelpers.FindAncestor<Window>(this);
-            var fr = VisualTreeHelpers.FindAncestor<Frame>(this);
-            var uc = VisualTreeHelpers.FindAncestor<UserControl>(this);
-
-            if (FilterPopupBackground == null) FilterPopupBackground = wnd != null
-                ? wnd.Background
-                : uc != null
-                    ? uc.Background
-                    : fr != null
-                        ? fr.Background
-                        : new SolidColorBrush(Colors.White); ;
-        }
-
+        
         #endregion Public Methods
 
         #region Private Methods
 
         /// <summary>
-        /// Loaded Event
+        ///    Event handler for the "Loaded" event of the "FrameworkContentElement" class.
         /// </summary>
-        /// <param name="sender"></param>
+        /// <param name="filterDataGrid"></param>
         /// <param name="e"></param>
-        private static void OnLoaded(object sender, RoutedEventArgs e)
+        private void OnLoadFilterDataGrid(FilterDataGrid filterDataGrid, DependencyPropertyChangedEventArgs e)
         {
-            var filterDatagrid = (FilterDataGrid)sender;
-            Debug.WriteLineIf(DebugMode, $"OnLoaded : {filterDatagrid?.Name}");
+            Debug.WriteLineIf(DebugMode, $"\tOnLoadFilterDataGrid {filterDataGrid?.Name}");
 
-            e.Handled = true;
+            base.OnApplyTemplate();
 
-            if (filterDatagrid == null || filterDatagrid.PersistentFilter == false || filterDatagrid.PresetLoaded) return;
-            filterDatagrid.PresetLoaded = true;
-            filterDatagrid.LoadPreset();
+            if (filterDataGrid == null) return;
+
+            var hostingWindow = Window.GetWindow(this);
+
+            // set the background color of the filter popup
+            FilterPopupBackground = FilterPopupBackground == null && hostingWindow != null
+                ? hostingWindow.Background
+                : new SolidColorBrush(Colors.White);
+
+            if(filterDataGrid.PersistentFilter)
+             filterDataGrid.LoadPreset();
         }
 
         /// <summary>
@@ -816,14 +798,14 @@ namespace FilterDataGrid
 
             if (filterPreset == null || filterPreset.Count == 0) return;
 
-            // set cursor
+            // Set cursor to wait
             Mouse.OverrideCursor = Cursors.Wait;
 
-            // remove all filters
+            // Remove all existing filters
             if (GlobalFilterList.Count > 0)
                 RemoveFilters();
 
-            // reset previous elapsed time
+            // Reset previous elapsed time
             ElapsedTime = new TimeSpan(0, 0, 0);
             stopWatchFilter = Stopwatch.StartNew();
 
@@ -831,80 +813,68 @@ namespace FilterDataGrid
             {
                 foreach (var preset in filterPreset)
                 {
+                    // Get columns that match the preset field name and are filterable
                     var columns = Columns
                         .Where(c =>
-                            (c is DataGridBoundColumn dbu && dbu.IsColumnFiltered & (dbu.FieldName == preset.FieldName))
-                            || (c is DataGridTextColumn dtx && dtx.IsColumnFiltered & (dtx.FieldName == preset.FieldName))
-                            || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered & (dtp.FieldName == preset.FieldName))
-                            || (c is DataGridCheckBoxColumn dck && dck.IsColumnFiltered & (dck.FieldName == preset.FieldName))
-                            || (c is DataGridNumericColumn dnm && dnm.IsColumnFiltered & (dnm.FieldName == preset.FieldName))
-                            || (c is DataGridComboBoxColumn cmb && cmb.IsColumnFiltered & (cmb.FieldName == preset.FieldName))
-                        )
-                        .Select(c => c)
+                            (c is DataGridTextColumn dtx && dtx.IsColumnFiltered && dtx.FieldName == preset.FieldName)
+                            || (c is DataGridTemplateColumn dtp && dtp.IsColumnFiltered && dtp.FieldName == preset.FieldName)
+                            || (c is DataGridCheckBoxColumn dck && dck.IsColumnFiltered && dck.FieldName == preset.FieldName)
+                            || (c is DataGridNumericColumn dnm && dnm.IsColumnFiltered && dnm.FieldName == preset.FieldName)
+                            || (c is DataGridComboBoxColumn cmb && cmb.IsColumnFiltered && cmb.FieldName == preset.FieldName))
                         .ToList();
 
                     foreach (var col in columns)
                     {
+                        // Get distinct values from the ItemsSource for the current column
+                        var sourceObjectList = preset.FieldType == typeof(DateTime)
+                            ? Items.Cast<object>()
+                                .Select(x => (object)((DateTime?)x.GetPropertyValue(preset.FieldName))?.Date)
+                                .Distinct()
+                                .ToList()
+                            : Items.Cast<object>()
+                                .Select(x => x.GetPropertyValue(preset.FieldName))
+                                .Distinct()
+                                .ToList();
+
+                        // Convert previously filtered items to the correct type
+                        preset.PreviouslyFilteredItems = preset.PreviouslyFilteredItems
+                            .Select(o => ConvertToType(o, preset.FieldType))
+                            .ToHashSet();
+
+                        // Get the items that are always present in the source collection
+                        preset.FilteredItems = sourceObjectList
+                            .Where(c => preset.PreviouslyFilteredItems.Contains(c))
+                            .ToList();
+
+                        // if no items are filtered, continue to the next column
+                        if (preset.FilteredItems.Count == 0)
+                            continue;
+
+                        preset.Translate = Translate;
+
                         var filterButton = VisualTreeHelpers.GetHeader(col, this)
                             ?.FindVisualChild<Button>("FilterButton");
 
-                        var fieldProperty = collectionType.GetPropertyInfo(preset.FieldName);
-
-                        if (fieldProperty != null)
-                            fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ??
-                                        fieldProperty.PropertyType;
-
-                        if (fieldType == typeof(DateTime))
-                        {
-                            object ConvertDateTime(object o)
-                            {
-                                var isSuccess = DateTime.TryParse(o?.ToString(), out var dateTime);
-                                // ReSharper disable once RedundantCast
-                                return isSuccess ? dateTime : (object)(DateTime?)null;
-                            }
-
-                            preset.PreviouslyFilteredItems = preset.PreviouslyFilteredItems
-                                .ToList()
-                                .ConvertAll(ConvertDateTime)
-                                .ToHashSet();
-                        }
-                        else if (fieldType.IsEnum)
-                        {
-                            object ConverEnum(object o)
-                            {
-                                // ReSharper disable once AssignNullToNotNullAttribute
-                                return Enum.Parse(fieldType, o.ToString());
-                            }
-
-                            preset.PreviouslyFilteredItems = preset.PreviouslyFilteredItems
-                                .ToList()
-                                .ConvertAll(ConverEnum)
-                                .ToHashSet();
-                        }
-
-                        preset.FieldType = fieldType;
-                        preset.Translate = Translate;
                         preset.FilterButton = filterButton;
 
                         FilterState.SetIsFiltered(filterButton, true);
 
                         preset.AddFilter(criteria);
 
-                        // add current filter to GlobalFilterList
+                        // Add current filter to GlobalFilterList
                         if (GlobalFilterList.All(f => f.FieldName != preset.FieldName))
                             GlobalFilterList.Add(preset);
 
-                        // set the current field name as the last filter name
+                        // Set the current field name as the last filter name
                         lastFilter = preset.FieldName;
                     }
                 }
 
-                if (Items.Count != 0) return;
+                // Remove all predefined filters when there is no match with the source collection
+                if (filterPreset.Count == 0)
+                    RemoveFilters();
 
-                // remove all predefined filters when there is no match with the source collection
-                RemoveFilters();
-
-                // empty json file
+                // Save json file
                 SavePreset();
             }
             catch (Exception ex)
@@ -914,19 +884,45 @@ namespace FilterDataGrid
             }
             finally
             {
-                // apply filter
+                // Apply filter
                 CollectionViewSource.Refresh();
 
                 stopWatchFilter.Stop();
 
-                // show elapsed time in UI
+                // Show elapsed time in UI
                 ElapsedTime = stopWatchFilter.Elapsed;
 
-                // reset cursor
+                // Reset cursor
                 ResetCursor();
 
-                Debug.WriteLineIf(DebugMode,
-                    $"OnFilterPresetChanged Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
+                Debug.WriteLineIf(DebugMode, $"OnFilterPresetChanged Elapsed time : {ElapsedTime:mm\\:ss\\.ff}");
+            }
+        }
+
+        /// <summary>
+        /// Convert an object to the specified type.
+        /// </summary>
+        /// <param name="value">The object to convert.</param>
+        /// <param name="type">The target type.</param>
+        /// <returns>The converted object.</returns>
+        private object ConvertToType(object value, Type type)
+        {
+            try
+            {
+                if (type == typeof(DateTime))
+                {
+                    return DateTime.TryParse(value?.ToString(), out var dateTime) ? (object)dateTime : (object)(DateTime?)null;
+                }
+                if (type.IsEnum)
+                {
+                    return Enum.Parse(type, value.ToString());
+                }
+                return Convert.ChangeType(value, type);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"ConvertToType error: {ex.Message}");
+                return null;
             }
         }
 

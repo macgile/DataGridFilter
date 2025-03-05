@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Controls;
 using System.Runtime.Serialization;
@@ -33,26 +34,47 @@ namespace FilterDataGrid
 
         public HashSet<object> PreviouslyFilteredItems { get; set; } = new HashSet<object>(EqualityComparer<object>.Default);
 
-        [DataMember (Name = "FilteredItems")]
+        [DataMember(Name = "FilteredItems")]
         public List<object> FilteredItems
         {
             get
             {
-                return FieldType?.BaseType == typeof(Enum) 
-                    ? PreviouslyFilteredItems.ToList().ConvertAll(f => (object)f.ToString()) 
+                return FieldType?.BaseType == typeof(Enum)
+                    ? PreviouslyFilteredItems.ToList().ConvertAll(f => (object)f.ToString())
                     : PreviouslyFilteredItems?.ToList();
             }
 
             set => PreviouslyFilteredItems = value.ToHashSet();
         }
-        
 
         [DataMember(Name = "FieldName")]
         public string FieldName { get; set; }
 
         public Button FilterButton { get; set; }
         public Loc Translate { get; set; }
-        public Type FieldType { get; set; }
+
+        // Use a string to store the type name for serialization
+        [DataMember(Name = "FieldType")]
+        private string FieldTypeString { get; set; }
+
+        // Property to get and set the actual Type
+        public Type FieldType
+        {
+            get
+            {
+                try
+                {
+                    return Type.GetType(FieldTypeString);
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception or handle it as needed
+                    Debug.WriteLine($"Error deserializing type: {ex.Message}");
+                    return null; // or a default type, e.g., typeof(object)
+                }
+            }
+            set => FieldTypeString = value.AssemblyQualifiedName;
+        }
         public bool IsFiltered
         {
             get => isFiltered;
