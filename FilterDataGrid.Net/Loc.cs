@@ -24,6 +24,7 @@
 // Traditional Chinese  : BeCare4
 // Turkish              : BEDIRHANSAMSA
 // Ukrainian            : oleluo
+// Korean               : hyuckkim
 
 // The simplification of the translation is achieved by dankovics.jozsef
 // TranslatableElements, ILanguageDictionary, LanguageDictionary
@@ -61,7 +62,8 @@ namespace FilterDataGrid
         Spanish,
         TraditionalChinese,
         Turkish,
-        Ukrainian
+        Ukrainian,
+        Korean
     }
 
     // Contributor : dankovics.jozsef
@@ -535,6 +537,26 @@ namespace FilterDataGrid
                 { TranslatableElements.False, "Не вибрано" },
                 { TranslatableElements.RemoveAll, "Очистити всі фільтри" },
                 { TranslatableElements.Indeterminate, "Невизначений" },
+            });
+
+        private static ILanguageDictionary Korean { get; } = new LanguageDictionary("Korean",
+            new CultureInfo("ko-KR"),
+            new Dictionary<TranslatableElements, string>
+            {
+                { TranslatableElements.All, "(전체 선택)" },
+                { TranslatableElements.Empty, "(비어 있음)" },
+                { TranslatableElements.Clear, "필터 초기화 \"{0}\"" },
+                { TranslatableElements.Contains, "검색 (포함)" },
+                { TranslatableElements.StartsWith, "검색 (시작)" },
+                { TranslatableElements.Toggle, "포함/시작 토글" },
+                { TranslatableElements.Ok, "확인" },
+                { TranslatableElements.Cancel, "취소" },
+                { TranslatableElements.Status, "{1:n0}에서 {0:n0}개 요소 찾음" },
+                { TranslatableElements.ElapsedTime, "걸린 시간 {0:mm}:{0:ss}.{0:ff}" },
+                { TranslatableElements.True, "선택됨" },
+                { TranslatableElements.False, "선택되지 않음" },
+                { TranslatableElements.RemoveAll, "필터 모두 제거" },
+                { TranslatableElements.Indeterminate, "불완전함" },
             });
 
         private ILanguageDictionary SelectedLanguage { get; set; } = English;
