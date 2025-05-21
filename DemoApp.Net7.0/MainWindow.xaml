@@ -189,6 +189,10 @@
                     Header="Start Date"
                     IsColumnFiltered="True" />
                 <control:DataGridTextColumn
+                    Binding="{Binding TestTimeSpan}"
+                    Header="TimeSpan"
+                    IsColumnFiltered="True" />
+                <control:DataGridTextColumn
                     Binding="{Binding TestDateOnly}"
                     Header="DateOnly"
                     IsColumnFiltered="True" />
