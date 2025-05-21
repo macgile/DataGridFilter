@@ -133,6 +133,15 @@ namespace SharedModelView.ModelView
                     // ReSharper disable once RedundantCast
                     : (DateTime?)null,
 
+                Rnd.Next(0, 10) != 1
+                    ? new DateOnly(2012 + Rnd.Next(10), Rnd.Next(12) + 1, Rnd.Next(28) + 1)
+                    // ReSharper disable once RedundantCast
+                    : (DateOnly?)null,
+                Rnd.Next(0, 10) != 1
+                    ? new TimeOnly(Rnd.Next(23), Rnd.Next(59), Rnd.Next(59))
+                    // ReSharper disable once RedundantCast
+                    : (TimeOnly?)null,
+
                 // is manager (three states)
                 // ReSharper disable once RedundantCast
                 Rnd.Next() % 3 == 2 ? (bool?)null : Rnd.Next() % 2 == 1,

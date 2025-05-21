@@ -188,6 +188,14 @@
                     Binding="{Binding StartDate}"
                     Header="Start Date"
                     IsColumnFiltered="True" />
+                <control:DataGridTextColumn
+                    Binding="{Binding TestDateOnly}"
+                    Header="DateOnly"
+                    IsColumnFiltered="True" />
+                <control:DataGridTextColumn
+                    Binding="{Binding TestTimeOnly}"
+                    Header="TimeOnly"
+                    IsColumnFiltered="True" />
             </control:FilterDataGrid.Columns>
         </control:FilterDataGrid>
 

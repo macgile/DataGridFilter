@@ -9,6 +9,7 @@
 
 #endregion
 
+using FilterDataGrid.Extension;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -126,6 +127,15 @@ namespace FilterDataGrid
                 typeof(string),
                 typeof(FilterDataGrid),
                 new PropertyMetadata("d"));
+        /// <summary>
+        ///     Time format displayed
+        /// </summary>
+        public static readonly DependencyProperty TimeFormatStringProperty =
+            DependencyProperty.Register("TimeFormatString",
+                typeof(string),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(null));
+
 
         /// <summary>
         ///     Language displayed
@@ -279,6 +289,15 @@ namespace FilterDataGrid
         {
             get => (string)GetValue(DateFormatStringProperty);
             set => SetValue(DateFormatStringProperty, value);
+        }
+
+        /// <summary>
+        ///     Date format displayed
+        /// </summary>
+        public string TimeFormatString
+        {
+            get => (string)GetValue(TimeFormatStringProperty);
+            set => SetValue(TimeFormatStringProperty, value);
         }
 
         /// <summary>
@@ -552,8 +571,10 @@ namespace FilterDataGrid
                     };
 
                     // apply the format string provided
-                    if (typeCode == TypeCode.DateTime && !string.IsNullOrEmpty(DateFormatString))
+                    if (fieldType.IsDate() && !string.IsNullOrEmpty(DateFormatString))
                         column.Binding.StringFormat = DateFormatString;
+                    if (fieldType.IsTime() && !string.IsNullOrEmpty(TimeFormatString))
+                        column.Binding.StringFormat = TimeFormatString;
 
                     // if the type does not belong to the "System" namespace, disable sorting
                     if (!fieldType.IsSystemType())
@@ -826,19 +847,11 @@ namespace FilterDataGrid
                     foreach (var col in columns)
                     {
                         // Get distinct values from the ItemsSource for the current column
-                        var sourceObjectList = preset.FieldType == typeof(DateTime)
-                            ? Items.Cast<object>()
-                                .Select(x => (object)((DateTime?)x.GetPropertyValue(preset.FieldName))?.Date)
-                                .Distinct()
-                                .ToList()
-                            : Items.Cast<object>()
-                                .Select(x => x.GetPropertyValue(preset.FieldName))
-                                .Distinct()
-                                .ToList();
+                        var sourceObjectList = Items.Distincts(preset.FieldType, preset.FieldName);
 
                         // Convert previously filtered items to the correct type
                         preset.PreviouslyFilteredItems = preset.PreviouslyFilteredItems
-                            .Select(o => ConvertToType(o, preset.FieldType))
+                            .Select(o => o.ConvertToType(preset.FieldType))
                             .ToHashSet();
 
                         // Get the items that are always present in the source collection
@@ -900,33 +913,6 @@ namespace FilterDataGrid
         }
 
         /// <summary>
-        /// Convert an object to the specified type.
-        /// </summary>
-        /// <param name="value">The object to convert.</param>
-        /// <param name="type">The target type.</param>
-        /// <returns>The converted object.</returns>
-        private object ConvertToType(object value, Type type)
-        {
-            try
-            {
-                if (type == typeof(DateTime))
-                {
-                    return DateTime.TryParse(value?.ToString(), out var dateTime) ? (object)dateTime : (object)(DateTime?)null;
-                }
-                if (type.IsEnum)
-                {
-                    return Enum.Parse(type, value.ToString());
-                }
-                return Convert.ChangeType(value, type);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"ConvertToType error: {ex.Message}");
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Serialize filters list
         /// </summary>
         private async void Serialize()
@@ -953,108 +939,6 @@ namespace FilterDataGrid
 
                 Debug.WriteLineIf(DebugMode, $"DeSerialize : {result.Count}");
             });
-        }
-
-        /// <summary>
-        /// Builds a tree structure from a collection of filter items.
-        /// </summary>
-        /// <param name="dates">The collection of filter items.</param>
-        /// <returns>A list of FilterItemDate representing the tree structure.</returns>
-        private async Task<List<FilterItemDate>> BuildTreeAsync(IEnumerable<FilterItem> dates)
-        {
-            var tree = new List<FilterItemDate>
-            {
-                new FilterItemDate
-                {
-                    Label = Translate.All, Level = 0, Initialize = true, FieldType = fieldType
-                }
-            };
-
-            if (dates == null) return tree;
-
-            try
-            {
-                var dateTimes = dates.Where(x => x.Level > 0).ToList();
-
-                var years = dateTimes.GroupBy(
-                    x => ((DateTime)x.Content).Year,
-                    (key, group) => new FilterItemDate
-                    {
-                        Level = 1,
-                        Content = key,
-                        Label = key.ToString(CultureInfo.CurrentCulture),
-                        Initialize = true,
-                        FieldType = fieldType,
-                        Children = group.GroupBy(
-                            x => ((DateTime)x.Content).Month,
-                            (monthKey, monthGroup) => new FilterItemDate
-                            {
-                                Level = 2,
-                                Content = monthKey,
-                                Label = new DateTime(key, monthKey, 1).ToString("MMMM", CultureInfo.CurrentCulture),
-                                Initialize = true,
-                                FieldType = fieldType,
-                                Children = monthGroup.Select(x => new FilterItemDate
-                                {
-                                    Level = 3,
-                                    Content = ((DateTime)x.Content).Day,
-                                    Label = ((DateTime)x.Content).ToString("dd", CultureInfo.CurrentCulture),
-                                    Initialize = true,
-                                    FieldType = fieldType,
-                                    Item = x
-                                }).ToList()
-                            }).ToList()
-                    }).ToList();
-
-                foreach (var year in years)
-                {
-                    foreach (var month in year.Children)
-                    {
-                        month.Parent = year;
-                        foreach (var day in month.Children)
-                        {
-                            day.Parent = month;
-                            // set the state of the "IsChecked" property based on the items already filtered (unchecked)
-                            if (!day.Item.IsChecked)
-                            {
-                                // call the SetIsChecked method of the FilterItemDate class
-                                day.IsChecked = false;
-                                // reset with new state (isChanged == false)
-                                day.Initialize = day.IsChecked;
-                            }
-                        }
-                        // reset with new state
-                        month.Initialize = month.IsChecked;
-                    }
-                    // reset with new state
-                    year.Initialize = year.IsChecked;
-                }
-
-                tree.AddRange(years);
-
-                if (dates.Any(x => x.Level == -1))
-                {
-                    var emptyItem = dates.First(x => x.Level == -1);
-                    tree.Add(new FilterItemDate
-                    {
-                        Label = Translate.Empty,
-                        Content = null,
-                        Level = -1,
-                        FieldType = fieldType,
-                        Initialize = emptyItem.IsChecked,
-                        Item = emptyItem,
-                        Children = new List<FilterItemDate>()
-                    });
-                }
-
-                tree.First().Tree = tree;
-                return await Task.FromResult(tree);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"FilterCommon.BuildTree : {ex.Message}");
-                throw;
-            }
         }
 
         /// <summary>
@@ -1146,9 +1030,12 @@ namespace FilterDataGrid
                                             fieldProperty.PropertyType;
 
                             // apply DateFormatString when StringFormat for column is not provided or empty
-                            if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
+                            if (fieldType.IsDate() && !string.IsNullOrEmpty(DateFormatString))
                                 if (string.IsNullOrEmpty(column.Binding.StringFormat))
                                     column.Binding.StringFormat = DateFormatString;
+                            else if (fieldType.IsTime() && !string.IsNullOrEmpty(TimeFormatString))
+                                if (string.IsNullOrEmpty(column.Binding.StringFormat))
+                                    column.Binding.StringFormat = TimeFormatString;
 
                             FieldType = fieldType;
 
@@ -1174,9 +1061,12 @@ namespace FilterDataGrid
                                             fieldProperty.PropertyType;
 
                             // apply DateFormatString when StringFormat for column is not provided or empty
-                            if (fieldType == typeof(DateTime) && !string.IsNullOrEmpty(DateFormatString))
+                            if (fieldType.IsDate() && !string.IsNullOrEmpty(DateFormatString))
                                 if (string.IsNullOrEmpty(column.Binding.StringFormat))
                                     column.Binding.StringFormat = DateFormatString;
+                                else if (fieldType.IsTime() && !string.IsNullOrEmpty(TimeFormatString))
+                                    if (string.IsNullOrEmpty(column.Binding.StringFormat))
+                                        column.Binding.StringFormat = TimeFormatString;
 
                             FieldType = fieldType;
 
@@ -1594,13 +1484,13 @@ namespace FilterDataGrid
             // apply filter (call the SearchFilter method)
             ItemCollectionView.Refresh();
 
-            if (CurrentFilter.FieldType != typeof(DateTime) || treeView == null) return;
+            if (!CurrentFilter.FieldType.IsDateOrTime() || treeView == null) return;
 
             // rebuild treeView
             if (string.IsNullOrEmpty(searchText))
             {
                 // populate the tree with items from the source list
-                TreeViewItems = await BuildTreeAsync(SourcePopupViewItems);
+                TreeViewItems = await SourcePopupViewItems.BuildTreeAsync(Translate, fieldType);
             }
             else
             {
@@ -1609,7 +1499,7 @@ namespace FilterDataGrid
                 var items = PopupViewItems.Where(i => i.IsChecked).ToList();
 
                 // if at least one element is not null, fill the tree, otherwise the tree contains only the element (select all).
-                TreeViewItems = await BuildTreeAsync(items.Any() ? items : null);
+                TreeViewItems = await (items.Any() ? items : null).BuildTreeAsync(Translate, fieldType);
             }
         }
 
@@ -1746,24 +1636,7 @@ namespace FilterDataGrid
                 await Dispatcher.InvokeAsync(() =>
                 {
                     // list for all items values, filtered and unfiltered (previous filtered items)
-                    List<object> sourceObjectList;
-
-                    // get the list of raw values of the current column
-                    if (fieldType == typeof(DateTime))
-                    {
-                        // possible distinct values because time part is removed
-                        sourceObjectList = Items.Cast<object>()
-                            .Select(x => (object)((DateTime?)x.GetPropertyValue(fieldName))?.Date)
-                            .Distinct()
-                            .ToList();
-                    }
-                    else
-                    {
-                        sourceObjectList = Items.Cast<object>()
-                            .Select(x => x.GetPropertyValue(fieldName))
-                            .Distinct()
-                            .ToList();
-                    }
+                    List<object> sourceObjectList = Items.Distincts(fieldType, fieldName);
 
                     // adds the previous filtered items to the list of new items (CurrentFilter.PreviouslyFilteredItems)
                     if (lastFilter == CurrentFilter.FieldName)
@@ -1839,9 +1712,9 @@ namespace FilterDataGrid
                 }); // Dispatcher
 
                 // ItemsSource (ListBow/TreeView)
-                if (fieldType == typeof(DateTime))
+                if (fieldType.IsDateOrTime())
                 {
-                    TreeViewItems = await BuildTreeAsync(filterItemList);
+                    TreeViewItems = await filterItemList.BuildTreeAsync(Translate, fieldType);
                 }
                 else
                 {
