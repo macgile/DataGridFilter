@@ -22,6 +22,8 @@ using System.Windows.Markup;
 [assembly: AssemblyProduct("FilterDataGrid Net7.0-windows")]
 #elif NET8_0
 [assembly: AssemblyProduct("FilterDataGrid Net8.0-windows")]
+#elif NET9_0
+[assembly: AssemblyProduct("FilterDataGrid Net9.0-windows")]
 #else
 [assembly: AssemblyProduct("FilterDataGrid")]
 #endif
