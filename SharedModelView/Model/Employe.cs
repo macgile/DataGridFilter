@@ -81,7 +81,7 @@ namespace SharedModelView
     {
         #region Public Constructors
 
-        public Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate,
+        public Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate, DateOnly? testDateOnly, TimeOnly? testTimeOnly, TimeSpan? testTimeSpan,
             bool? manager = false, Departments department = Departments.None, int idCountry = 0, Country country = null)
         {
             LastName = lastName;
@@ -89,6 +89,9 @@ namespace SharedModelView
             Salary = salary;
             Age = age;
             StartDate = startDate;
+            TestTimeSpan = testTimeSpan;
+            TestDateOnly = testDateOnly;
+            TestTimeOnly = testTimeOnly;
             Manager = manager;
             Department = department;
             IdCountry = idCountry;
@@ -108,6 +111,9 @@ namespace SharedModelView
         public bool? Manager { get; set; }
         public double? Salary { get; set; }
         public DateTime? StartDate { get; set; }
+        public TimeSpan? TestTimeSpan { get; set; }
+        public DateOnly? TestDateOnly { get; set; }
+        public TimeOnly? TestTimeOnly { get; set; }
 
         #endregion Public Properties
     }
