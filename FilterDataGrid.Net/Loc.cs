@@ -354,8 +354,8 @@ namespace FilterDataGrid
                 { TranslatableElements.Cancel, "Annulla" },
                 { TranslatableElements.Status, "{0:n0} oggetti trovati su {1:n0}" },
                 { TranslatableElements.ElapsedTime, "Tempo trascorso {0:mm}:{0:ss}.{0:ff}" },
-                { TranslatableElements.True, "Controllato" },
-                { TranslatableElements.False, "Deselezionato" },
+                { TranslatableElements.True, "Vero" },
+                { TranslatableElements.False, "Falso" },
                 { TranslatableElements.RemoveAll, "Rimuovi tutti i filtri" },
                 { TranslatableElements.Indeterminate, "Indeterminato" },
             });

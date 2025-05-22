@@ -2,7 +2,7 @@
 
 // Author     : Gilles Macabies
 // Solution   : FilterDataGrid
-// Projet     : DemoApp.Net7.0
+// Projet     : DemoApp.Net7.0, DemoApp.Net8.0, DemoApp.Net9.0
 // File       : Employe.cs
 // Created    : 20/05/2023
 //
