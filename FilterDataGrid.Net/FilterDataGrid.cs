@@ -1252,7 +1252,8 @@ namespace FilterDataGrid
                     obj.IsChecked = item.IsChecked;
                 }
             }
-            else
+            // check if first item select all checkbox (in case of bool?, first item is Unchecked)
+            else if(ListBoxItems[0].Level==0)
             {
                 // update select all item status
                 ListBoxItems[0].IsChecked = PopupViewItems.All(i => i.IsChecked);

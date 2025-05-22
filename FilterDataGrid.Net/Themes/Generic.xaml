@@ -787,8 +787,8 @@
                                                 x:Name="CheckBoxTree"
                                                 VerticalAlignment="Center"
                                                 Focusable="False"
+                                                Content="{Binding Label}"
                                                 IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" />
-                                            <ContentPresenter Margin="2" Content="{Binding Label}" />
                                         </StackPanel>
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding Level}" Value="1">
