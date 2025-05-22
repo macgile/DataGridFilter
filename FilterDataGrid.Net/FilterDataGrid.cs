@@ -982,7 +982,7 @@ namespace FilterDataGrid
                     {
                         Level = 1,
                         Content = key,
-                        Label = key.ToString(CultureInfo.CurrentCulture),
+                        Label = key.ToString(Translate.Culture),
                         Initialize = true,
                         FieldType = fieldType,
                         Children = group.GroupBy(
@@ -991,14 +991,14 @@ namespace FilterDataGrid
                             {
                                 Level = 2,
                                 Content = monthKey,
-                                Label = new DateTime(key, monthKey, 1).ToString("MMMM", CultureInfo.CurrentCulture),
+                                Label = new DateTime(key, monthKey, 1).ToString("MMMM", Translate.Culture),
                                 Initialize = true,
                                 FieldType = fieldType,
                                 Children = monthGroup.Select(x => new FilterItemDate
                                 {
                                     Level = 3,
                                     Content = ((DateTime)x.Content).Day,
-                                    Label = ((DateTime)x.Content).ToString("dd", CultureInfo.CurrentCulture),
+                                    Label = ((DateTime)x.Content).ToString("dd", Translate.Culture),
                                     Initialize = true,
                                     FieldType = fieldType,
                                     Item = x
