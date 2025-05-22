@@ -9,6 +9,10 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedModelView", "SharedMo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApp.Net7.0", "DemoApp.Net7.0\DemoApp.Net7.0.csproj", "{08F847A8-56C6-4C9F-A635-454B559684E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp.Net8.0", "DemoApp.Net8.0\DemoApp.Net8.0.csproj", "{5C283556-F433-9C0A-DF95-48CEFBA51D5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp.Net9.0", "DemoApp.Net9.0\DemoApp.Net9.0.csproj", "{9111AADC-1E90-F6C5-2210-44A0120B399C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,14 @@ Global
 		{08F847A8-56C6-4C9F-A635-454B559684E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08F847A8-56C6-4C9F-A635-454B559684E4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{08F847A8-56C6-4C9F-A635-454B559684E4}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{5C283556-F433-9C0A-DF95-48CEFBA51D5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C283556-F433-9C0A-DF95-48CEFBA51D5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C283556-F433-9C0A-DF95-48CEFBA51D5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C283556-F433-9C0A-DF95-48CEFBA51D5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9111AADC-1E90-F6C5-2210-44A0120B399C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9111AADC-1E90-F6C5-2210-44A0120B399C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9111AADC-1E90-F6C5-2210-44A0120B399C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9111AADC-1E90-F6C5-2210-44A0120B399C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +44,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedModelView\SharedModelView.projitems*{08f847a8-56c6-4c9f-a635-454b559684e4}*SharedItemsImports = 5
+		SharedModelView\SharedModelView.projitems*{5c283556-f433-9c0a-df95-48cefba51d5b}*SharedItemsImports = 5
+		SharedModelView\SharedModelView.projitems*{9111aadc-1e90-f6c5-2210-44a0120b399c}*SharedItemsImports = 5
 		SharedModelView\SharedModelView.projitems*{e2e134a8-314f-43b4-bcc6-206d2bb5705c}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

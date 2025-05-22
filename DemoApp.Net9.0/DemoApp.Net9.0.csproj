@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows7.0</TargetFramework>
+    <RootNamespace>DemoApp.Net9._0</RootNamespace>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FilterDataGrid.Net\FilterDataGrid.Net.csproj" AdditionalProperties="TargetFramework=Net9.0-windows" />
+  </ItemGroup>
+
+  <Import Project="..\SharedModelView\SharedModelView.projitems" Label="Shared" />
+
+</Project>
