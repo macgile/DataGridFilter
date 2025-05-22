@@ -90,7 +90,7 @@ namespace FilterDataGrid.Extension
                     {
                         Level = 1,
                         Content = key,
-                        Label = key.ToString(CultureInfo.CurrentCulture),
+                        Label = key.ToString(Translate.Culture),
                         Initialize = true,
                         FieldType = fieldType,
                         Children = group.GroupBy(
@@ -99,14 +99,14 @@ namespace FilterDataGrid.Extension
                             {
                                 Level = 2,
                                 Content = monthKey,
-                                Label = new DateTime(key, monthKey, 1).ToString("MMMM", CultureInfo.CurrentCulture),
+                                Label = new DateTime(key, monthKey, 1).ToString("MMMM", Translate.Culture),
                                 Initialize = true,
                                 FieldType = fieldType,
                                 Children = monthGroup.Select(x => new FilterItemDate
                                 {
                                     Level = 3,
                                     Content = ((DateTime)x.Content).Day,
-                                    Label = ((DateTime)x.Content).ToString("dd", CultureInfo.CurrentCulture),
+                                    Label = ((DateTime)x.Content).ToString("dd", Translate.Culture),
                                     Initialize = true,
                                     FieldType = fieldType,
                                     Item = x
@@ -171,7 +171,7 @@ namespace FilterDataGrid.Extension
                         {
                             Level = 1,
                             Content = daysKey,
-                            Label = daysKey.ToString(CultureInfo.CurrentCulture),
+                            Label = daysKey.ToString(Translate.Culture),
                             Initialize = true,
                             FieldType = fieldType,
                             Children = daysGroup.GroupBy(
@@ -180,7 +180,7 @@ namespace FilterDataGrid.Extension
                             {
                                 Level = 1,
                                 Content = hoursKey,
-                                Label = hoursKey.ToString(CultureInfo.CurrentCulture),
+                                Label = hoursKey.ToString(Translate.Culture),
                                 Initialize = true,
                                 FieldType = fieldType,
                                 Children = hoursGroup.GroupBy(
@@ -214,7 +214,7 @@ namespace FilterDataGrid.Extension
                         {
                             Level = 1,
                             Content = key,
-                            Label = key.ToString(CultureInfo.CurrentCulture),
+                            Label = key.ToString(Translate.Culture),
                             Initialize = true,
                             FieldType = fieldType,
                             Children = group.GroupBy(
@@ -293,7 +293,7 @@ namespace FilterDataGrid.Extension
                     {
                         Level = 1,
                         Content = key,
-                        Label = key.ToString(CultureInfo.CurrentCulture),
+                        Label = key.ToString(Translate.Culture),
                         Initialize = true,
                         FieldType = fieldType,
                         Children = group.GroupBy(
@@ -302,14 +302,14 @@ namespace FilterDataGrid.Extension
                             {
                                 Level = 2,
                                 Content = monthKey,
-                                Label = new DateOnly(key, monthKey, 1).ToString("MMMM", CultureInfo.CurrentCulture),
+                                Label = new DateOnly(key, monthKey, 1).ToString("MMMM", Translate.Culture),
                                 Initialize = true,
                                 FieldType = fieldType,
                                 Children = monthGroup.Select(x => new FilterItemDate
                                 {
                                     Level = 3,
                                     Content = ((DateOnly)x.Content).Day,
-                                    Label = ((DateOnly)x.Content).ToString("dd", CultureInfo.CurrentCulture),
+                                    Label = ((DateOnly)x.Content).ToString("dd", Translate.Culture),
                                     Initialize = true,
                                     FieldType = fieldType,
                                     Item = x
@@ -371,7 +371,7 @@ namespace FilterDataGrid.Extension
                     {
                         Level = 1,
                         Content = key,
-                        Label = key.ToString(CultureInfo.CurrentCulture),
+                        Label = key.ToString(Translate.Culture),
                         Initialize = true,
                         FieldType = fieldType,
                         Children = group.GroupBy(
