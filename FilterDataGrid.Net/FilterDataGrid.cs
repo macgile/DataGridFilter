@@ -1748,12 +1748,17 @@ namespace FilterDataGrid
                 {
                     // list for all items values, filtered and unfiltered (previous filtered items)
                     List<object> sourceObjectList;
+                    
+                    // remove NewItemPlaceholder added by DataGrid when user can add row
+                    // !System.Windows.Data.CollectionView.NewItemPlaceholder.Equals(x): Explicitly excludes the new entry row.
+                    // Testing on DataGridRow is an additional safety feature, but the most important thing is to exclude the NewItemPlaceholder.
 
                     // get the list of raw values of the current column
                     if (fieldType == typeof(DateTime))
                     {
                         // possible distinct values because time part is removed
                         sourceObjectList = Items.Cast<object>()
+                            .Where(x => !(x is DataGridRow) && !CollectionView.NewItemPlaceholder.Equals(x))
                             .Select(x => (object)((DateTime?)x.GetPropertyValue(fieldName))?.Date)
                             .Distinct()
                             .ToList();
@@ -1761,6 +1766,7 @@ namespace FilterDataGrid
                     else
                     {
                         sourceObjectList = Items.Cast<object>()
+                            .Where(x => !(x is DataGridRow) && !CollectionView.NewItemPlaceholder.Equals(x))
                             .Select(x => x.GetPropertyValue(fieldName))
                             .Distinct()
                             .ToList();
