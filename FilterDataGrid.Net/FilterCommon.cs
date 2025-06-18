@@ -73,7 +73,7 @@ namespace FilterDataGrid
                     return null; // or a default type, e.g., typeof(object)
                 }
             }
-            set => FieldTypeString = value.AssemblyQualifiedName;
+            set => FieldTypeString = value?.AssemblyQualifiedName;
         }
         public bool IsFiltered
         {
