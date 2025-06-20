@@ -24,7 +24,9 @@ using System.Windows.Input;
 
 namespace FilterDataGrid
 {
-    public sealed class DataGridCheckBoxColumn : System.Windows.Controls.DataGridCheckBoxColumn
+    //Unsealed all columns. We would like to be able to inherit from these classes. 
+    //Created IDataGridColumn with common column properties. Updated all columns to use the interface. 
+    public class DataGridCheckBoxColumn : System.Windows.Controls.DataGridCheckBoxColumn, IDataGridColumn
     {
         #region Public Fields
 
@@ -61,7 +63,7 @@ namespace FilterDataGrid
         #endregion Public Properties
     }
 
-    public sealed class DataGridComboBoxColumn : System.Windows.Controls.DataGridComboBoxColumn
+    public class DataGridComboBoxColumn : System.Windows.Controls.DataGridComboBoxColumn, IDataGridColumn
     {
 
         #region Public Classes
@@ -154,7 +156,8 @@ namespace FilterDataGrid
     }
 
     public class DataGridNumericColumn : DataGridTextColumn
-    {
+    { 
+        //Notes
         #region Private Fields
 
         private const bool DebugMode = false;
@@ -359,7 +362,7 @@ namespace FilterDataGrid
         #endregion Private Methods
     }
 
-    public sealed class DataGridTemplateColumn : System.Windows.Controls.DataGridTemplateColumn
+    public class DataGridTemplateColumn : System.Windows.Controls.DataGridTemplateColumn, IDataGridColumn
     {
         #region Public Fields
 
@@ -396,7 +399,7 @@ namespace FilterDataGrid
         #endregion Public Properties
     }
 
-    public class DataGridTextColumn : System.Windows.Controls.DataGridTextColumn
+    public class DataGridTextColumn : System.Windows.Controls.DataGridTextColumn, IDataGridColumn
     {
         #region Public Fields
 
@@ -433,7 +436,7 @@ namespace FilterDataGrid
         #endregion Public Properties
     }
 
-    public sealed class DataGridBoundColumn : System.Windows.Controls.DataGridBoundColumn
+    public class DataGridBoundColumn : System.Windows.Controls.DataGridBoundColumn, IDataGridColumn
     {
         #region Public Fields
 
@@ -502,5 +505,11 @@ namespace FilterDataGrid
         protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem) => GenerateElement(cell, dataItem);
 
         #endregion GenerateElement
+    }
+
+    public interface IDataGridColumn
+    {
+        string FieldName { get; set; }
+        bool IsColumnFiltered { get; set; }
     }
 }
