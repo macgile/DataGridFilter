@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,11 +20,90 @@ using System.Windows.Input;
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable CheckNamespace
+// ReSharper disable UnusedMember.Global
+// ReSharper disable once ClassNeverInstantiated.Global
 
 namespace FilterDataGrid
 {
-    //Unsealed all columns. We would like to be able to inherit from these classes. 
-    //Created IDataGridColumn with common column properties. Updated all columns to use the interface. 
+    public interface IDataGridColumn
+    {
+        #region Public Properties
+
+        string FieldName { get; set; }
+        bool IsColumnFiltered { get; set; }
+
+        #endregion Public Properties
+    }
+
+    public class DataGridBoundColumn : System.Windows.Controls.DataGridBoundColumn, IDataGridColumn
+    {
+        #region Public Fields
+
+        /// <summary>
+        /// FieldName Dependency Property.
+        /// </summary>
+        public static readonly DependencyProperty FieldNameProperty =
+            DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridTextColumn),
+                new PropertyMetadata(""));
+
+        /// <summary>
+        /// IsColumnFiltered Dependency Property.
+        /// </summary>
+        public static readonly DependencyProperty IsColumnFilteredProperty =
+            DependencyProperty.Register(nameof(IsColumnFiltered), typeof(bool), typeof(DataGridTextColumn),
+                new PropertyMetadata(false));
+
+        #endregion Public Fields
+
+        #region Public Properties
+
+        public string FieldName
+        {
+            get => (string)GetValue(FieldNameProperty);
+            set => SetValue(FieldNameProperty, value);
+        }
+
+        public bool IsColumnFiltered
+        {
+            get => (bool)GetValue(IsColumnFilteredProperty);
+            set => SetValue(IsColumnFilteredProperty, value);
+        }
+
+        #endregion Public Properties
+
+        #region GenerateElement
+
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public string TemplateName { get; set; }
+
+        protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem) => GenerateElement(cell, dataItem);
+
+        protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
+        {
+            var content = new ContentControl()
+            {
+                ContentTemplate = (DataTemplate)cell.FindResource(TemplateName)
+            };
+
+            if (Binding != null)
+            {
+                var binding = new Binding(((Binding)Binding).Path.Path)
+                {
+                    Source = dataItem,
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnSourceUpdated = true,
+                    NotifyOnTargetUpdated = true,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                };
+
+                content.SetBinding(ContentControl.ContentProperty, binding);
+            }
+
+            return content;
+        }
+        #endregion GenerateElement
+    }
+    
     public class DataGridCheckBoxColumn : System.Windows.Controls.DataGridCheckBoxColumn, IDataGridColumn
     {
         #region Public Fields
@@ -65,7 +143,6 @@ namespace FilterDataGrid
 
     public class DataGridComboBoxColumn : System.Windows.Controls.DataGridComboBoxColumn, IDataGridColumn
     {
-
         #region Public Classes
 
         public class ItemsSourceMembers
@@ -156,8 +233,7 @@ namespace FilterDataGrid
     }
 
     public class DataGridNumericColumn : DataGridTextColumn
-    { 
-        //Notes
+    {
         #region Private Fields
 
         private const bool DebugMode = false;
@@ -434,82 +510,5 @@ namespace FilterDataGrid
         }
 
         #endregion Public Properties
-    }
-
-    public class DataGridBoundColumn : System.Windows.Controls.DataGridBoundColumn, IDataGridColumn
-    {
-        #region Public Fields
-
-        /// <summary>
-        /// FieldName Dependency Property.
-        /// </summary>
-        public static readonly DependencyProperty FieldNameProperty =
-            DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridTextColumn),
-                new PropertyMetadata(""));
-
-        /// <summary>
-        /// IsColumnFiltered Dependency Property.
-        /// </summary>
-        public static readonly DependencyProperty IsColumnFilteredProperty =
-            DependencyProperty.Register(nameof(IsColumnFiltered), typeof(bool), typeof(DataGridTextColumn),
-                new PropertyMetadata(false));
-
-        #endregion Public Fields
-
-        #region Public Properties
-
-        public string FieldName
-        {
-            get => (string)GetValue(FieldNameProperty);
-            set => SetValue(FieldNameProperty, value);
-        }
-
-        public bool IsColumnFiltered
-        {
-            get => (bool)GetValue(IsColumnFilteredProperty);
-            set => SetValue(IsColumnFilteredProperty, value);
-        }
-
-        #endregion Public Properties
-
-        #region GenerateElement
-
-        public string TemplateName { get; set; }
-
-        protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
-        {
-            Binding binding;
-
-            ContentControl content = new ContentControl()
-            {
-                ContentTemplate = (DataTemplate)cell.FindResource(TemplateName)
-            };
-
-            if (Binding != null)
-            {
-                binding = new Binding(((Binding)Binding).Path.Path)
-                {
-                    Source = dataItem,
-                    Mode = BindingMode.TwoWay,
-                    NotifyOnSourceUpdated = true,
-                    NotifyOnTargetUpdated = true,
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                };
-
-                content.SetBinding(ContentControl.ContentProperty, binding);
-            }
-
-            return content;
-        }
-
-        protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem) => GenerateElement(cell, dataItem);
-
-        #endregion GenerateElement
-    }
-
-    public interface IDataGridColumn
-    {
-        string FieldName { get; set; }
-        bool IsColumnFiltered { get; set; }
     }
 }
