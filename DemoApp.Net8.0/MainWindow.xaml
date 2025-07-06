@@ -38,6 +38,9 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="1*" />
+
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Margin="10,10,0,20">
@@ -220,5 +223,95 @@
             FilterLanguage="French"
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource FilterDatagridStyle}" />
+
+
+        <control:FilterDataGrid
+            x:Name="FilterDataGridCombined"
+            Grid.Row="6"
+            AutoGenerateColumns="True"
+            DateFormatString="d"
+            FilterLanguage="English"
+            ItemsSource="{Binding FilteredList, UpdateSourceTrigger=PropertyChanged}"
+            PersistentFilter="False"
+            ShowElapsedTime="True"
+            ShowRowsCount="True"
+            ShowStatusBar="True"
+            Style="{StaticResource FilterDatagridStyle}">
+            <control:FilterDataGrid.Columns>
+
+                <control:DataGridTemplateColumn
+                    FieldName="FirstName"
+                    Header="First name"
+                    IsColumnFiltered="True"
+                    SortMemberPath="FirstName">
+                    <control:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="sharedModelView:Employe">
+                            <TextBlock Padding="2,0" Text="{Binding FirstName}" />
+                        </DataTemplate>
+                    </control:DataGridTemplateColumn.CellTemplate>
+                </control:DataGridTemplateColumn>
+
+                <control:DataGridTextColumn
+                    Binding="{Binding LastName}"
+                    Header="Last name"
+                    IsColumnFiltered="True" />
+
+                <control:DataGridNumericColumn
+                    Binding="{Binding Age, StringFormat=d}"
+                    Header="Age"
+                    IsColumnFiltered="True" />
+
+                <control:DataGridNumericColumn
+                    Binding="{Binding Salary, StringFormat=c}"
+                    Header="Salary"
+                    IsColumnFiltered="True" />
+
+                <control:DataGridCheckBoxColumn
+                    Binding="{Binding Manager}"
+                    Header="Manager"
+                    IsColumnFiltered="True" />
+
+                <!--  Nested object  -->
+                <!--<control:DataGridTextColumn
+                    Binding="{Binding Country.Name}"
+                    Header="Country.Name"
+                    IsColumnFiltered="True"
+                    IsReadOnly="True" />-->
+
+                <!--  ComboBoxColumn enum  -->
+                <control:DataGridComboBoxColumn
+                    Header="Department"
+                    IsColumnFiltered="True"
+                    IsReadOnly="False"
+                    ItemsSource="{Binding Source={StaticResource EnumDepartments}}"
+                    SelectedItemBinding="{Binding Department}" />
+
+                <!--  ComboBoxColumn unique ID  -->
+                <!--<control:DataGridComboBoxColumn
+                    DisplayMemberPath="Name"
+                    Header="Country"
+                    IsColumnFiltered="True"
+                    IsReadOnly="False"
+                    ItemsSource="{Binding Source={StaticResource Countries}}"
+                    SelectedValueBinding="{Binding IdCountry}"
+                    SelectedValuePath="Id" />-->
+
+                <!--  ComboBoxColumn nested object  -->
+                <control:DataGridComboBoxColumn
+                    DisplayMemberPath="Name"
+                    Header="Country"
+                    IsColumnFiltered="True"
+                    IsReadOnly="False"
+                    ItemsSource="{Binding Source={StaticResource CountriesList}}"
+                    SelectedValueBinding="{Binding Country.Id}"
+                    SelectedValuePath="Id" />
+
+                <control:DataGridTextColumn
+                    Binding="{Binding StartDate}"
+                    Header="Start Date"
+                    IsColumnFiltered="True" />
+            </control:FilterDataGrid.Columns>
+        </control:FilterDataGrid>
     </Grid>
+
 </Window>
