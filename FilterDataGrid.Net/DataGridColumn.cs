@@ -43,14 +43,14 @@ namespace FilterDataGrid
         /// FieldName Dependency Property.
         /// </summary>
         public static readonly DependencyProperty FieldNameProperty =
-            DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridTextColumn),
+            DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridBoundColumn),
                 new PropertyMetadata(""));
 
         /// <summary>
         /// IsColumnFiltered Dependency Property.
         /// </summary>
         public static readonly DependencyProperty IsColumnFilteredProperty =
-            DependencyProperty.Register(nameof(IsColumnFiltered), typeof(bool), typeof(DataGridTextColumn),
+            DependencyProperty.Register(nameof(IsColumnFiltered), typeof(bool), typeof(DataGridBoundColumn),
                 new PropertyMetadata(false));
 
         #endregion Public Fields
