@@ -781,9 +781,10 @@ namespace FilterDataGrid
             var hostingWindow = Window.GetWindow(this);
 
             // set the background color of the filter popup
-            FilterPopupBackground = FilterPopupBackground == null && hostingWindow != null
-                ? hostingWindow.Background
-                : new SolidColorBrush(Colors.White);
+            if (FilterPopupBackground == null)
+            {
+                FilterPopupBackground = hostingWindow?.Background;
+            }
 
             if (filterDataGrid.PersistentFilter)
                 filterDataGrid.LoadPreset();

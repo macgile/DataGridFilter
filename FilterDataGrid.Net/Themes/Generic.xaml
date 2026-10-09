@@ -452,8 +452,8 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!--  RENDER THE HEADER CONTENT -->
-                <ContentPresenter Grid.Column="0" Content="{Binding}"/>
+                <!--  RENDER THE HEADER CONTENT  -->
+                <ContentPresenter Grid.Column="0" Content="{Binding}" />
 
                 <!--
                     FILTER BUTTON
@@ -480,22 +480,22 @@
             <!--  POPUP  -->
             <Popup
                 Name="FilterPopup"
-                AllowsTransparency="True"
+                AllowsTransparency="False"
                 IsOpen="False"
                 PlacementTarget="{Binding ElementName=ContainerFilterGrid}"
                 StaysOpen="{StaticResource StayOpen}">
                 <Popup.Resources>
                     <!--
-                    Fix default background color of border when value is not provided  
-                    
+                    Fix default background color of border when value is not provided
+
                     **** DOES NOT WORK if parent is a Page or UserControl (cannot find parent window) ****
-                    
+
                     <SolidColorBrush
                         x:Key="BackgroundColor"
                         Opacity="1"
                         Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Background, Converter={StaticResource SolidBrushToColorConverter}}" />
-                    
-                    Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=FilterPopupBackground}, 
+
+                    Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=FilterPopupBackground},
                     TargetNullValue={StaticResource BackgroundColor}"
                     -->
 
@@ -786,8 +786,8 @@
                                             <CheckBox
                                                 x:Name="CheckBoxTree"
                                                 VerticalAlignment="Center"
-                                                Focusable="False"
                                                 Content="{Binding Label}"
+                                                Focusable="False"
                                                 IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" />
                                         </StackPanel>
                                         <DataTemplate.Triggers>
