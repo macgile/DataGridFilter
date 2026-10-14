@@ -182,6 +182,24 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata(null));
 
+        public static readonly DependencyProperty ExternalFilterProperty =
+            DependencyProperty.Register(
+                nameof(ExternalFilter),
+                typeof(Func<object, bool>),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(
+                    null,
+                    OnExternalFilterChanged));
+
+        public static readonly DependencyProperty FilterVersionProperty =
+            DependencyProperty.Register(
+                nameof(FilterVersion),
+                typeof(int),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(
+                    0,
+                    OnFilterVersionChanged));
+
         #endregion Public DependencyProperty
 
         #region Public Event
@@ -396,6 +414,18 @@ namespace FilterDataGrid
             get => (Brush)GetValue(FilterPopupBackgroundProperty);
             set => SetValue(FilterPopupBackgroundProperty, value);
         }
+
+        public Func<object, bool>? ExternalFilter
+        {
+            get => (Func<object, bool>?)GetValue(ExternalFilterProperty);
+            set => SetValue(ExternalFilterProperty, value);
+        }
+        public int FilterVersion
+        {
+            get => (int)GetValue(FilterVersionProperty);
+            set => SetValue(FilterVersionProperty, value);
+        }
+
 
         #endregion Public Properties
 
@@ -1389,8 +1419,26 @@ namespace FilterDataGrid
         /// <returns></returns>
         private bool Filter(object o)
         {
-            return criteria.Values
-                .Aggregate(true, (prevValue, predicate) => prevValue && predicate(o));
+            var columnFilterResult =
+                criteria.Values.Aggregate(
+                    true,
+                    (prevValue, predicate) =>
+                        prevValue && predicate(o));
+
+            bool externalFilterResult;
+
+            try
+            {
+                externalFilterResult =
+                    ExternalFilter?.Invoke(o) ?? true;
+            }
+            catch
+            {
+                externalFilterResult = true;
+            }
+
+            return columnFilterResult &&
+                   externalFilterResult;
         }
 
         /// <summary>
@@ -2092,6 +2140,26 @@ namespace FilterDataGrid
             for (var i = 0; i < Items.Count; i++)
                 if (ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow row)
                     row.Header = $"{i + 1}";
+        }
+
+        private static void OnExternalFilterChanged(
+            DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FilterDataGrid grid)
+            {
+                grid.CollectionViewSource?.Refresh();
+            }
+        }
+
+        private static void OnFilterVersionChanged(
+            DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FilterDataGrid grid)
+            {
+                grid.CollectionViewSource?.Refresh();
+            }
         }
 
         #endregion Private Methods
