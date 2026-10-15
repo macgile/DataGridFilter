@@ -11,8 +11,8 @@ https://github.com/ikatyang/emoji-cheat-sheet?tab=readme-ov-file#hand-single-fin
 [![Net Version](https://img.shields.io/badge/net%20version-net4.8%20netcore3.1%20net5.0%20net6.0%20net7.0%20net8.0-blue)](https://shields.io)
 
 <!-- FilterDataGrid.png -->
-![datagrid image demo](https://raw.githubusercontent.com/macgile/DataGridFilter/master/FilterDataGrid.png)  
-
+![datagrid image demo]()  
+https://raw.githubusercontent.com/macgile/DataGridFilter/master/FilterDataGrid.png
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
 for each column, in automatic or custom generation.  
 
@@ -24,9 +24,9 @@ Translation of labels and formatting of dates in the following languages:
 
  > *The translations are from google translate, if you find any errors or want to add other languages, please let me know.*
 
-The **Nuget package** is available [here](https://www.nuget.org/packages/FilterDataGrid/).
+The **Nuget package** is available [here on Nuget](https://www.nuget.org/packages/FilterDataGrid/).
 
-To understand how the filter works, you can consult the article posted on [CodeProject](https://www.codeproject.com/Articles/5292782/WPF-DataGrid-Filterable-multi-language).  
+To understand how the filter works, you can consult the article posted on [CodeProject](https://web.archive.org/web/20250927183629/https://www.codeproject.com/articles/WPF-DataGrid-Filterable-Multi-Language).  
 
 ## How to use
 
@@ -185,7 +185,7 @@ Number of rows | Opening of the PopUp | Applying the filter | Total (PopUp + Fil
 
 ## Demonstration
 
-![datagrid image demo](https://raw.githubusercontent.com/macgile/DataGridFilter/master/capture.gif)  
+![datagrid image demo](./capture.gif)  
 
 ## Contributors
 
