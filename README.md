@@ -11,8 +11,8 @@ https://github.com/ikatyang/emoji-cheat-sheet?tab=readme-ov-file#hand-single-fin
 [![Net Version](https://img.shields.io/badge/net%20version-net4.8%20netcore3.1%20net5.0%20net6.0%20net7.0%20net8.0-blue)](https://shields.io)
 
 <!-- FilterDataGrid.png -->
-![datagrid image demo](./FilterDataGrid.png)  
-
+![datagrid image demo]()  
+https://raw.githubusercontent.com/macgile/DataGridFilter/master/FilterDataGrid.png
 A DataGrid control that inherits from the base DataGrid control class and override some methods to implement filters  
 for each column, in automatic or custom generation.  
 
