@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,7 +45,7 @@ namespace FilterDataGrid
         /// </summary>
         public static readonly DependencyProperty FieldNameProperty =
             DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridBoundColumn),
-                new PropertyMetadata(""));
+                new PropertyMetadata(string.Empty));
 
         /// <summary>
         /// IsColumnFiltered Dependency Property.
@@ -80,14 +81,14 @@ namespace FilterDataGrid
 
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
-            var content = new ContentControl()
+            ContentControl content = new()
             {
                 ContentTemplate = (DataTemplate)cell.FindResource(TemplateName)
             };
 
             if (Binding != null)
             {
-                var binding = new Binding(((Binding)Binding).Path.Path)
+                Binding binding = new(((Binding)Binding).Path.Path)
                 {
                     Source = dataItem,
                     Mode = BindingMode.TwoWay,
@@ -101,9 +102,10 @@ namespace FilterDataGrid
 
             return content;
         }
+
         #endregion GenerateElement
     }
-    
+
     public class DataGridCheckBoxColumn : System.Windows.Controls.DataGridCheckBoxColumn, IDataGridColumn
     {
         #region Public Fields
@@ -113,7 +115,7 @@ namespace FilterDataGrid
         /// </summary>
         public static readonly DependencyProperty FieldNameProperty =
             DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridCheckBoxColumn),
-                new PropertyMetadata(""));
+                new PropertyMetadata(string.Empty));
 
         /// <summary>
         /// IsColumnFiltered Dependency Property.
@@ -164,7 +166,7 @@ namespace FilterDataGrid
         /// </summary>
         public static readonly DependencyProperty FieldNameProperty =
             DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridComboBoxColumn),
-                new PropertyMetadata(""));
+                new PropertyMetadata(string.Empty));
 
         /// <summary>
         /// IsColumnFiltered Dependency Property.
@@ -207,13 +209,13 @@ namespace FilterDataGrid
             // Marshal the call back to the UI thread
             await Dispatcher.InvokeAsync(() =>
             {
-                var itemsSource = ItemsSource;
-                var itemsSourceMembers = itemsSource.Cast<object>().Select(x =>
+                System.Collections.IEnumerable itemsSource = ItemsSource;
+                List<ItemsSourceMembers> itemsSourceMembers = [.. itemsSource.Cast<object>().Select(x =>
                     new ItemsSourceMembers
                     {
                         SelectedValue = x.GetPropertyValue(SelectedValuePath).ToString(),
                         DisplayMember = x.GetPropertyValue(DisplayMemberPath).ToString()
-                    }).ToList();
+                    })];
 
                 ComboBoxItemsSource = itemsSourceMembers;
             });
@@ -232,11 +234,18 @@ namespace FilterDataGrid
         #endregion Protected Methods
     }
 
-    public class DataGridNumericColumn : DataGridTextColumn
+    public partial class DataGridNumericColumn : DataGridTextColumn
     {
-        #region Private Fields
+        #region Private Constants
 
         private const bool DebugMode = false;
+        private const string SignedIntegerPattern = @"^\d+$";
+        private const string UnsignedIntegerPattern = @"^\d+$";
+
+        #endregion Private Constants
+
+        #region Private Fields
+
         private CultureInfo culture;
         private Type fieldType;
         private string originalValue;
@@ -253,41 +262,38 @@ namespace FilterDataGrid
         public void BuildRegex()
         {
             Debug.WriteLineIf(DebugMode, $"BuildRegex : {fieldType}");
-            var nfi = culture.NumberFormat;
+            NumberFormatInfo nfi = culture.NumberFormat;
 
-            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-            switch (Type.GetTypeCode(fieldType))
+            TypeCode typeCode = Type.GetTypeCode(fieldType);
+
+            switch (typeCode)
             {
-                // signed integer types
                 case TypeCode.Int16:
                 case TypeCode.Int32:
                 case TypeCode.Int64:
                 case TypeCode.SByte:
-                    regex = new Regex($@"^{nfi.NegativeSign}?\d+$");
+                    regex = new Regex($@"^{Regex.Escape(nfi.NegativeSign)}\d+$|{SignedIntegerPattern}", RegexOptions.Compiled);
                     break;
 
-                // unsigned integer types
                 case TypeCode.Byte:
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:
                 case TypeCode.UInt64:
-                    regex = new Regex(@"^\d+$");
+                    regex = MyRegex();
                     break;
 
-                // floating point types
                 case TypeCode.Decimal:
                 case TypeCode.Double:
                 case TypeCode.Single:
-                    var decimalSeparator = stringFormat.Contains("c")
+                    string decimalSeparator = stringFormat.Contains('c')
                         ? Regex.Escape(nfi.CurrencyDecimalSeparator)
                         : Regex.Escape(nfi.NumberDecimalSeparator);
-                    regex = new Regex($@"^{nfi.NegativeSign}?(\d+({decimalSeparator}\d*)?|{decimalSeparator}\d*)?$");
+                    regex = new Regex($@"^{Regex.Escape(nfi.NegativeSign)}?(\d+({decimalSeparator}\d*)?|{decimalSeparator}\d*)?$", RegexOptions.Compiled);
                     break;
 
-                // non-numeric types
                 default:
                     Debug.WriteLineIf(DebugMode, "Unsupported fieldType");
-                    regex = new Regex(@"[^\t\r\n]+");
+                    regex = new Regex(@"[^\t\r\n]+", RegexOptions.Compiled);
                     break;
             }
         }
@@ -341,15 +347,15 @@ namespace FilterDataGrid
                 // Determine the column type if not already determined
                 if (fieldType == null)
                 {
-                    var filterDataGrid = (FilterDataGrid)DataGridOwner;
-                    var dataContext = editingElement.DataContext;
+                    FilterDataGrid filterDataGrid = (FilterDataGrid)DataGridOwner;
+                    object dataContext = editingElement.DataContext;
                     culture = filterDataGrid.Translate.Culture;
-                    var propertyName = ((Binding)Binding).Path.Path;
+                    string propertyName = ((Binding)Binding).Path.Path;
                     stringFormat = string.IsNullOrEmpty(((Binding)Binding).StringFormat)
                         ? string.Empty
                         : ((Binding)Binding).StringFormat.ToLower();
 
-                    var fieldProperty = dataContext.GetType().GetProperty(propertyName);
+                    PropertyInfo fieldProperty = dataContext.GetType().GetProperty(propertyName);
                     if (fieldProperty != null)
                     {
                         fieldType = Nullable.GetUnderlyingType(fieldProperty.PropertyType) ?? fieldProperty.PropertyType;
@@ -369,7 +375,7 @@ namespace FilterDataGrid
                     DataObject.AddPastingHandler(edit, OnPaste);
 
                     // Create a new binding with the desired StringFormat and culture
-                    var newBinding = new Binding(((Binding)Binding).Path.Path)
+                    Binding newBinding = new(((Binding)Binding).Path.Path)
                     {
                         // removes formatting(symbol) for cell editing(TextBox)
                         // original formatting remains active for display(TextBlock)
@@ -403,7 +409,7 @@ namespace FilterDataGrid
 
             if (e.SourceDataObject.GetData(DataFormats.Text) is string pasteText && sender is TextBox textBox)
             {
-                var newText = textBox.Text.Insert(textBox.SelectionStart, pasteText);
+                string newText = textBox.Text.Insert(textBox.SelectionStart, pasteText);
 
                 if (!regex.IsMatch(newText))
                 {
@@ -423,8 +429,8 @@ namespace FilterDataGrid
 
             if (sender is TextBox textBox)
             {
-                var newText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
-                var isNumeric = regex.IsMatch(newText);
+                string newText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+                bool isNumeric = regex.IsMatch(newText);
 
                 Debug.WriteLineIf(DebugMode, $"originalValue : {originalValue,-15}" +
                                              $"originalText : {textBox.Text,-15}" +
@@ -434,6 +440,9 @@ namespace FilterDataGrid
                 e.Handled = !isNumeric;
             }
         }
+
+        [GeneratedRegex(UnsignedIntegerPattern, RegexOptions.Compiled)]
+        private static partial Regex MyRegex();
 
         #endregion Private Methods
     }
@@ -447,7 +456,7 @@ namespace FilterDataGrid
         /// </summary>
         public static readonly DependencyProperty FieldNameProperty =
             DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridTemplateColumn),
-                new PropertyMetadata(""));
+                new PropertyMetadata(string.Empty));
 
         /// <summary>
         /// IsColumnFiltered Dependency Property.
@@ -484,7 +493,7 @@ namespace FilterDataGrid
         /// </summary>
         public static readonly DependencyProperty FieldNameProperty =
             DependencyProperty.Register(nameof(FieldName), typeof(string), typeof(DataGridTextColumn),
-                new PropertyMetadata(""));
+                new PropertyMetadata(string.Empty));
 
         /// <summary>
         /// IsColumnFiltered Dependency Property.

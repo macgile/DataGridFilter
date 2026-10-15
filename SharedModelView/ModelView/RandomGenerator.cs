@@ -2,7 +2,7 @@
 
 // Author     : Gilles Macabies
 // Solution   : FilterDataGrid
-// Projet     : DemoApp.Net7.0, DemoApp.Net8.0, DemoApp.Net9.0
+// Projet     : DemoApp.Net8.0, DemoApp.Net9.0, DemoApp.Net10.0
 // File       : RandomGenerator.cs
 // Created    : 13/06/2023
 //

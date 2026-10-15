@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32519.111
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilterDataGrid.Net", "FilterDataGrid.Net\FilterDataGrid.Net.csproj", "{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedModelView", "SharedModelView\SharedModelView.shproj", "{E2E134A8-314F-43B4-BCC6-206D2BB5705C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoApp.Net7.0", "DemoApp.Net7.0\DemoApp.Net7.0.csproj", "{08F847A8-56C6-4C9F-A635-454B559684E4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp.Net8.0", "DemoApp.Net8.0\DemoApp.Net8.0.csproj", "{5C283556-F433-9C0A-DF95-48CEFBA51D5B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp.Net9.0", "DemoApp.Net9.0\DemoApp.Net9.0.csproj", "{9111AADC-1E90-F6C5-2210-44A0120B399C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp.Net10.0", "DemoApp.Net10.0\DemoApp.Net10.0.csproj", "{0D052864-0233-7517-43E2-0B5851B0B2DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{B9D0F3B2-3921-4F75-A224-5DC84EE7D859}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{08F847A8-56C6-4C9F-A635-454B559684E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08F847A8-56C6-4C9F-A635-454B559684E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08F847A8-56C6-4C9F-A635-454B559684E4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{08F847A8-56C6-4C9F-A635-454B559684E4}.Release|Any CPU.Build.0 = Debug|Any CPU
 		{5C283556-F433-9C0A-DF95-48CEFBA51D5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5C283556-F433-9C0A-DF95-48CEFBA51D5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C283556-F433-9C0A-DF95-48CEFBA51D5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,6 +31,10 @@ Global
 		{9111AADC-1E90-F6C5-2210-44A0120B399C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9111AADC-1E90-F6C5-2210-44A0120B399C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9111AADC-1E90-F6C5-2210-44A0120B399C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D052864-0233-7517-43E2-0B5851B0B2DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D052864-0233-7517-43E2-0B5851B0B2DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D052864-0233-7517-43E2-0B5851B0B2DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D052864-0233-7517-43E2-0B5851B0B2DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,7 +43,7 @@ Global
 		SolutionGuid = {F6EC7BC8-FC6A-44D2-A84C-CCD48B53A6E5}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		SharedModelView\SharedModelView.projitems*{08f847a8-56c6-4c9f-a635-454b559684e4}*SharedItemsImports = 5
+		SharedModelView\SharedModelView.projitems*{0d052864-0233-7517-43e2-0b5851b0b2dc}*SharedItemsImports = 5
 		SharedModelView\SharedModelView.projitems*{5c283556-f433-9c0a-df95-48cefba51d5b}*SharedItemsImports = 5
 		SharedModelView\SharedModelView.projitems*{9111aadc-1e90-f6c5-2210-44a0120b399c}*SharedItemsImports = 5
 		SharedModelView\SharedModelView.projitems*{e2e134a8-314f-43b4-bcc6-206d2bb5705c}*SharedItemsImports = 13

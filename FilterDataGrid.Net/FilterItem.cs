@@ -12,8 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
-
 namespace FilterDataGrid
 {
     public abstract class FilterBase : NotifyProperty
@@ -154,11 +152,28 @@ namespace FilterDataGrid
 
             // (Select All) item
             if (Level == 0)
-                Tree?.Skip(1).ToList().ForEach(c => { c.SetIsChecked(value, true, true); });
+            {
+                List<FilterItemDate> itemsToUpdate = Tree?.Skip(1).ToList();
+                if (itemsToUpdate != null)
+                {
+                    foreach (FilterItemDate item in itemsToUpdate)
+                    {
+                        item.SetIsChecked(value, true, true);
+                    }
+                }
+            }
 
             // state.HasValue : !null
             if (updateChildren && isChecked.HasValue && Level > 0)
-                Children?.ForEach(c => { c.SetIsChecked(value, true, false); });
+            {
+                if (Children != null)
+                {
+                    foreach (FilterItemDate child in Children)
+                    {
+                        child.SetIsChecked(value, true, false);
+                    }
+                }
+            }
 
             if (updateParent) Parent?.VerifyCheckedState();
 
@@ -169,10 +184,10 @@ namespace FilterDataGrid
         {
             bool? b = null;
 
-            for (var i = 0; i < Children.Count; ++i)
+            for (int i = 0; i < Children.Count; ++i)
             {
-                var item = Children[i];
-                var current = item.IsChecked;
+                FilterItemDate item = Children[i];
+                bool? current = item.IsChecked;
 
                 if (i == 0)
                 {

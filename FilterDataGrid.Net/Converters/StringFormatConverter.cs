@@ -20,6 +20,12 @@ namespace FilterDataGrid.Converters
 {
     public class StringFormatConverter : IValueConverter, IMultiValueConverter
     {
+        #region Private Constants
+
+        private const string CultureParameter = "Culture";
+
+        #endregion Private Constants
+
         #region ValueConverter
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -44,13 +50,17 @@ namespace FilterDataGrid.Converters
                 if (values[0] == DependencyProperty.UnsetValue || string.IsNullOrEmpty(values[0]?.ToString()))
                     return string.Empty;
 
-                var stringFormat = values[0].ToString() ?? string.Empty;
+                string stringFormat = values[0].ToString() ?? string.Empty;
 
                 // the last item of values array is culture
-                if (parameter != null && parameter.Equals("Culture"))
-                    culture = values.LastOrDefault() != null ? (CultureInfo)values.Last() : culture;
+                if (parameter != null && parameter.Equals(CultureParameter))
+                {
+                    object lastValue = values.LastOrDefault();
+                    culture = lastValue != null ? (CultureInfo)lastValue : culture;
+                }
 
-                return string.Format(culture, stringFormat, values.Skip(1).ToArray());
+                object[] formatArgs = [.. values.Skip(1)];
+                return string.Format(culture, stringFormat, formatArgs);
             }
             catch (FormatException ex)
             {

@@ -5,7 +5,7 @@
 // Projet     : DemoApp.Net6.0
 // File       : DelegateCommand.cs
 // Created    : 13/11/2022
-// 
+//
 
 #endregion
 
@@ -19,18 +19,9 @@ namespace SharedModelView.ModelView
     /// <summary>
     ///     DelegateCommand
     /// </summary>
-    public class DelegateCommand : ICommand
+    public class DelegateCommand(Action<object> execute,
+        Predicate<object> canExecute = null) : ICommand
     {
-        private readonly Predicate<object> canExecute;
-        private readonly Action<object> execute;
-
-        public DelegateCommand(Action<object> execute,
-            Predicate<object> canExecute = null)
-        {
-            this.execute = execute;
-            this.canExecute = canExecute;
-        }
-
         public void RaiseCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);

@@ -1,5 +1,5 @@
 ﻿<Window
-    x:Class="DemoApp.Net7._0.MainWindow"
+    x:Class="DemoApp.Net10._0.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:control="http://filterdatagrid.control.com/2021"
@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sharedModelView="clr-namespace:SharedModelView"
-    Title="Net7.0 Demo App"
+    Title="Net10.0 Demo App"
     Width="1280"
     Height="900"
     WindowStartupLocation="CenterScreen"

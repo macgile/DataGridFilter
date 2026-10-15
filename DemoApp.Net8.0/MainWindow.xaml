@@ -224,7 +224,6 @@
             ItemsSource="{Binding Employes, UpdateSourceTrigger=PropertyChanged}"
             Style="{StaticResource FilterDatagridStyle}" />
 
-
         <control:FilterDataGrid
             x:Name="FilterDataGridCombined"
             Grid.Row="6"
@@ -313,5 +312,4 @@
             </control:FilterDataGrid.Columns>
         </control:FilterDataGrid>
     </Grid>
-
 </Window>

@@ -329,7 +329,6 @@
                                                     Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                                     Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
                                             </Grid>
-
                                         </Grid>
                                     </ControlTemplate>
                                 </ScrollViewer.Template>
@@ -453,7 +452,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!--  RENDER THE HEADER CONTENT -->
-                <ContentPresenter Grid.Column="0" Content="{Binding}"/>
+                <ContentPresenter Grid.Column="0" Content="{Binding}" />
 
                 <!--
                     FILTER BUTTON
@@ -486,16 +485,16 @@
                 StaysOpen="{StaticResource StayOpen}">
                 <Popup.Resources>
                     <!--
-                    Fix default background color of border when value is not provided  
-                    
+                    Fix default background color of border when value is not provided
+
                     **** DOES NOT WORK if parent is a Page or UserControl (cannot find parent window) ****
-                    
+
                     <SolidColorBrush
                         x:Key="BackgroundColor"
                         Opacity="1"
                         Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Background, Converter={StaticResource SolidBrushToColorConverter}}" />
-                    
-                    Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=FilterPopupBackground}, 
+
+                    Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:FilterDataGrid}}, Path=FilterPopupBackground},
                     TargetNullValue={StaticResource BackgroundColor}"
                     -->
 
@@ -904,5 +903,4 @@
             </Popup>
         </Grid>
     </DataTemplate>
-
 </ResourceDictionary>

@@ -8,34 +8,21 @@ using System.Windows.Markup;
 [assembly: AssemblyCompany("Macabies Gilles")]
 [assembly: AssemblyCopyright("Copyright © 2021 Gilles Macabies")]
 [assembly: ComVisible(false)]
-
-
-#if NET48
-[assembly: AssemblyProduct("FilterDataGrid Net48-windows")]
-#elif NETCOREAPP3_1
-[assembly: AssemblyProduct("FilterDataGrid NetCoreApp3.1")]
-#elif NET5_0
-[assembly: AssemblyProduct("FilterDataGrid Net5.0-windows")]
-#elif NET6_0
-[assembly: AssemblyProduct("FilterDataGrid Net6.0-windows")]
-#elif NET7_0
-[assembly: AssemblyProduct("FilterDataGrid Net7.0-windows")]
-#elif NET8_0
+#if NET8_0
 [assembly: AssemblyProduct("FilterDataGrid Net8.0-windows")]
 #elif NET9_0
 [assembly: AssemblyProduct("FilterDataGrid Net9.0-windows")]
+#elif NET10_0
+[assembly: AssemblyProduct("FilterDataGrid Net10.0-windows")]
 #else
 [assembly: AssemblyProduct("FilterDataGrid")]
 #endif
 
-
 [assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, 
-    ResourceDictionaryLocation.SourceAssembly 
+    ResourceDictionaryLocation.None,
+    ResourceDictionaryLocation.SourceAssembly
 )]
-
-[assembly: XmlnsDefinition("http://filterdatagrid.control.com/2021", "FilterDataGrid", AssemblyName="FilterDataGrid")]
-
+[assembly: XmlnsDefinition("http://filterdatagrid.control.com/2021", "FilterDataGrid", AssemblyName = "FilterDataGrid")]
 [assembly: Guid("20c6b7ba-9949-43a4-ada5-047c10ccd899")]
-[assembly: AssemblyVersion("1.2.9.0")]
-[assembly: AssemblyFileVersion("1.2.9.0")]
+[assembly: AssemblyVersion("1.3.0.0")]
+[assembly: AssemblyFileVersion("1.3.0.0")]

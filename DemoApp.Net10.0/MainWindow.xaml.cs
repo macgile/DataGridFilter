@@ -2,7 +2,7 @@
 
 // Author     : Gilles Macabies
 // Solution   : FilterDataGrid
-// Projet     : DemoApp.Net7.0
+// Projet     : DemoApp.Net10.0
 // File       : MainWindow.xaml.cs
 // Created    : 04/12/2022
 //
@@ -14,7 +14,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 
-namespace DemoApp.Net7._0
+namespace DemoApp.Net10._0
 {
     /// <summary>
     ///     Interaction logic for MainWindow.xaml

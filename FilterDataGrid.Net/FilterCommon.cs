@@ -13,8 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Controls;
 using System.Runtime.Serialization;
+using System.Windows.Controls;
 
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -39,12 +39,19 @@ namespace FilterDataGrid
         {
             get
             {
-                return FieldType?.BaseType == typeof(Enum)
-                    ? PreviouslyFilteredItems.ToList().ConvertAll(f => (object)f.ToString())
-                    : PreviouslyFilteredItems?.ToList();
+                List<object> result = null;
+                if (FieldType?.BaseType == typeof(Enum))
+                {
+                    result = PreviouslyFilteredItems.ToList().ConvertAll(f => (object)f.ToString());
+                }
+                else
+                {
+                    result = PreviouslyFilteredItems?.ToList();
+                }
+                return result;
             }
 
-            set => PreviouslyFilteredItems = value.ToHashSet();
+            set => PreviouslyFilteredItems = [.. value];
         }
 
         [DataMember(Name = "FieldName")]
@@ -62,19 +69,22 @@ namespace FilterDataGrid
         {
             get
             {
+                Type result;
                 try
                 {
-                    return Type.GetType(FieldTypeString);
+                    result = FieldTypeString != null ? Type.GetType(FieldTypeString) : null;
                 }
                 catch (Exception ex)
                 {
                     // Log the exception or handle it as needed
                     Debug.WriteLine($"Error deserializing type: {ex.Message}");
-                    return null; // or a default type, e.g., typeof(object)
+                    result = null; // or a default type, e.g., typeof(object)
                 }
+                return result;
             }
             set => FieldTypeString = value?.AssemblyQualifiedName;
         }
+
         public bool IsFiltered
         {
             get => isFiltered;
@@ -105,9 +115,15 @@ namespace FilterDataGrid
             // predicate of filter
             bool Predicate(object o)
             {
-                var value = FieldType == typeof(DateTime)
-                    ? ((DateTime?)o.GetPropertyValue(FieldName))?.Date
-                    : o.GetPropertyValue(FieldName);
+                object value = null;
+                if (FieldType == typeof(DateTime))
+                {
+                    value = ((DateTime?)o.GetPropertyValue(FieldName))?.Date;
+                }
+                else
+                {
+                    value = o.GetPropertyValue(FieldName);
+                }
 
                 return !PreviouslyFilteredItems.Contains(value);
             }

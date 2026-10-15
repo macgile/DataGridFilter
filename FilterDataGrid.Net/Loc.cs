@@ -5,7 +5,7 @@
 // Projet     : FilterDataGrid.Net
 // File       : Loc.cs
 // Created    : 03/04/2024
-// 
+//
 
 #endregion
 
@@ -187,12 +187,9 @@ namespace FilterDataGrid
             {
                 language = value;
 
-                var type = typeof(Loc);
-                var propertyInfo =
-                    type.GetProperty(
-                        Enum.GetName(typeof(Local), language) ??
-                        throw new ArgumentException("Language is required", nameof(Local)),
-                        BindingFlags.Static | BindingFlags.NonPublic);
+                Type type = typeof(Loc);
+                string enumName = Enum.GetName(typeof(Local), language) ?? throw new ArgumentException("Language is required", nameof(Local));
+                PropertyInfo propertyInfo = type.GetProperty(enumName, BindingFlags.Static | BindingFlags.NonPublic);
 
                 if (propertyInfo == null) return;
                 SelectedLanguage = (ILanguageDictionary)propertyInfo.GetValue(null);
@@ -211,7 +208,7 @@ namespace FilterDataGrid
         public string Empty => Translate(TranslatableElements.Empty);
         public string IsFalse => Translate(TranslatableElements.False);
         public string IsTrue => Translate(TranslatableElements.True);
-        public string Neutral => "{0}";
+        public static string Neutral => "{0}";
         public string Ok => Translate(TranslatableElements.Ok);
         public string RemoveAll => Translate(TranslatableElements.RemoveAll);
         public string StartsWith => Translate(TranslatableElements.StartsWith);
@@ -565,25 +562,14 @@ namespace FilterDataGrid
     }
 
     // Contributor : dankovics.jozsef
-    internal class LanguageDictionary : ILanguageDictionary
+    internal class LanguageDictionary(string language, CultureInfo culture,
+        Dictionary<TranslatableElements, string> dictionary) : ILanguageDictionary
     {
-        #region Public Constructors
-
-        public LanguageDictionary(string language, CultureInfo culture,
-            Dictionary<TranslatableElements, string> dictionary)
-        {
-            Language = language;
-            Culture = culture;
-            Dictionary = dictionary;
-        }
-
-        #endregion Public Constructors
-
         #region Public Properties
 
-        public CultureInfo Culture { get; }
-        public Dictionary<TranslatableElements, string> Dictionary { get; }
-        public string Language { get; }
+        public CultureInfo Culture { get; } = culture;
+        public Dictionary<TranslatableElements, string> Dictionary { get; } = dictionary;
+        public string Language { get; } = language;
 
         #endregion Public Properties
     }

@@ -2,7 +2,7 @@
 
 // Author     : Gilles Macabies
 // Solution   : FilterDataGrid
-// Projet     : DemoApp.Net7.0, DemoApp.Net8.0, DemoApp.Net9.0
+// Projet     : DemoApp.Net8.0, DemoApp.Net9.0, DemoApp.Net10.0
 // File       : Employe.cs
 // Created    : 20/05/2023
 //
@@ -13,7 +13,6 @@ using System;
 using System.Collections.ObjectModel;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 
 namespace SharedModelView
 {
@@ -71,43 +70,27 @@ namespace SharedModelView
 
         // ReSharper disable once PropertyCanBeMadeInitOnly.Global
         public int Id { get; set; }
+
         public string Name { get; set; }
         public string Region { get; set; }
 
         #endregion Public Properties
     }
 
-    public class Employe
+    public class Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate,
+        bool? manager = false, Departments department = Departments.None, int idCountry = 0, Country country = null)
     {
-        #region Public Constructors
-
-        public Employe(string lastName, string firstName, double? salary, int? age, DateTime? startDate,
-            bool? manager = false, Departments department = Departments.None, int idCountry = 0, Country country = null)
-        {
-            LastName = lastName;
-            FirstName = firstName;
-            Salary = salary;
-            Age = age;
-            StartDate = startDate;
-            Manager = manager;
-            Department = department;
-            IdCountry = idCountry;
-            Country = country;
-        }
-
-        #endregion Public Constructors
-
         #region Public Properties
 
-        public int? Age { get; set; }
-        public Departments Department { get; set; }
-        public Country Country { get; set; }
-        public string FirstName { get; set; }
-        public int IdCountry { get; set; }
-        public string LastName { get; set; }
-        public bool? Manager { get; set; }
-        public double? Salary { get; set; }
-        public DateTime? StartDate { get; set; }
+        public int? Age { get; set; } = age;
+        public Departments Department { get; set; } = department;
+        public Country Country { get; set; } = country;
+        public string FirstName { get; set; } = firstName;
+        public int IdCountry { get; set; } = idCountry;
+        public string LastName { get; set; } = lastName;
+        public bool? Manager { get; set; } = manager;
+        public double? Salary { get; set; } = salary;
+        public DateTime? StartDate { get; set; } = startDate;
 
         #endregion Public Properties
     }

@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -22,7 +21,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
 
 // ReSharper disable RedundantCast
@@ -101,9 +99,7 @@ namespace FilterDataGrid
 
         private static void ItemsSourceChanged(object o, EventArgs eArgs)
         {
-            ItemsControl itemsControl = o as ItemsControl;
-
-            if (itemsControl == null) return;
+            if (o is not ItemsControl itemsControl) return;
 
             void EventHandler(object sender, EventArgs e)
             {
@@ -120,9 +116,7 @@ namespace FilterDataGrid
 
         private static void OnScrollToTopPropertyChanged(DependencyObject dpo, DependencyPropertyChangedEventArgs e)
         {
-            ItemsControl itemsControl = dpo as ItemsControl;
-
-            if (itemsControl != null)
+            if (dpo is ItemsControl itemsControl)
             {
                 DependencyPropertyDescriptor dependencyPropertyDescriptor =
                     DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty,
@@ -130,7 +124,8 @@ namespace FilterDataGrid
 
                 if (dependencyPropertyDescriptor != null)
                 {
-                    if ((bool)e.NewValue)
+                    bool newValue = (bool)e.NewValue;
+                    if (newValue)
                     {
                         dependencyPropertyDescriptor.AddValueChanged(itemsControl, ItemsSourceChanged);
                     }
@@ -156,15 +151,25 @@ namespace FilterDataGrid
             if (obj == null) throw new ArgumentException("Value cannot be null.", nameof(obj));
             if (propertyName == null) throw new ArgumentException("Value cannot be null.", nameof(propertyName));
 
-            foreach (var prop in propertyName.Split('.').Select(s => obj?.GetType().GetProperty(s)))
-                obj = prop?.GetValue(obj, null);
+            string[] propertyNames = propertyName.Split('.');
+            foreach (string prop in propertyNames)
+            {
+                if (obj == null) break;
+                PropertyInfo propertyInfo = obj.GetType().GetProperty(prop);
+                obj = propertyInfo?.GetValue(obj, null);
+            }
             return obj;
         }
 
         public static T GetPropertyValue<T>(this object obj, string propertyName)
         {
-            foreach (var prop in propertyName.Split('.').Select(s => obj?.GetType().GetProperty(s)))
-                obj = prop?.GetValue(obj, null);
+            string[] propertyNames = propertyName.Split('.');
+            foreach (string prop in propertyNames)
+            {
+                if (obj == null) break;
+                PropertyInfo propertyInfo = obj.GetType().GetProperty(prop);
+                obj = propertyInfo?.GetValue(obj, null);
+            }
 
             return (obj != null) ? (T)obj : default;
         }
@@ -178,9 +183,10 @@ namespace FilterDataGrid
 
             if (!propertyName.Contains('.')) return srcType.GetProperty(propertyName);
 
-            foreach (var info in propertyName.Split('.')
-                         .Select(s => srcType?.GetProperty(s, BindingFlags.Public | BindingFlags.Instance)))
+            string[] propertyNames = propertyName.Split('.');
+            foreach (string prop in propertyNames)
             {
+                PropertyInfo info = srcType?.GetProperty(prop, BindingFlags.Public | BindingFlags.Instance);
                 srcType = info?.PropertyType;
                 if (srcType == null) break;
                 infos = info;
@@ -212,11 +218,23 @@ namespace FilterDataGrid
 
     public static class JsonConvert
     {
+        #region Private Constants
+
+        private const string DateTimeFormatString = "yyyy-MM-ddTHH:mm:ss.fffffff";
+
+        #endregion Private Constants
+
+        #region Private Methods
+
         private static DataContractJsonSerializerSettings GetSettings() =>
-            new DataContractJsonSerializerSettings
+            new()
             {
-                DateTimeFormat = new DateTimeFormat("yyyy-MM-ddTHH:mm:ss.fffffff")
+                DateTimeFormat = new DateTimeFormat(DateTimeFormatString)
             };
+
+        #endregion Private Methods
+
+        #region Public Methods
 
         public static T Deserialize<T>(string filename)
         {
@@ -225,11 +243,9 @@ namespace FilterDataGrid
                 if (!File.Exists(filename)) return (T)default;
 
                 // ReSharper disable once ConvertToUsingDeclaration
-                using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    var ser = new DataContractJsonSerializer(typeof(T), GetSettings());
-                    return (T)ser.ReadObject(fs);
-                }
+                using FileStream fs = new(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                DataContractJsonSerializer ser = new(typeof(T), GetSettings());
+                return (T)ser.ReadObject(fs);
             }
             catch (Exception ex)
             {
@@ -243,17 +259,13 @@ namespace FilterDataGrid
             try
             {
                 // ReSharper disable once ConvertToUsingDeclaration
-                using (var fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read))
-                {
-                    using (var writer =
-                           JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, false, "  "))
-                    {
-                        var ser = new DataContractJsonSerializer(typeof(T), GetSettings());
-                        ser.WriteObject(writer, data);
-                        writer.Flush();
-                        return fs.Length;
-                    }
-                }
+                using FileStream fs = new(filename, FileMode.Create, FileAccess.Write, FileShare.Read);
+                using System.Xml.XmlDictionaryWriter writer =
+                       JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, false, "  ");
+                DataContractJsonSerializer ser = new(typeof(T), GetSettings());
+                ser.WriteObject(writer, data);
+                writer.Flush();
+                return fs.Length;
             }
             catch (Exception ex)
             {
@@ -261,6 +273,8 @@ namespace FilterDataGrid
                 throw;
             }
         }
+
+        #endregion Public Methods
     }
 
     public static class VisualTreeHelpers
@@ -271,24 +285,24 @@ namespace FilterDataGrid
             where T : DependencyObject
         {
             // Search immediate children first (breadth-first)
-            var childrenCount = VisualTreeHelper.GetChildrenCount(dependencyObject);
+            int childrenCount = VisualTreeHelper.GetChildrenCount(dependencyObject);
 
             //http://stackoverflow.com/questions/12304904/why-visualtreehelper-getchildrencount-returns-0-for-popup
 
             if (childrenCount == 0 && dependencyObject is Popup)
             {
-                var popup = dependencyObject as Popup;
+                Popup popup = dependencyObject as Popup;
                 return popup.Child?.FindVisualChild<T>(name);
             }
 
-            for (var i = 0; i < childrenCount; i++)
+            for (int i = 0; i < childrenCount; i++)
             {
-                var child = VisualTreeHelper.GetChild(dependencyObject, i);
-                var nameOfChild = child.GetValue(FrameworkElement.NameProperty) as string;
+                DependencyObject child = VisualTreeHelper.GetChild(dependencyObject, i);
+                string nameOfChild = child.GetValue(FrameworkElement.NameProperty) as string;
 
-                if (child is T && (name == string.Empty || name == nameOfChild))
-                    return (T)child;
-                var childOfChild = child.FindVisualChild<T>(name);
+                if (child is T t && (name == string.Empty || name == nameOfChild))
+                    return t;
+                T childOfChild = child.FindVisualChild<T>(name);
                 if (childOfChild != null)
                     return childOfChild;
             }
@@ -299,15 +313,18 @@ namespace FilterDataGrid
         private static IEnumerable<T> GetChildrenOf<T>(this DependencyObject obj, bool recursive)
             where T : DependencyObject
         {
-            var count = VisualTreeHelper.GetChildrenCount(obj);
-            for (var i = 0; i < count; i++)
+            int count = VisualTreeHelper.GetChildrenCount(obj);
+            for (int i = 0; i < count; i++)
             {
-                var child = VisualTreeHelper.GetChild(obj, i);
-                if (child is T) yield return (T)child;
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child is T t) yield return t;
 
                 if (recursive)
-                    foreach (var item in child.GetChildrenOf<T>())
+                {
+                    IEnumerable<T> childItems = child.GetChildrenOf<T>();
+                    foreach (T item in childItems)
                         yield return item;
+                }
             }
         }
 
@@ -332,21 +349,19 @@ namespace FilterDataGrid
             if (child == null) return null;
 
             //handle content elements separately
-            var contentElement = child as ContentElement;
-            if (contentElement != null)
+            if (child is ContentElement contentElement)
             {
-                var parent = ContentOperations.GetParent(contentElement);
+                DependencyObject parent = ContentOperations.GetParent(contentElement);
                 if (parent != null) return parent;
 
-                var fce = contentElement as FrameworkContentElement;
+                FrameworkContentElement fce = contentElement as FrameworkContentElement;
                 return fce?.Parent;
             }
 
             //also try searching for parent in framework elements (such as DockPanel, etc)
-            var frameworkElement = child as FrameworkElement;
-            if (frameworkElement != null)
+            if (child is FrameworkElement frameworkElement)
             {
-                var parent = frameworkElement.Parent;
+                DependencyObject parent = frameworkElement.Parent;
                 if (parent != null) return parent;
             }
 
@@ -368,7 +383,7 @@ namespace FilterDataGrid
 
             while (current != null)
             {
-                if (current is T) return (T)current;
+                if (current is T t) return t;
 
                 current = VisualTreeHelper.GetParent(current);
             }
@@ -402,13 +417,12 @@ namespace FilterDataGrid
             {
                 if (!string.IsNullOrEmpty(parentName))
                 {
-                    var frameworkElement = current as FrameworkElement;
-                    if (current is T && frameworkElement != null && frameworkElement.Name == parentName)
-                        return (T)current;
+                    if (current is T t && current is FrameworkElement frameworkElement && frameworkElement.Name == parentName)
+                        return t;
                 }
-                else if (current is T)
+                else if (current is T t)
                 {
-                    return (T)current;
+                    return t;
                 }
 
                 current = VisualTreeHelper.GetParent(current);
@@ -427,13 +441,12 @@ namespace FilterDataGrid
 
             T foundChild = null;
 
-            var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (var i = 0; i < childrenCount; i++)
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
             {
-                var child = VisualTreeHelper.GetChild(parent, i);
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
                 // If the child is not of the request child type child
-                var childType = child as T;
-                if (childType == null)
+                if (child is not T)
                 {
                     // recursively drill down the tree
                     foundChild = FindChild<T>(child, childName);
@@ -443,9 +456,8 @@ namespace FilterDataGrid
                 }
                 else if (!string.IsNullOrEmpty(childName))
                 {
-                    var frameworkElement = child as FrameworkElement;
                     // If the child's name is set for search
-                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    if (child is FrameworkElement frameworkElement && frameworkElement.Name == childName)
                     {
                         // if the child's name is of the request name
                         foundChild = (T)child;
@@ -480,13 +492,12 @@ namespace FilterDataGrid
 
             T foundChild = null;
 
-            var childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (var i = 0; i < childrenCount; i++)
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
             {
-                var child = VisualTreeHelper.GetChild(parent, i);
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
                 // If the child is not of the request child type child
-                var childType = child as T;
-                if (childType == null)
+                if (child is not T)
                 {
                     // recursively drill down the tree
                     foundChild = FindChild<T>(child);
@@ -516,9 +527,9 @@ namespace FilterDataGrid
             if (element.GetType() == type) return element;
             Visual foundElement = null;
             if (element is FrameworkElement frameworkElement) frameworkElement.ApplyTemplate();
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
             {
-                var visual = VisualTreeHelper.GetChild(element, i) as Visual;
+                Visual visual = VisualTreeHelper.GetChild(element, i) as Visual;
                 foundElement = GetDescendantByType(visual, type);
                 if (foundElement != null) break;
             }
@@ -528,9 +539,9 @@ namespace FilterDataGrid
 
         public static DataGridColumnHeader GetHeader(DataGridColumn column, DependencyObject reference)
         {
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(reference); i++)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(reference); i++)
             {
-                var child = VisualTreeHelper.GetChild(reference, i);
+                DependencyObject child = VisualTreeHelper.GetChild(reference, i);
 
                 if (child is DataGridColumnHeader colHeader && colHeader.Column == column) return colHeader;
 
@@ -557,14 +568,13 @@ namespace FilterDataGrid
         public static T TryFindParent<T>(this DependencyObject child) where T : DependencyObject
         {
             //get parent item
-            var parentObject = GetParentObject(child);
+            DependencyObject parentObject = GetParentObject(child);
 
             //we've reached the end of the tree
             if (parentObject == null) return null;
 
             //check if the parent matches the type we're looking for
-            var parent = parentObject as T;
-            if (parent != null)
+            if (parentObject is T parent)
                 return parent;
             return TryFindParent<T>(parentObject);
         }
