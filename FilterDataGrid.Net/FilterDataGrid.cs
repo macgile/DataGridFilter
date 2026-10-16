@@ -250,6 +250,20 @@ namespace FilterDataGrid
 
         private readonly Dictionary<string, Predicate<object>> criteria = new Dictionary<string, Predicate<object>>();
 
+        #region Private DependencyProperty
+
+        private static readonly DependencyPropertyKey VisibleItemCountPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                nameof(VisibleItemCount),
+                typeof(int),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(0));
+
+        public static readonly DependencyProperty VisibleItemCountProperty =
+            VisibleItemCountPropertyKey.DependencyProperty;
+
+        #endregion Private DependencyProperty
+
         #endregion Private Fields
 
         #region Public Properties
@@ -424,6 +438,12 @@ namespace FilterDataGrid
         {
             get => (int)GetValue(FilterVersionProperty);
             set => SetValue(FilterVersionProperty, value);
+        }
+
+        public int VisibleItemCount
+        {
+            get => (int)GetValue(VisibleItemCountProperty);
+            private set => SetValue(VisibleItemCountPropertyKey, value);
         }
 
 
@@ -658,7 +678,11 @@ namespace FilterDataGrid
                 // set Filter, contribution : STEFAN HEIMEL
                 if (CollectionViewSource.CanFilter) CollectionViewSource.Filter = Filter;
 
+                CollectionViewSource.CollectionChanged += OnItemsViewChanged;
+
                 ItemsSourceCount = Items.Count;
+                UpdateVisibleItemCount();
+
                 ElapsedTime = new TimeSpan(0, 0, 0);
 
                 OnPropertyChanged(nameof(ItemsSourceCount));
@@ -780,6 +804,9 @@ namespace FilterDataGrid
                 criteria.Clear();
                 GlobalFilterList.Clear();
                 CollectionViewSource?.Refresh();
+
+                // Update visible items count
+                UpdateVisibleItemCount();
 
                 // empty json file
                 if (PersistentFilter) SavePreset();
@@ -919,6 +946,9 @@ namespace FilterDataGrid
             {
                 // Apply filter
                 CollectionViewSource.Refresh();
+
+                // Update visible items count
+                UpdateVisibleItemCount();
 
                 stopWatchFilter.Stop();
 
@@ -1570,7 +1600,12 @@ namespace FilterDataGrid
             Mouse.OverrideCursor = Cursors.Wait;
 
             if (CurrentFilter.IsFiltered && criteria.Remove(CurrentFilter.FieldName))
+            {
                 CollectionViewSource.Refresh();
+
+                // Update visible items count
+                UpdateVisibleItemCount();
+            }
 
             if (GlobalFilterList.Contains(CurrentFilter))
                 GlobalFilterList.Remove(CurrentFilter);
@@ -2013,6 +2048,9 @@ namespace FilterDataGrid
                 // apply filter
                 CollectionViewSource.Refresh();
 
+                // Update visible items count
+                UpdateVisibleItemCount();
+
                 // set button icon (filtered or not)
                 FilterState.SetIsFiltered(CurrentFilter.FilterButton, CurrentFilter?.IsFiltered ?? false);
 
@@ -2149,6 +2187,9 @@ namespace FilterDataGrid
             if (d is FilterDataGrid grid)
             {
                 grid.CollectionViewSource?.Refresh();
+
+                // Update visible items count
+                grid.VisibleItemCount = grid.Items.Count;
             }
         }
 
@@ -2159,7 +2200,21 @@ namespace FilterDataGrid
             if (d is FilterDataGrid grid)
             {
                 grid.CollectionViewSource?.Refresh();
+
+                // Update visible items count
+                grid.VisibleItemCount = grid.Items.Count;
             }
+        }
+
+        private void OnItemsViewChanged(
+            object? sender,
+            NotifyCollectionChangedEventArgs e)
+        {
+            UpdateVisibleItemCount();
+        }
+        private void UpdateVisibleItemCount()
+        {
+            VisibleItemCount = Items.Count;
         }
 
         #endregion Private Methods
