@@ -262,6 +262,16 @@ namespace FilterDataGrid
         public static readonly DependencyProperty VisibleItemCountProperty =
             VisibleItemCountPropertyKey.DependencyProperty;
 
+        private static readonly DependencyPropertyKey IsFilteredPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                nameof(IsFiltered),
+                typeof(bool),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(false));
+
+        public static readonly DependencyProperty IsFilteredProperty =
+            IsFilteredPropertyKey.DependencyProperty;
+
         #endregion Private DependencyProperty
 
         #endregion Private Fields
@@ -446,6 +456,17 @@ namespace FilterDataGrid
             private set => SetValue(VisibleItemCountPropertyKey, value);
         }
 
+        public bool IsFiltered
+        {
+            get => (bool)GetValue(IsFilteredProperty);
+            private set
+            {
+                Debug.WriteLineIf(
+                    Debugger.IsAttached,
+                    $"Visible={VisibleItemCount}, Total={ItemsSourceCount}, NewIsFiltered={value}");
+                SetValue(IsFilteredPropertyKey, value);
+            }
+        }
 
         #endregion Public Properties
 
@@ -680,7 +701,6 @@ namespace FilterDataGrid
 
                 CollectionViewSource.CollectionChanged += OnItemsViewChanged;
 
-                ItemsSourceCount = Items.Count;
                 UpdateVisibleItemCount();
 
                 ElapsedTime = new TimeSpan(0, 0, 0);
@@ -2170,7 +2190,7 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "ItemSourceCollectionChanged");
 
-            ItemsSourceCount = Items.Count;
+            UpdateVisibleItemCount();
             OnPropertyChanged(nameof(ItemsSourceCount));
 
             if (!ShowRowsCount) return;
@@ -2215,6 +2235,21 @@ namespace FilterDataGrid
         private void UpdateVisibleItemCount()
         {
             VisibleItemCount = Items.Count;
+
+            ItemsSourceCount = GetItemsSourceCount();
+
+            IsFiltered =
+                VisibleItemCount > 0 &&
+                VisibleItemCount != ItemsSourceCount;
+
+            OnPropertyChanged(nameof(ItemsSourceCount));
+        }
+
+        private int GetItemsSourceCount()
+        {
+            return ItemsSource is ICollection collection
+                ? collection.Count
+                : Items.Count;
         }
 
         #endregion Private Methods
