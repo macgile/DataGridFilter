@@ -909,6 +909,10 @@ namespace FilterDataGrid
         /// <returns>The converted object.</returns>
         private object ConvertToType(object value, Type type)
         {
+            // null value of a nullable column (e.g. bool?, int?), must be kept as is
+            // Convert.ChangeType(null, valueType) throws an InvalidCastException
+            if (value == null) return null;
+
             try
             {
                 if (type == typeof(DateTime))

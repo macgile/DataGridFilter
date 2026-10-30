@@ -12,6 +12,7 @@
 #region CONTRIBUTORS
 
 // Czech                : hanyscz
+// Danish               : MortenSteengaard
 // Dutch                : Tenera
 // Hebrew               : abaye123
 // Hugarian             : dankovics.jozsef
@@ -48,6 +49,7 @@ namespace FilterDataGrid
     public enum Local
     {
         Czech,
+        Danish,
         Dutch,
         English,
         French,
@@ -241,6 +243,26 @@ namespace FilterDataGrid
                 { TranslatableElements.False, "Nezaškrtnuto" },
                 { TranslatableElements.RemoveAll, "Odebrat všechny filtry" },
                 { TranslatableElements.Indeterminate, "Neurčeno" }
+            });
+
+        private static ILanguageDictionary Danish { get; } = new LanguageDictionary("Danish",
+            new CultureInfo("da-DK"),
+            new Dictionary<TranslatableElements, string>
+            {
+                { TranslatableElements.All, "(Vælg alle)" },
+                { TranslatableElements.Empty, "(Tomme)" },
+                { TranslatableElements.Clear, "Ryd filter \"{0}\"" },
+                { TranslatableElements.Contains, "Søg (indeholder)" },
+                { TranslatableElements.StartsWith, "Søg (begynder med)" },
+                { TranslatableElements.Toggle, "Skift mellem indeholder/begynder med" },
+                { TranslatableElements.Ok, "OK" },
+                { TranslatableElements.Cancel, "Annullér" },
+                { TranslatableElements.Status, "{0:n0} række(r) fundet ud af {1:n0}" },
+                { TranslatableElements.ElapsedTime, "Forløbet tid {0:mm}:{0:ss}.{0:ff}" },
+                { TranslatableElements.True, "Markeret" },
+                { TranslatableElements.False, "Ikke markeret" },
+                { TranslatableElements.RemoveAll, "Ryd alle filtre" },
+                { TranslatableElements.Indeterminate, "Ubestemt" },
             });
 
         private static ILanguageDictionary Dutch { get; } = new LanguageDictionary("Dutch", new CultureInfo("nl-NL"),
@@ -512,7 +534,7 @@ namespace FilterDataGrid
                 { TranslatableElements.Ok, "Tamam" },
                 { TranslatableElements.Cancel, "İptal" },
                 { TranslatableElements.Status, "{1:n0} kayıt içerisinden {0:n0} kayıt bulundu" },
-                { TranslatableElements.ElapsedTime, "Geçen süre {0:dd}:{0:ss}.{0:ff}" },
+                { TranslatableElements.ElapsedTime, "Geçen süre {0:mm}:{0:ss}.{0:ff}" },
                 { TranslatableElements.True, "Seçili" },
                 { TranslatableElements.False, "Seçili değil" },
                 { TranslatableElements.RemoveAll, "Tüm filtreleri kaldır" },
