@@ -475,7 +475,7 @@ namespace FilterDataGrid
 
             try
             {
-                // ignore excluded columns
+                // Ignore excluded columns
                 if (excludedColumns.Any(
                         x => string.Equals(x, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
                 {
@@ -483,33 +483,53 @@ namespace FilterDataGrid
                     return;
                 }
 
-                // enable column sorting when user specified
+                // Enable column sorting when specified by the user
                 e.Column.CanUserSort = CanUserSortColumns;
 
-                // return if the field is excluded
+                // Return if the field is excluded
                 if (excludedFields.Any(c =>
-                        string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase))) return;
+                        string.Equals(c, e.PropertyName, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    return;
+                }
 
-                // template
                 var template = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
 
-                // get type
+                // Get the underlying type for nullable properties
                 fieldType = Nullable.GetUnderlyingType(e.PropertyType) ?? e.PropertyType;
 
-                // get type code
                 var typeCode = Type.GetTypeCode(fieldType);
 
+                // Read-only properties require a OneWay binding
+                var propertyIsReadOnly =
+                    e.PropertyDescriptor is PropertyDescriptor descriptor &&
+                    descriptor.IsReadOnly;
+
+                var isReadOnly = propertyIsReadOnly || e.Column.IsReadOnly;
+
+                var bindingMode = isReadOnly
+                    ? BindingMode.OneWay
+                    : BindingMode.TwoWay;
+                
                 if (fieldType.IsEnum)
                 {
                     var column = new DataGridComboBoxColumn
                     {
-                        ItemsSource = ((System.Windows.Controls.DataGridComboBoxColumn)e.Column).ItemsSource,
-                        SelectedItemBinding = new Binding(e.PropertyName),
+                        ItemsSource =
+                            !(e.Column is System.Windows.Controls.DataGridComboBoxColumn col)
+                                ? Enum.GetValues(fieldType) 
+                                : col.ItemsSource,
+
+                        SelectedItemBinding = new Binding(e.PropertyName)
+                        {
+                            Mode = bindingMode
+                        },
                         FieldName = e.PropertyName,
                         Header = e.Column.Header,
                         HeaderTemplate = template,
-                        IsSingle = false, // eNum is not a unique value (unique identifier)
-                        IsColumnFiltered = true
+                        IsSingle = false,
+                        IsColumnFiltered = true,
+                        IsReadOnly = isReadOnly
                     };
 
                     e.Column = column;
@@ -518,25 +538,37 @@ namespace FilterDataGrid
                 {
                     var column = new DataGridCheckBoxColumn
                     {
-                        Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
+                        Binding = new Binding(e.PropertyName)
+                        {
+                            Mode = bindingMode,
+                            ConverterCulture = Translate.Culture
+                        },
                         FieldName = e.PropertyName,
                         Header = e.Column.Header,
                         HeaderTemplate = template,
-                        IsColumnFiltered = true
+                        IsColumnFiltered = true,
+                        IsReadOnly = isReadOnly
                     };
 
                     e.Column = column;
                 }
-                // TypeCode of numeric type, between 5 and 15
+                // Numeric TypeCode values range from 5 to 15:
+                // SByte, Byte, Int16, UInt16, Int32, UInt32, Int64,
+                // UInt64, Single, Double and Decimal.
                 else if ((int)typeCode > 4 && (int)typeCode < 16)
                 {
-                    var column = new DataGridNumericColumn()
+                    var column = new DataGridNumericColumn
                     {
-                        Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
+                        Binding = new Binding(e.PropertyName)
+                        {
+                            Mode = bindingMode,
+                            ConverterCulture = Translate.Culture
+                        },
                         FieldName = e.PropertyName,
                         Header = e.Column.Header,
                         HeaderTemplate = template,
-                        IsColumnFiltered = true
+                        IsColumnFiltered = true,
+                        IsReadOnly = isReadOnly
                     };
 
                     e.Column = column;
@@ -545,27 +577,28 @@ namespace FilterDataGrid
                 {
                     var column = new DataGridTextColumn
                     {
-                        Binding = new Binding(e.PropertyName) { ConverterCulture = Translate.Culture },
+                        Binding = new Binding(e.PropertyName)
+                        {
+                            Mode = bindingMode,
+                            ConverterCulture = Translate.Culture
+                        },
                         FieldName = e.PropertyName,
                         Header = e.Column.Header,
-                        IsColumnFiltered = true
+                        HeaderTemplate = template,
+                        IsReadOnly = isReadOnly
                     };
 
-                    // apply the format string provided
+                    // Apply the specified date format
                     if (typeCode == TypeCode.DateTime && !string.IsNullOrEmpty(DateFormatString))
+                    {
                         column.Binding.StringFormat = DateFormatString;
+                    }
 
-                    // if the type does not belong to the "System" namespace, disable sorting
+                    // Disable sorting and editing for complex types
                     if (!fieldType.IsSystemType())
                     {
                         column.CanUserSort = false;
-
-                        // if the type is a nested object (class), disable cell editing
-                        column.IsReadOnly = fieldType.IsClass;
-                    }
-                    else
-                    {
-                        column.HeaderTemplate = template;
+                        column.IsReadOnly = true;
                     }
 
                     e.Column = column;
@@ -1077,7 +1110,6 @@ namespace FilterDataGrid
 
             try
             {
-
                 PropertyInfo fieldProperty = null;
 
                 // ReSharper disable MergeIntoPattern
@@ -1123,7 +1155,7 @@ namespace FilterDataGrid
                         fieldType = null;
                         var template = (DataTemplate)TryFindResource("DataGridHeaderTemplate");
 
-                        // Convert to switch, only one case should ever get used, so checking for each type should be uneessary.
+                        // Convert to switch, only one case should ever get used, so checking for each type should be uneccessary.
                         // Change to cast so inherited column typs can be used.
                         switch (col)
                         {
