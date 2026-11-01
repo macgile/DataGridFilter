@@ -182,6 +182,24 @@ namespace FilterDataGrid
                 typeof(FilterDataGrid),
                 new PropertyMetadata(null));
 
+        public static readonly DependencyProperty ExternalFilterProperty =
+            DependencyProperty.Register(
+                nameof(ExternalFilter),
+                typeof(Func<object, bool>),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(
+                    null,
+                    OnExternalFilterChanged));
+
+        public static readonly DependencyProperty FilterVersionProperty =
+            DependencyProperty.Register(
+                nameof(FilterVersion),
+                typeof(int),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(
+                    0,
+                    OnFilterVersionChanged));
+
         #endregion Public DependencyProperty
 
         #region Public Event
@@ -231,6 +249,30 @@ namespace FilterDataGrid
         private bool startsWith;
 
         private readonly Dictionary<string, Predicate<object>> criteria = new Dictionary<string, Predicate<object>>();
+
+        #region Private DependencyProperty
+
+        private static readonly DependencyPropertyKey VisibleItemCountPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                nameof(VisibleItemCount),
+                typeof(int),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(0));
+
+        public static readonly DependencyProperty VisibleItemCountProperty =
+            VisibleItemCountPropertyKey.DependencyProperty;
+
+        private static readonly DependencyPropertyKey IsFilteredPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                nameof(IsFiltered),
+                typeof(bool),
+                typeof(FilterDataGrid),
+                new PropertyMetadata(false));
+
+        public static readonly DependencyProperty IsFilteredProperty =
+            IsFilteredPropertyKey.DependencyProperty;
+
+        #endregion Private DependencyProperty
 
         #endregion Private Fields
 
@@ -395,6 +437,34 @@ namespace FilterDataGrid
         {
             get => (Brush)GetValue(FilterPopupBackgroundProperty);
             set => SetValue(FilterPopupBackgroundProperty, value);
+        }
+
+        public Func<object, bool>? ExternalFilter
+        {
+            get => (Func<object, bool>?)GetValue(ExternalFilterProperty);
+            set => SetValue(ExternalFilterProperty, value);
+        }
+        public int FilterVersion
+        {
+            get => (int)GetValue(FilterVersionProperty);
+            set => SetValue(FilterVersionProperty, value);
+        }
+
+        public int VisibleItemCount
+        {
+            get => (int)GetValue(VisibleItemCountProperty);
+            private set => SetValue(VisibleItemCountPropertyKey, value);
+        }
+
+        public bool IsFiltered
+        {
+            get => (bool)GetValue(IsFilteredProperty);
+            private set
+            {
+                if (IsFiltered == value) return;
+                Debug.WriteLineIf(DebugMode, $"Visible={VisibleItemCount}, Total={ItemsSourceCount}, NewIsFiltered={value}");
+                SetValue(IsFilteredPropertyKey, value);
+            }
         }
 
         #endregion Public Properties
@@ -661,7 +731,10 @@ namespace FilterDataGrid
                 // set Filter, contribution : STEFAN HEIMEL
                 if (CollectionViewSource.CanFilter) CollectionViewSource.Filter = Filter;
 
-                ItemsSourceCount = Items.Count;
+                CollectionViewSource.CollectionChanged += OnItemsViewChanged;
+
+                UpdateVisibleItemCount();
+
                 ElapsedTime = new TimeSpan(0, 0, 0);
 
                 OnPropertyChanged(nameof(ItemsSourceCount));
@@ -784,6 +857,9 @@ namespace FilterDataGrid
                 GlobalFilterList.Clear();
                 CollectionViewSource?.Refresh();
 
+                // Update visible items count
+                UpdateVisibleItemCount();
+
                 // empty json file
                 if (PersistentFilter) SavePreset();
             }
@@ -814,9 +890,10 @@ namespace FilterDataGrid
             var hostingWindow = Window.GetWindow(this);
 
             // set the background color of the filter popup
-            FilterPopupBackground = FilterPopupBackground == null && hostingWindow != null
-                ? hostingWindow.Background
-                : new SolidColorBrush(Colors.White);
+            if (FilterPopupBackground == null)
+            {
+                FilterPopupBackground = hostingWindow?.Background;
+            }
 
             if (filterDataGrid.PersistentFilter)
                 filterDataGrid.LoadPreset();
@@ -921,6 +998,9 @@ namespace FilterDataGrid
             {
                 // Apply filter
                 CollectionViewSource.Refresh();
+
+                // Update visible items count
+                UpdateVisibleItemCount();
 
                 stopWatchFilter.Stop();
 
@@ -1424,8 +1504,26 @@ namespace FilterDataGrid
         /// <returns></returns>
         private bool Filter(object o)
         {
-            return criteria.Values
-                .Aggregate(true, (prevValue, predicate) => prevValue && predicate(o));
+            var columnFilterResult =
+                criteria.Values.Aggregate(
+                    true,
+                    (prevValue, predicate) =>
+                        prevValue && predicate(o));
+
+            bool externalFilterResult;
+
+            try
+            {
+                externalFilterResult =
+                    ExternalFilter?.Invoke(o) ?? true;
+            }
+            catch
+            {
+                externalFilterResult = true;
+            }
+
+            return columnFilterResult &&
+                   externalFilterResult;
         }
 
         /// <summary>
@@ -1557,7 +1655,12 @@ namespace FilterDataGrid
             Mouse.OverrideCursor = Cursors.Wait;
 
             if (CurrentFilter.IsFiltered && criteria.Remove(CurrentFilter.FieldName))
+            {
                 CollectionViewSource.Refresh();
+
+                // Update visible items count
+                UpdateVisibleItemCount();
+            }
 
             if (GlobalFilterList.Contains(CurrentFilter))
                 GlobalFilterList.Remove(CurrentFilter);
@@ -2000,6 +2103,9 @@ namespace FilterDataGrid
                 // apply filter
                 CollectionViewSource.Refresh();
 
+                // Update visible items count
+                UpdateVisibleItemCount();
+
                 // set button icon (filtered or not)
                 FilterState.SetIsFiltered(CurrentFilter.FilterButton, CurrentFilter?.IsFiltered ?? false);
 
@@ -2119,7 +2225,7 @@ namespace FilterDataGrid
         {
             Debug.WriteLineIf(DebugMode, "ItemSourceCollectionChanged");
 
-            ItemsSourceCount = Items.Count;
+            UpdateVisibleItemCount();
             OnPropertyChanged(nameof(ItemsSourceCount));
 
             if (!ShowRowsCount) return;
@@ -2127,6 +2233,58 @@ namespace FilterDataGrid
             for (var i = 0; i < Items.Count; i++)
                 if (ItemContainerGenerator.ContainerFromIndex(i) is DataGridRow row)
                     row.Header = $"{i + 1}";
+        }
+
+        private static void OnExternalFilterChanged(
+            DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FilterDataGrid grid)
+            {
+                grid.CollectionViewSource?.Refresh();
+
+                // Update visible items count
+                grid.VisibleItemCount = grid.Items.Count;
+            }
+        }
+
+        private static void OnFilterVersionChanged(
+            DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FilterDataGrid grid)
+            {
+                grid.CollectionViewSource?.Refresh();
+
+                // Update visible items count
+                grid.VisibleItemCount = grid.Items.Count;
+            }
+        }
+
+        private void OnItemsViewChanged(
+            object? sender,
+            NotifyCollectionChangedEventArgs e)
+        {
+            UpdateVisibleItemCount();
+        }
+        private void UpdateVisibleItemCount()
+        {
+            VisibleItemCount = Items.Count;
+
+            ItemsSourceCount = GetItemsSourceCount();
+
+            IsFiltered =
+                VisibleItemCount > 0 &&
+                VisibleItemCount != ItemsSourceCount;
+
+            OnPropertyChanged(nameof(ItemsSourceCount));
+        }
+
+        private int GetItemsSourceCount()
+        {
+            return ItemsSource is ICollection collection
+                ? collection.Count
+                : Items.Count;
         }
 
         #endregion Private Methods

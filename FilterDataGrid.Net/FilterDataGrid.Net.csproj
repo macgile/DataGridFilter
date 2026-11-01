@@ -1,82 +1,84 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net48-windows;netcoreapp3.1;net6.0-windows;net7.0-windows;net8.0-windows;net9.0-windows</TargetFrameworks>
-    <OutputType>Library</OutputType>
-    <UseWPF>true</UseWPF>
-    <RootNamespace>FilterDataGrid</RootNamespace>
-    <AssemblyName>FilterDataGrid</AssemblyName>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net48-windows;netcoreapp3.1;net6.0-windows;net7.0-windows;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+		<OutputType>Library</OutputType>
+		<UseWPF>true</UseWPF>
+		<RootNamespace>FilterDataGrid</RootNamespace>
+		<AssemblyName>FilterDataGrid</AssemblyName>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <PropertyGroup>
+	<PropertyGroup>
 
-    <Authors>Gilles Macabies</Authors>
-    <Copyright>Gilles Macabies 2023</Copyright>
+		<Authors>Gilles Macabies</Authors>
+		<Copyright>Gilles Macabies 2023</Copyright>
 
-    <!-- Do not remove this line -->
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<!-- Do not remove this line -->
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <PackageOutputPath>..\..\NuGet</PackageOutputPath>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<PackageOutputPath>..\..\NuGet</PackageOutputPath>
 
-    <!-- Package version -->
-    <Version>1.2.9</Version>
+		<!-- Package version -->
+		<Version>1.2.9</Version>
 
-    <IsPublishable>False</IsPublishable>
-    <NeutralLanguage />
+		<IsPublishable>False</IsPublishable>
+		<NeutralLanguage />
 
-    <PackageIcon>icon.png</PackageIcon>
-    <PackageIconUrl />
-    <PackageLicenseExpression></PackageLicenseExpression>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageIconUrl />
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 
-    <PackageProjectUrl>https://github.com/macgile/DataGridFilter</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryType>GitHub</RepositoryType>
-    <RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/macgile/DataGridFilter</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryType>GitHub</RepositoryType>
+		<RepositoryUrl>https://github.com/macgile/DataGridFilter</RepositoryUrl>
 
 
-    <Title>A DataGrid control that implements filters for each column like Excel, automatically or custom generated.</Title>
-    <Description>
-      A DataGrid control that inherits from the base DataGrid control class and override some methods to
-      implement filters for each column like Excel, in automatic or custom generation.
-      Translation of labels and date formatting in the following languages :
-      Czech, Chinese(traditional and simplified), Dutch, English, French, German, Hebrew, Hungarian, Italian, Japanese, Polish, Portuguese, Russian, Spanish, Turkish, Ukrainian.
-    </Description>
-    <PackageTags>DataGrid Excel Filter WPF C# Control .Net .NetCore Free</PackageTags>
-    <PackageReleaseNotes>
-      Fix "Object reference not set to an instance" exceptions on ItemSourceChanged event.
-      Fix filtering issue if DataContext was assigned before initialization by @oleluo
-      Ability to rotate the header. Use Header's Content instead of converting it to String by @ValerCheck
-      Added Czech language, translation by @hanyscz
-      Added Portuguese language, translation by @eduardoghi
-      Added Ukrainian language, translation by @oleluo
-    </PackageReleaseNotes>
-    <SignAssembly>False</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+		<Title>A DataGrid control that implements filters for each column like Excel, automatically or custom generated.</Title>
+		<Description>
+			A DataGrid control that inherits from the base DataGrid control class and override some methods to
+			implement filters for each column like Excel, in automatic or custom generation.
+			Translation of labels and date formatting in the following languages :
+			Czech, Chinese(traditional and simplified), Dutch, English, French, German, Hebrew, Hungarian, Italian, Japanese, Polish, Portuguese, Russian, Spanish, Turkish, Ukrainian.
+		</Description>
+		<PackageTags>DataGrid Excel Filter WPF C# Control .Net .NetCore Free</PackageTags>
+		<PackageReleaseNotes>
+			Fix "Object reference not set to an instance" exceptions on ItemSourceChanged event.
+			Fix filtering issue if DataContext was assigned before initialization by @oleluo
+			Ability to rotate the header. Use Header's Content instead of converting it to String by @ValerCheck
+			Added Czech language, translation by @hanyscz
+			Added Portuguese language, translation by @eduardoghi
+			Added Ukrainian language, translation by @oleluo
+		</PackageReleaseNotes>
+		<SignAssembly>False</SignAssembly>
+		<AssemblyOriginatorKeyFile>..\FilterDataGrid.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Converters\NegativeValueConverter.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Converters\NegativeValueConverter.cs" />
+	</ItemGroup>
 
-  <!-- Additional Package Items -->
-  <ItemGroup>
-    <None Include="..\..\NuGet\icon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\NuGet\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\NuGet\Readme.txt">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<!-- Additional Package Items -->
+	<ItemGroup>
+		<None Include="..\..\NuGet\icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\NuGet\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\NuGet\Readme.txt">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>
