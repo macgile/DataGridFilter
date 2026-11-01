@@ -461,9 +461,8 @@ namespace FilterDataGrid
             get => (bool)GetValue(IsFilteredProperty);
             private set
             {
-                Debug.WriteLineIf(
-                    Debugger.IsAttached,
-                    $"Visible={VisibleItemCount}, Total={ItemsSourceCount}, NewIsFiltered={value}");
+                if (IsFiltered == value) return;
+                Debug.WriteLineIf(DebugMode, $"Visible={VisibleItemCount}, Total={ItemsSourceCount}, NewIsFiltered={value}");
                 SetValue(IsFilteredPropertyKey, value);
             }
         }
